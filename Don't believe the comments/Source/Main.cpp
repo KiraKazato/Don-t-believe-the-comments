@@ -1,4 +1,5 @@
 ﻿#include "DxLib.h"
+#include <windows.h>
 #include "SceneManager.h"
 #include "ResourceManager.h"
 #include "Master.h"

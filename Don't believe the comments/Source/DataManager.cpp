@@ -44,7 +44,19 @@ void DataManager::Load(const string& filePath)
 		if (getline(ss, cell, ',')) inData.answer = cell;
 		
 		// 難易度
-		if (getline(ss, cell, ',')) inData.difficulty = stoi(cell);
+		if (getline(ss, cell, ',')) 
+		{
+			// エラー発生時の処理
+			try
+			{
+				inData.difficulty = stoi(cell); 
+			}
+			catch (...)
+			{
+				inData.difficulty = 0;
+			}
+			
+		}
 
 		// 真コメント
 		if (getline(ss, cell, ','))
@@ -89,7 +101,6 @@ const vector<string> DataManager::LoadComment(stringstream& ss, string& cell)
 		// 入れる
 		ret.emplace_back(cell);
 	}
-
 	return ret;
 }
 
@@ -100,5 +111,13 @@ void DataManager::SetQuestion(int index)
 
 const QuestionData& DataManager::GetQuestionData()
 {
-	return mQuestions[mnCurrentIndex];
+	// mnCurrentIndexがエラー部分を参照したらエラーデータを返す
+	try
+	{
+		return mQuestions[mnCurrentIndex];
+	}
+	catch (...)
+	{
+		return QuestionData("エラー", "エラー", INT_MAX, { "エラー" }, { "エラー" });
+	}
 }

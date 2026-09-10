@@ -147,6 +147,7 @@
     <ClCompile Include="Source\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\DataManager.h" />
     <ClInclude Include="Source\Master.h" />
     <ClInclude Include="Source\Object2D.h" />
     <ClInclude Include="Source\ObjectManager.h" />

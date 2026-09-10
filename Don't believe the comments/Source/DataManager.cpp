@@ -24,7 +24,7 @@ void DataManager::Load(const string& filePath)
 	// Å‰‚Ìs‚Í€–Ú–¼‚Ì‚½‚ß”ò‚Î‚·
 	getline(ifs, line);
 
-	if (getline(ifs, line))
+	while (getline(ifs, line))
 	{
 		size_t pos = 0;
 

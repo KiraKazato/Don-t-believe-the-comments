@@ -23,5 +23,5 @@ public:
 
 private:
     // 複数のUIデータをまとめて保管しておくリスト（配列のようなもの）
-    static std::vector<UIData> uiList;
+    static std::vector<UIData> mUIList;
 };

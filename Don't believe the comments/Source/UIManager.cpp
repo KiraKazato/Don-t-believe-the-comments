@@ -1,6 +1,6 @@
 #include "UIManager.h"
 
-std::vector<UIData> UIManager::uiList;
+std::vector<UIData> UIManager::mUIList;
 
 void UIManager::AddUI(int _handle, float _x1, float _y1, float _x2, float _y2, float _ratio)
 {
@@ -21,20 +21,20 @@ void UIManager::AddUI(int _handle, float _x1, float _y1, float _x2, float _y2, f
 	newX2 = centerX + halfWidth;
 	newY2 = centerY + halfHeight;
 	//比率を適用した座標を入れる
-	uiList.push_back({ _handle,newX1,newY1,newX2,newY2 });
+	mUIList.push_back({ _handle,newX1,newY1,newX2,newY2 });
 }
 
 void UIManager::DrawUI()
 {
 	//中身を参照しつつ、勝手な変更バグをなくす
-	for (const auto& list : uiList)
+	for (const auto& ui : mUIList)
 	{
 		//画像の表示
-		DrawExtendGraphF(list.x1, list.y1, list.x2, list.y2, list.handle, TRUE);
+		DrawExtendGraphF(ui.x1, ui.y1, ui.x2, ui.y2, ui.handle, TRUE);
 	}
 }
 
 void UIManager::ClearUI()
 {
-	uiList.clear();
+	mUIList.clear();
 }

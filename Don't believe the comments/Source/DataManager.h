@@ -3,19 +3,17 @@
 #include <vector>
 #include <sstream>
 
-using namespace std;
-
 struct QuestionData
 {
-	string question = "";	// 問題
-	string answer = "";		// 答え
+	std::string question = "";	// 問題
+	std::string answer = "";		// 答え
 	int difficulty = 0;		// 難易度
-	vector<string> trueComment;			// 真コメント
-	vector<string> falseComment;		// 偽コメント
+	std::vector<std::string> trueComment;			// 真コメント
+	std::vector<std::string> falseComment;		// 偽コメント
 
 	// コンストラクタ
 	// データを作る際、明示的に作ることができる
-	QuestionData(const string& question, const string& answer, int difficulty, const vector<string>& trueComment, const vector<string>& falseComment)
+	QuestionData(const std::string& question, const std::string& answer, int difficulty, const std::vector<std::string>& trueComment, const std::vector<std::string>& falseComment)
 		: question(question), answer(answer), difficulty(difficulty), trueComment(trueComment), falseComment(falseComment)
 	{
 	}
@@ -27,7 +25,7 @@ struct QuestionData
 class DataManager
 {
 private:
-	vector<QuestionData> mQuestions{};
+	std::vector<QuestionData> mQuestions{};
 	int mnCurrentIndex = 0;
 
 public:
@@ -45,7 +43,7 @@ public:
 	DataManager& operator=(const DataManager&) = default;
 
 	// 読み込み
-	void Load(const string& filePath);
+	void Load(const std::string& filePath);
 
 	
 
@@ -61,7 +59,7 @@ public:
 private:
 	// コメント読み込み
 	// 特殊のため分ける　
-	const vector<string> LoadComment(stringstream&,string&);
+	const std::vector<std::string> LoadComment(std::stringstream&, std::string&);
 
 
 	bool mbIsLoadFinish = false;	// ロード処理を作る時に使えるはず

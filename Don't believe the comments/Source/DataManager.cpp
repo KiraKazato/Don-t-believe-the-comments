@@ -4,14 +4,14 @@
 #include <sstream>
 #include "DxLib.h"
 
-void DataManager::Load(const string& filePath)
+void DataManager::Load(const std::string& filePath)
 {
 	mbIsLoadFinish = false;
 
 	// 入れるためのデータを用意する
 	QuestionData inData = QuestionData();
 
-	ifstream ifs(filePath, ios::in);
+	std::ifstream ifs(filePath, std::ios::in);
 
 	if (!ifs)
 	{
@@ -19,7 +19,7 @@ void DataManager::Load(const string& filePath)
 		return;
 	}
 
-	string line;
+	std::string line;
 
 	// 最初の行は項目名のため飛ばす
 	getline(ifs, line);
@@ -34,8 +34,8 @@ void DataManager::Load(const string& filePath)
 			line.replace(pos, 2, "");
 		}
 
-		stringstream ss(line);
-		string cell;
+		std::stringstream ss(line);
+		std::string cell;
 
 		// 問題
 		if (getline(ss, cell, ',')) inData.question = cell;
@@ -61,8 +61,8 @@ void DataManager::Load(const string& filePath)
 		// 真コメント
 		if (getline(ss, cell, ','))
 		{
-			stringstream ssComent(cell);
-			string cellComment;
+			std::stringstream ssComent(cell);
+			std::string cellComment;
 
 			inData.trueComment = LoadComment(ssComent, cellComment);
 
@@ -71,8 +71,8 @@ void DataManager::Load(const string& filePath)
 		// 偽コメント
 		if (getline(ss, cell, ','))
 		{
-			stringstream ssComent(cell);
-			string cellComment;
+			std::stringstream ssComent(cell);
+			std::string cellComment;
 
 			inData.falseComment = LoadComment(ssComent, cellComment);
 		}
@@ -83,9 +83,9 @@ void DataManager::Load(const string& filePath)
 	mbIsLoadFinish = true;
 }
 
-const vector<string> DataManager::LoadComment(stringstream& ss, string& cell)
+const std::vector<std::string> DataManager::LoadComment(std::stringstream& ss, std::string& cell)
 {
-	vector<string> ret;
+	std::vector<std::string> ret;
 
 	// } で区切る
 	while (getline(ss, cell, '}'))

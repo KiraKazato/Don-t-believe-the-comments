@@ -1,18 +1,21 @@
 ﻿#include "DxLib.h"
-#include <windows.h>
 #include "SceneManager.h"
 #include "ResourceManager.h"
 #include "Master.h"
 #include "ObjectManager.h"
 #include "Scene.h"
+#include "EffectManager.h"
+#include "EffekseerEffect.h"
 /**
 * @note リファレンス https://dxlib.xsrv.jp/dxfunc.html
 */
 
-//Master クラスの静的メンバ変数定義
+//Masterクラスの静的メンバ変数定義
 SceneManager* Master::mpSceneManager = new SceneManager();
 SoundManager* Master::mpSoundManager = new SoundManager();
 ResourceManager* Master::mpResourceManager = new ResourceManager();
+EffectManager* Master::mpEffectManager = new EffectManager();
+
 
 /**
 * @fn WinMain
@@ -30,7 +33,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	//実行ログを表示するか
 	SetOutApplicationLogValidFlag(TRUE);
-	
+
+	SetUseDirect3DVersion(DX_DIRECT3D_11);
+
 
 	// DXライブラリ初期化
 	if(DxLib_Init() == -1)
@@ -40,9 +45,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	
 	//サウンドマネージャーの初期化
 	Master::mpSoundManager->Initialize();  
-	// シーンマネージャーの生成と初期化
+	// シーンマネージャーの初期化
 	Master::mpSceneManager->Initialize(); 
-	
+	//エフェクトマネージャーの初期化
+	Master::mpEffectManager->Initalize();
 
 	// 描画先画面を裏画面に設定する
 	SetDrawScreen(DX_SCREEN_BACK);
@@ -87,8 +93,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	delete Master::mpSoundManager;
 	delete Master::mpResourceManager;
 
-	
-	
+
+	Effkseer_End();
 
 	// DXライブラリ使用の終了
 	DxLib_End();

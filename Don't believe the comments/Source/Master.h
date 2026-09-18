@@ -3,6 +3,7 @@
 #include "SoundManager.h"
 #include "ResourceManager.h"
 #include "EffectManager.h"
+#include "FontManager.h"
 // ゲーム内で1つだけしか存在しないものを管理するクラス
 //例えば、
 //SceneManagerだったり
@@ -18,6 +19,7 @@ public:
 	static SoundManager* mpSoundManager;  //サウンドマネージャーのポインタ
 	static ResourceManager* mpResourceManager;  //サウンドマネージャーのポインタ
 	static EffectManager* mpEffectManager;//エフェクトマネージャーのポインタ
+	static FontManager* mpFontManager;
 public:
 	static const int Width = 1920;
 	static const int Height = 1080;

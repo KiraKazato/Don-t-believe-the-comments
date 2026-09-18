@@ -6,6 +6,8 @@
 #include "Scene.h"
 #include "EffectManager.h"
 #include "EffekseerEffect.h"
+#include "FontManager.h"
+
 /**
 * @note リファレンス https://dxlib.xsrv.jp/dxfunc.html
 */
@@ -15,7 +17,7 @@ SceneManager* Master::mpSceneManager = new SceneManager();
 SoundManager* Master::mpSoundManager = new SoundManager();
 ResourceManager* Master::mpResourceManager = new ResourceManager();
 EffectManager* Master::mpEffectManager = new EffectManager();
-
+FontManager* Master::mpFontManager = new FontManager();
 
 /**
 * @fn WinMain
@@ -49,6 +51,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Master::mpSceneManager->Initialize(); 
 	//エフェクトマネージャーの初期化
 	Master::mpEffectManager->Initalize();
+	//フォントマネージャーの初期化
+	Master::mpFontManager->Initialize();
 
 	// 描画先画面を裏画面に設定する
 	SetDrawScreen(DX_SCREEN_BACK);
@@ -92,6 +96,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Master::mpSoundManager->Finalize();
 	delete Master::mpSoundManager;
 	delete Master::mpResourceManager;
+	Master::mpFontManager->Finalize();
+	delete Master::mpFontManager;
 
 
 	Effkseer_End();

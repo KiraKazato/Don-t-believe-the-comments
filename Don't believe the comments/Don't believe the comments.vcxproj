@@ -76,14 +76,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\student\Desktop\Don-t-believe-the-comments\Don%27t believe the comments\EffekseerForDXlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\風戸　弦\Desktop\俺\Don-t-believe-the-comments\Don%27t believe the comments\EffekseerForDXlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\student\Desktop\Don-t-believe-the-comments\Don%27t believe the comments\EffekseerForDXlib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\風戸　弦\Desktop\俺\Don-t-believe-the-comments\Don%27t believe the comments\EffekseerForDXlib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -94,14 +94,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\student\Desktop\Don-t-believe-the-comments\Don%27t believe the comments\EffekseerForDXlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\風戸　弦\Desktop\俺\Don-t-believe-the-comments\Don%27t believe the comments\EffekseerForDXlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\student\Desktop\Don-t-believe-the-comments\Don%27t believe the comments\EffekseerForDXlib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\風戸　弦\Desktop\俺\Don-t-believe-the-comments\Don%27t believe the comments\EffekseerForDXlib</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
@@ -111,14 +111,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\student\Desktop\Don-t-believe-the-comments\Don%27t believe the comments\EffekseerForDXlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\風戸　弦\Desktop\俺\Don-t-believe-the-comments\Don%27t believe the comments\EffekseerForDXlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\student\Desktop\Don-t-believe-the-comments\Don%27t believe the comments\EffekseerForDXlib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\風戸　弦\Desktop\俺\Don-t-believe-the-comments\Don%27t believe the comments\EffekseerForDXlib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -129,14 +129,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\student\Desktop\Don-t-believe-the-comments\Don%27t believe the comments\EffekseerForDXlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\風戸　弦\Desktop\俺\Don-t-believe-the-comments\Don%27t believe the comments\EffekseerForDXlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\student\Desktop\Don-t-believe-the-comments\Don%27t believe the comments\EffekseerForDXlib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\風戸　弦\Desktop\俺\Don-t-believe-the-comments\Don%27t believe the comments\EffekseerForDXlib</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
@@ -145,6 +145,7 @@
     <ClCompile Include="Source\EffectManager.cpp" />
     <ClCompile Include="Source\EffekseerEffect.cpp" />
     <ClCompile Include="Source\FontManager.cpp" />
+    <ClCompile Include="Source\GameScene.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Object2D.cpp" />
     <ClCompile Include="Source\ObjectManager.cpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="Source\EffekseerEffect.h" />
     <ClInclude Include="Source\EffectManager.h" />
     <ClInclude Include="Source\FontManager.h" />
+    <ClInclude Include="Source\GameScene.h" />
     <ClInclude Include="Source\Master.h" />
     <ClInclude Include="Source\Object2D.h" />
     <ClInclude Include="Source\ObjectManager.h" />

@@ -118,6 +118,7 @@ const QuestionData& DataManager::GetQuestionData()
 	}
 	catch (...)
 	{
-		return QuestionData("エラー", "エラー", INT_MAX, { "エラー" }, { "エラー" });
+		static const QuestionData ErrorData= QuestionData("エラー", "エラー", INT_MAX, { "エラー" }, { "エラー" });;
+		return  ErrorData;
 	}
 }

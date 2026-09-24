@@ -23,4 +23,8 @@ public:
 public:
 	static const int Width = 1920;
 	static const int Height = 1080;
+
+	//120•ªŠ„‚µ‚½‚Æ‚«‚Ì1—ñ–Ú
+	static const int gridWidth = 16;
+	static const int gridHeight = 9;
 };

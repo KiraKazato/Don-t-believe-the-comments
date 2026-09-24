@@ -143,8 +143,8 @@
   <ItemGroup>
     <ClCompile Include="Source\DataManager.cpp" />
     <ClCompile Include="Source\EffectManager.cpp" />
-    <ClCompile Include="Source\EffekseerEffect.cpp" />
     <ClCompile Include="Source\FontManager.cpp" />
+    <ClCompile Include="Source\GameCycle.cpp" />
     <ClCompile Include="Source\GameScene.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Object2D.cpp" />
@@ -163,6 +163,7 @@
     <ClInclude Include="Source\EffekseerEffect.h" />
     <ClInclude Include="Source\EffectManager.h" />
     <ClInclude Include="Source\FontManager.h" />
+    <ClInclude Include="Source\GameCycle.h" />
     <ClInclude Include="Source\GameScene.h" />
     <ClInclude Include="Source\Master.h" />
     <ClInclude Include="Source\Object2D.h" />

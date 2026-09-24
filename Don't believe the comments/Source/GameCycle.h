@@ -1,6 +1,6 @@
 #pragma once
 #include "DxLib.h"
-#include "DataManager.h"
+#include "QuestionManager.h"
 class GameCycle
 {
 public:

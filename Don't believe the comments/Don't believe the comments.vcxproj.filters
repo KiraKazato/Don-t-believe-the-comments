@@ -45,7 +45,7 @@
     <ClCompile Include="Source\TitleScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DataManager.cpp">
+    <ClCompile Include="Source\QuestionManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\UIManager.cpp">
@@ -95,7 +95,7 @@
     <ClInclude Include="Source\TitleScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DataManager.h">
+    <ClInclude Include="Source\QuestionManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\UIManager.h">

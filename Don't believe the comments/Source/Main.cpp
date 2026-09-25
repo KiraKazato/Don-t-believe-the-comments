@@ -7,6 +7,7 @@
 #include "EffectManager.h"
 #include "EffekseerEffect.h"
 #include "FontManager.h"
+#include "QuestionManager.h"
 
 /**
 * @note リファレンス https://dxlib.xsrv.jp/dxfunc.html
@@ -18,6 +19,7 @@ SoundManager* Master::mpSoundManager = new SoundManager();
 ResourceManager* Master::mpResourceManager = new ResourceManager();
 EffectManager* Master::mpEffectManager = new EffectManager();
 FontManager* Master::mpFontManager = new FontManager();
+QuestionManager* Master::mpQuestionManager = new QuestionManager();
 
 /**
 * @fn WinMain
@@ -26,8 +28,7 @@ FontManager* Master::mpFontManager = new FontManager();
 * @return int 0 正常終了／-1 エラー
 * @details Main関数
 */
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-	LPSTR lpCmdLine, int nCmdShow)
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
 	SetGraphMode(Master::Width, Master::Height, 32);
 	// ウインドウモードで起動
@@ -53,6 +54,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Master::mpEffectManager->Initalize();
 	//フォントマネージャーの初期化
 	Master::mpFontManager->Initialize();
+	//クエスチョンマネージャーの初期化
+	Master::mpQuestionManager->Intialize();
 
 	// 描画先画面を裏画面に設定する
 	SetDrawScreen(DX_SCREEN_BACK);
@@ -98,6 +101,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	delete Master::mpResourceManager;
 	Master::mpFontManager->Finalize();
 	delete Master::mpFontManager;
+	delete Master::mpQuestionManager;
 
 
 	Effkseer_End();

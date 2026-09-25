@@ -14,35 +14,43 @@ FontManager::~FontManager()
 void FontManager::Initialize()
 {
 	//ここで使いたいフォントを追加
-	LoadInputFont(FONT_TETUBINN, "07鉄瓶ゴシック", "Resource/TetubinGosikku.ttf", 80);
+	LoadInputFont(FONT_TETUBINN, "07鉄瓶ゴシック", "Resource/TetubinGosikku.ttf");
 }
 
-void FontManager::LoadInputFont(Font tag, const char* _fontName, LPCSTR _fileName, int _size)
+void FontManager::LoadInputFont(Font tag, const char* _fontName, LPCSTR _fileName)
 {
 	AddFontResourceExA(_fileName, FR_PRIVATE, NULL);
 
-	int fontHandle = CreateFontToHandle(_fontName, _size, 0, DX_FONTTYPE_ANTIALIASING);
-
-	fontList.push_back({ tag, fontHandle ,_fileName });
+	fontList.push_back({ tag, _fontName ,_fileName });
 }
 
 
-void FontManager::LoadSystemFont(Font tag, const char* _fontName, int _size)
+void FontManager::LoadSystemFont(Font tag, const char* _fontName)
 {
-	int fontHandle = CreateFontToHandle(_fontName, _size, 0, DX_FONTTYPE_ANTIALIASING);
-
-	fontList.push_back({ tag, fontHandle ,NULL });
+	fontList.push_back({ tag,_fontName,NULL });
 }
 
 
 
-int FontManager::GetFontHandle(Font tag)
+int FontManager::GetFontHandle(Font tag,int _size)
 {
-	for (const auto& tuple : fontList)
+	if (!fontHandleList.empty())
 	{
-		if (std::get<0>(tuple) == tag)
+		for (const auto& Handle : fontHandleList)
 		{
-			return std::get<1>(tuple);
+			if (std::get<0>(Handle) == tag && std::get<1>(Handle) == _size)
+			{
+				return std::get<2>(Handle);
+			}
+		}
+	}
+	for (const auto& font : fontList)
+	{
+		if (std::get<0>(font) == tag)
+		{
+			int fontHandle =CreateFontToHandle(std::get<1>(font), _size, 0, DX_FONTTYPE_ANTIALIASING);
+			fontHandleList.push_back({ tag,_size,fontHandle });
+			return fontHandle;
 		}
 	}
 	return -1;
@@ -50,10 +58,13 @@ int FontManager::GetFontHandle(Font tag)
 
 void FontManager::Finalize()
 {
-	for (const auto& tuple : fontList)
+	for (const auto& Handle : fontHandleList)
 	{
 		// フォントハンドルを削除
-		DeleteFontToHandle(std::get<1>(tuple));
+		DeleteFontToHandle(std::get<2>(Handle));
+	}
+	for (const auto& tuple : fontList)
+	{	
 		if (std::get<2>(tuple) != NULL)
 		{
 			// ウィンドウズに一時的に保持していたフォントデータを削除

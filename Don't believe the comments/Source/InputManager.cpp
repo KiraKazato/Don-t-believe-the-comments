@@ -7,6 +7,7 @@ InputManager::InputManager()
 
 InputManager::~InputManager()
 {
+	Finalize();
 }
 
 void InputManager::Initialize()
@@ -33,7 +34,9 @@ void InputManager::Draw()
 
 void InputManager::Update()
 {
+	// “ü—Ío—ˆ‚½‚©Šm”F
 	mnKeyInputState = CheckKeyInput(mnInputHandle);
+	ProcessActKeyInput();
 
 	if (mnKeyInputState == 1)
 	{

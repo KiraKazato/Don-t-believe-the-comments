@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\InputManager.cpp" />
     <ClCompile Include="Source\QuestionManager.cpp" />
     <ClCompile Include="Source\EffectManager.cpp" />
     <ClCompile Include="Source\FontManager.cpp" />
@@ -161,6 +162,7 @@
     <ClCompile Include="Source\UIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\InputManager.h" />
     <ClInclude Include="Source\QuestionManager.h" />
     <ClInclude Include="Source\EffekseerEffect.h" />
     <ClInclude Include="Source\EffectManager.h" />

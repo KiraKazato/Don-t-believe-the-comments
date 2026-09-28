@@ -101,6 +101,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	delete Master::mpResourceManager;
 	Master::mpFontManager->Finalize();
 	delete Master::mpFontManager;
+	Master::mpQuestionManager->Finalize();
 	delete Master::mpQuestionManager;
 
 

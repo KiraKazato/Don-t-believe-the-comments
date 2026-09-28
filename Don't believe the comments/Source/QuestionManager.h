@@ -10,6 +10,15 @@ enum StageNumber
 };
 
 
+
+struct GroupRate
+{
+	int group;
+	std::vector<int>difficultgroup;
+	int rate;
+	int changeRate;
+};
+
 struct QuestionData
 {
 	std::string question = "";	// 問題
@@ -44,18 +53,19 @@ public:
 public:
 	void Intialize();
 	
-	//追加 
-	//***************************************
 	void Finalize();
 
-	//ステージごとの確立設定
+	//ステージごとの確率設定
 	// クイズ出現（出題） ※要素数は同数にしてください
 	// @param difficulties	出す難易度				書き方例）{5,4,3,2,1}
 	// @param probability	その難易度の問題が出る確率（単位:％）	書き方例）{5,20,40,50,60}
-	void SetQuestionRate(StageNumber _stage, const std::vector<int>& _difficulty, const std::vector<int>& _rate);
-	//***************************************
+	void SetQuestionRate(StageNumber _stage, std::vector<GroupRate> _group);
 
-	void SpawnQuiz();
+	// クイズの出現
+	void SpawnQuestion(StageNumber _number, int _questionNumber);
+
+	// 既に出た問題のリストをクリアする
+	void ClearSpawnedQuestion();
 
 	// 問題番号を指定して問題を出す
 	void SetQuestion(int _index, int _difficulty);
@@ -63,21 +73,20 @@ public:
 	// 現在の問題の情報を得る
 	const QuestionData& GetQuestionData();
 
-	// ロードが終わったか
-	bool IsLoadFinish() const { return mbIsLoadFinish; };
-
 private:
 	// 読み込み
 	void Load(const std::string& _filePath);
 	
 	// コメント読み込み
-	// 特殊なため分ける　
+	// 特殊なため分ける
 	const std::vector<std::string> LoadComment(std::stringstream&, std::string&);
 
 private:
-	bool mbIsLoadFinish = false;	// ロード処理を作る時に使えるはず
-
-private:
 	//ステージと、そのステージで出る問題の難易度と難易度の出る確率
-	std::vector<std::tuple<StageNumber, std::vector<int>, std::vector<int>>> stageData;
+	std::vector<std::pair<StageNumber, std::vector<GroupRate>>> stageData;
+
+	//確率の最大値
+	static const int maxRate = 90;
+	//確率の最小値
+	static const int minRate = 10;
 };

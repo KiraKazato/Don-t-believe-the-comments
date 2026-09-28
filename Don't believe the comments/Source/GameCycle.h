@@ -1,6 +1,8 @@
 #pragma once
 #include "DxLib.h"
 #include "QuestionManager.h"
+
+
 class GameCycle
 {
 public:
@@ -23,4 +25,7 @@ private:
 
 private:
 	int questionNumberStringHandle = 0;
+
+private:
+	QuestionManager mQuestionManager;
 };

@@ -24,7 +24,11 @@ void GameCycle::Update()
 		return;
 	}
 
-	InputAnswer();
+	if (!InputAnswer)
+	{
+		return;
+	}
+	AnswerJudge();
 }
 void GameCycle::Finalize()
 {
@@ -47,9 +51,12 @@ bool GameCycle::QuestinDraw()
 
 void GameCycle::InputAnswer()
 {
+	//•¶Žš“ü—Í
+	
 }
 
 bool GameCycle::AnswerJudge()
 {
+
 	return true;
 }

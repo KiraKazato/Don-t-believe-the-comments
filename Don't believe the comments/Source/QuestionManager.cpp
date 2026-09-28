@@ -7,9 +7,21 @@
 void QuestionManager::Intialize()
 {
 	Load("Data/Quiz.csv");
+
+	
 }
 
-void QuestionManager::SpawnQuiz(const std::vector<int>& _difficulties, const std::vector<int>& _probability)
+void QuestionManager::Finalize()
+{
+	stageData.clear();
+}
+
+void QuestionManager::SetQuestionRate(StageNumber _stage,const std::vector<int>&_difficulty,const std::vector<int>&_rate)
+{
+	stageData.push_back({ _stage,_difficulty,_rate });
+}
+
+void QuestionManager::SpawnQuiz()
 {
 	int difficultIndex = 0;
 	int questionIndex = 0;

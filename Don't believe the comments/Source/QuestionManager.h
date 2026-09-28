@@ -3,6 +3,13 @@
 #include <vector>
 #include <sstream>
 
+//ステージ番号
+enum StageNumber
+{
+	STAGE_1 = 0,
+};
+
+
 struct QuestionData
 {
 	std::string question = "";	// 問題
@@ -36,11 +43,19 @@ public:
 
 public:
 	void Intialize();
+	
+	//追加 
+	//***************************************
+	void Finalize();
 
+	//ステージごとの確立設定
 	// クイズ出現（出題） ※要素数は同数にしてください
 	// @param difficulties	出す難易度				書き方例）{5,4,3,2,1}
 	// @param probability	その難易度の問題が出る確率（単位:％）	書き方例）{5,20,40,50,60}
-	void SpawnQuiz(const std::vector<int>& _difficulties, const std::vector<int>& _probability);
+	void SetQuestionRate(StageNumber _stage, const std::vector<int>& _difficulty, const std::vector<int>& _rate);
+	//***************************************
+
+	void SpawnQuiz();
 
 	// 問題番号を指定して問題を出す
 	void SetQuestion(int _index, int _difficulty);
@@ -59,6 +74,10 @@ private:
 	// 特殊なため分ける　
 	const std::vector<std::string> LoadComment(std::stringstream&, std::string&);
 
-
+private:
 	bool mbIsLoadFinish = false;	// ロード処理を作る時に使えるはず
+
+private:
+	//ステージと、そのステージで出る問題の難易度と難易度の出る確率
+	std::vector<std::tuple<StageNumber, std::vector<int>, std::vector<int>>> stageData;
 };

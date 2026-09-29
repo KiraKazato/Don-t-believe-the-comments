@@ -10,7 +10,7 @@
 
 void QuestionManager::Intialize()
 {
-	Load("Data/Quiz.csv");
+	Load("Resource/QuizData/Quiz.csv");
 	std::vector<GroupRate> initializeGroup =
 	{
 		GroupRate({1,{1,2,3},50,-5}),
@@ -72,8 +72,13 @@ void QuestionManager::SpawnQuestion(StageNumber _number, int _questionNumber)
 		int difficultGroupIndex = 0;
 		for (auto& rate : data.second)
 		{
-			rate.rate /= totalRate;
+			float normalizedRate = (float)rate.rate / totalRate;
 
+			rate.rate = normalizedRate * 100;
+
+		}
+		for (auto& rate : data.second)
+		{
 			// 確率計算
 			if (rate.rate > GetRand(100))
 			{
@@ -84,12 +89,18 @@ void QuestionManager::SpawnQuestion(StageNumber _number, int _questionNumber)
 				// 抽選
 				setQuestionIndex = GetRand(static_cast<int>(mQuestions[setDifficultIndex].size()) - 1);
 
-				// 既に出題した問題があったか
+
 				bool isFound = true;
 				// 何回ループしたか
 				int loopCount = 0;
+				// 既に出題した問題があったか
 				while (isFound)
 				{
+					if (mSpawnedQuestion.empty())
+					{
+						isFound = false;
+					}
+
 					// 同じものがないか探索
 					for (const auto& spawned : mSpawnedQuestion)
 					{
@@ -202,7 +213,7 @@ void QuestionManager::Load(const std::string& _filePath)
 			}
 
 			if (questionGraphID != -1)
-				inData.questionGraphHandle = Master::mpResourceManager->LoadGraphics("Resource/Question/Question" + std::to_string(questionGraphID) + ".png");
+				inData.questionGraphHandle = Master::mpResourceManager->LoadGraphics("Resource/QuizImage/Quiz" + std::to_string(questionGraphID) + ".png");
 		}
 
 		// 答え
@@ -242,7 +253,7 @@ void QuestionManager::Load(const std::string& _filePath)
 		}
 
 		// 入れる
-		mQuestions[inData.difficulty].emplace_back(inData);
+		mQuestions[inData.difficulty - 1].emplace_back(inData);
 	}
 }
 

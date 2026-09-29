@@ -12,7 +12,7 @@ public:
 	void Update();
 	void Draw();
 	void Finalize();
-
+	void SetStage(StageNumber _stageNumeber);
 private:
 	void CommentDraw();//ƒRƒƒ“ƒg‚Ì•\¦
 	
@@ -27,13 +27,17 @@ private:
 	void GameEnd();
 private:
 	int questionNumberStringHandle = 0;
-	int questionNumber = 0;
+	int questionNumber = 1;
+	int maxQuestionNumber = 7;
+	
 private:
 	bool isQuestionNumberDraw = false;
 	bool isQuestionDraw = false;
 	bool isInputAnswer = false;
+	bool QuestionSpawned = false;
 private:
 	std::string answer{};
 private:
 	TextInputManager mTextInputManager;
+	StageNumber stageNumber = STAGE_1;
 };

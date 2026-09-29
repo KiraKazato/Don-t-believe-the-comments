@@ -89,5 +89,5 @@ private:
 	//確率の最大値
 	static const int maxRate = 90;
 	//確率の最小値
-	static const int minRate = 10;
+	static const int minRate = 5;
 };

@@ -27,6 +27,8 @@ public:
 
 	void StateInit();
 
+	void InputStringInit();
+
 private:
 	int mnInputHandle = 0;		// “ü—Íƒnƒ“ƒhƒ‹
 	int mnKeyInputState = 0;	// “ü—Íó‘Ô

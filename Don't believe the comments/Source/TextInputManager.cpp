@@ -28,7 +28,7 @@ void TextInputManager::Draw()
 		width += GetDrawFormatStringWidth("%s", IMEData->InputString);
 		mnKeyInputDrawX = (mnKeyInputDrawX + width) / 2;
 		
-		DrawKeyInputString(mnKeyInputDrawX, mnKeyInputDrawY, mnInputHandle);
+		DrawKeyInputString(mnKeyInputDrawX, mnKeyInputDrawY, mnInputHandle, FALSE);
 	}
 }
 

@@ -154,6 +154,8 @@ void QuestionManager::ClearSpawnedQuestion()
 
 void QuestionManager::Load(const std::string& _filePath)
 {
+	mQuestions.resize(DIFFICULT_MAX);
+
 	// 入れるためのデータを用意する
 	QuestionData inData = QuestionData();
 
@@ -200,13 +202,6 @@ void QuestionManager::Load(const std::string& _filePath)
 			{
 				inData.difficulty = 0;
 			}
-
-			// 難易度数値が出るごとに大きくしていく
-			if (mQuestions.size() < stoi(cell))
-			{
-				mQuestions.resize(stoi(cell));
-			}
-
 		}
 
 		// 真コメント
@@ -252,6 +247,13 @@ const std::vector<std::string> QuestionManager::LoadComment(std::stringstream& _
 		ret.emplace_back(_cell);
 	}
 	return ret;
+}
+
+const std::vector<std::string> QuestionManager::LoadAnswer(std::string& _cell)
+{
+
+
+	return std::vector<std::string>();
 }
 
 void QuestionManager::SetQuestion(int _index, int _difficulty)

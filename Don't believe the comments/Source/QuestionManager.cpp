@@ -78,7 +78,8 @@ void QuestionManager::SpawnQuestion(StageNumber _number, int _questionNumber)
 			if (rate.rate > GetRand(100))
 			{
 				// 難易度
-				setDifficultIndex = rate.difficultgroup[difficultGroupIndex];
+				setDifficultIndex = GetRand(rate.difficultgroup.size() - 1);
+				difficultGroupIndex = setDifficultIndex;
 
 				// 抽選
 				setQuestionIndex = GetRand(static_cast<int>(mQuestions[setDifficultIndex].size()) - 1);
@@ -267,7 +268,7 @@ const QuestionData& QuestionManager::GetQuestionData()
 	// mnCurrentIndexがエラー部分を参照したらエラーデータを返す
 	try
 	{
-		return mQuestions[mnCurrentDifficulty][mnCurrentIndex];
+		return mQuestions.at(mnCurrentDifficulty).at(mnCurrentIndex);
 	}
 	catch (...)
 	{

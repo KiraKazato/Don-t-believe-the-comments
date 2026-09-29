@@ -77,7 +77,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		//画面を初期化する
 		ClearDrawScreen();
 
-		
 		Master::mpSceneManager->Draw();
 		//裏画面の内容を表画面に映す
 		ScreenFlip();

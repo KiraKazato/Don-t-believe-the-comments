@@ -11,6 +11,7 @@ void GameCycle::Initialize()
 {
 	questionNumberStringHandle = Master::mpFontManager->GetFontHandle(Master::mpFontManager->FONT_TETUBINN, 90);
 	mTextInputManager.Initialize();
+	mTextInputManager.SetKeyInputDrawPosition(Master::Width / 2, Master::Height / 2);
 }
 void GameCycle::Update()
 {
@@ -45,6 +46,7 @@ void GameCycle::Draw()
 		QuestionDraw();
 		return;
 	}
+	mTextInputManager.Draw();
 }
 
 

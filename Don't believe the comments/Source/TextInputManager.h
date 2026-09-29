@@ -7,7 +7,7 @@ public:
 	TextInputManager();
 	~TextInputManager();
 
-	void Initialize(int _fontHandle);
+	void Initialize(int _fontHandle = -1);
 	void Draw();
 	void Update();
 	void Finalize();

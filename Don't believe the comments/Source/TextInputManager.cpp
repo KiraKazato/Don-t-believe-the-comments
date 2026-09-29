@@ -26,12 +26,20 @@ void TextInputManager::Draw()
 		char tmpStr[256] = "\0";
 		auto IMEData = GetIMEInputData();
 
-		GetKeyInputString(tmpStr, mnInputHandle);
-		int width = GetDrawFormatStringWidth("%s", tmpStr);
-		width += GetDrawFormatStringWidth("%s", IMEData->InputString);
-		mnKeyInputDrawX = (mnKeyInputDrawX + width) / 2;
+		try
+		{
+			GetKeyInputString(tmpStr, mnInputHandle);
+		}
+		catch (...)
+		{
+			memset(tmpStr, '\0', sizeof(tmpStr));
+		}
 		
-		DrawKeyInputString(mnKeyInputDrawX, mnKeyInputDrawY, mnInputHandle, FALSE);
+		int width = GetDrawFormatStringWidth("%s", tmpStr);
+		if (IMEData)
+			width += GetDrawFormatStringWidth("%s", IMEData->InputString);
+		
+		DrawKeyInputString(mnKeyInputDrawX - (width / 2), mnKeyInputDrawY, mnInputHandle, FALSE);
 	}
 }
 
@@ -39,7 +47,6 @@ void TextInputManager::Update()
 {
 	// “ü—Ío—ˆ‚½‚©Šm”F
 	mnKeyInputState = CheckKeyInput(mnInputHandle);
-	ProcessActKeyInput();
 
 	if (mnKeyInputState == 1)
 	{
@@ -97,5 +104,9 @@ const char* TextInputManager::GetInputString() const
 void TextInputManager::StateInit()
 {
 	mnKeyInputState = 0; 
+	for (int i = 0; i < 256; i++)
+	{
+		mInputString[i] = mPauseInputString[i] = '\0';
+	}
 	SetActiveKeyInput(mnInputHandle);
 }

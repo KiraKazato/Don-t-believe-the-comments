@@ -19,16 +19,16 @@ struct GroupRate
 
 struct QuestionData
 {
-	std::string question = "";	// 問題
+	int questionGraphHandle = -1;	// 問題
 	std::string answer{};	// 答え
-	int difficulty = 0;			// 難易度
+	int difficulty = 0;		// 難易度
 	std::vector<std::string> trueComment{};		// 真コメント
-	std::vector<std::string> falseComment{};		// 偽コメント
+	std::vector<std::string> falseComment{};	// 偽コメント
 
 	// コンストラクタ
 	// データを作る際、明示的に作ることができる
-	QuestionData(const std::string& question, const std::string& answer, int difficulty, const std::vector<std::string>& trueComment, const std::vector<std::string>& falseComment)
-		: question(question), answer(answer), difficulty(difficulty), trueComment(trueComment), falseComment(falseComment)
+	QuestionData(int questionGraphHandle, const std::string& answer, int difficulty, const std::vector<std::string>& trueComment, const std::vector<std::string>& falseComment)
+		: questionGraphHandle(questionGraphHandle), answer(answer), difficulty(difficulty), trueComment(trueComment), falseComment(falseComment)
 	{
 	}
 	// 空データを作成可能
@@ -57,9 +57,9 @@ public:
 	void Finalize();
 
 	//ステージごとの確率設定
-	// クイズ出現（出題） ※要素数は同数にしてください
-	// @param difficulties	出す難易度				書き方例）{5,4,3,2,1}
-	// @param probability	その難易度の問題が出る確率（単位:％）	書き方例）{5,20,40,50,60}
+	// クイズ出現（出題）
+	// @param stage	出すステージ
+	// @param group	その難易度とその確率
 	void SetQuestionRate(StageNumber _stage, std::vector<GroupRate> _group);
 
 	// クイズの出現
@@ -77,13 +77,10 @@ public:
 private:
 	// 読み込み
 	void Load(const std::string& _filePath);
-	
+
 	// コメント読み込み
 	// 特殊なため分ける
 	const std::vector<std::string> LoadComment(std::stringstream&, std::string&);
-
-	// 答え読み込み
-	const std::vector<std::string> LoadAnswer(std::string&);
 
 private:
 	//ステージと、そのステージで出る問題の難易度と難易度の出る確率

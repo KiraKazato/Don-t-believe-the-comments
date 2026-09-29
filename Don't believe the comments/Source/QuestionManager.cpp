@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include "DxLib.h"
+#include "Master.h"
 
 // {1,2,3} {4,5,6} {7.8}  {9,10}
 // 減少大　減少中  増加大 増加中
@@ -64,8 +65,7 @@ void QuestionManager::SpawnQuestion(StageNumber _number, int _questionNumber)
 		for (auto& rate : data.second)
 		{
 			rate.rate += (_questionNumber - 1) * rate.changeRate;
-			rate.rate = min(max(minRate, rate.rate), maxRate);
-
+			rate.rate = std::min(std::max(minRate, rate.rate), maxRate);
 			totalRate += rate.rate;
 		}
 
@@ -78,7 +78,7 @@ void QuestionManager::SpawnQuestion(StageNumber _number, int _questionNumber)
 			if (rate.rate > GetRand(100))
 			{
 				// 難易度
-				setDifficultIndex = GetRand(rate.difficultgroup.size() - 1);
+				setDifficultIndex = GetRand(static_cast<int>(rate.difficultgroup.size() - 1));
 				difficultGroupIndex = setDifficultIndex;
 
 				// 抽選
@@ -121,7 +121,7 @@ void QuestionManager::SpawnQuestion(StageNumber _number, int _questionNumber)
 							setDifficultIndex++;
 							if (setDifficultIndex < 0)
 							{
-								setDifficultIndex = data.second.size() - 1;
+								setDifficultIndex = static_cast<int>(data.second.size() - 1);
 							}
 						}
 						// もう一度探索
@@ -186,7 +186,24 @@ void QuestionManager::Load(const std::string& _filePath)
 		std::stringstream ss(line);
 		std::string cell;
 		// 問題
-		if (getline(ss, cell, ',')) inData.question = cell;
+		if (getline(ss, cell, ','))
+		{
+			int questionGraphID = -1;
+			try
+			{
+				// 問題IDを得る
+				questionGraphID = stoi(cell);
+			}
+			catch (...)
+			{
+				questionGraphID = -1;
+
+				inData.questionGraphHandle = -1;
+			}
+
+			if (questionGraphID != -1)
+				inData.questionGraphHandle = Master::mpResourceManager->LoadGraphics("Resource/Question/Question" + std::to_string(questionGraphID) + ".png");
+		}
 
 		// 答え
 		if (getline(ss, cell, ',')) inData.answer = cell;
@@ -250,13 +267,6 @@ const std::vector<std::string> QuestionManager::LoadComment(std::stringstream& _
 	return ret;
 }
 
-const std::vector<std::string> QuestionManager::LoadAnswer(std::string& _cell)
-{
-
-
-	return std::vector<std::string>();
-}
-
 void QuestionManager::SetQuestion(int _index, int _difficulty)
 {
 	mnCurrentIndex = _index;
@@ -272,7 +282,7 @@ const QuestionData& QuestionManager::GetQuestionData()
 	}
 	catch (...)
 	{
-		static const QuestionData ErrorData = QuestionData("エラー", "エラー", INT_MAX, { "エラー" }, { "エラー" });
+		static const QuestionData ErrorData = QuestionData(-1, "NULL_ERROR", INT_MAX, { "これはエラー用コメントです" }, { "これはエラー用コメントです" });
 		return  ErrorData;
 	}
 }

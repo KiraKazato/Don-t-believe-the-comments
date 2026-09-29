@@ -10,9 +10,12 @@ TextInputManager::~TextInputManager()
 	Finalize();
 }
 
-void TextInputManager::Initialize()
+void TextInputManager::Initialize(int _fontHandle)
 {
+	SetKeyInputStringFont(_fontHandle);
+
 	mnInputHandle = MakeKeyInput(256, TRUE, FALSE, FALSE);
+
 	SetActiveKeyInput(mnInputHandle);
 }
 

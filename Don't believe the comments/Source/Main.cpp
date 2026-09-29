@@ -48,14 +48,16 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	
 	//サウンドマネージャーの初期化
 	Master::mpSoundManager->Initialize();  
-	// シーンマネージャーの初期化
-	Master::mpSceneManager->Initialize(); 
-	//エフェクトマネージャーの初期化
-	Master::mpEffectManager->Initalize();
 	//フォントマネージャーの初期化
 	Master::mpFontManager->Initialize();
 	//クエスチョンマネージャーの初期化
 	Master::mpQuestionManager->Intialize();
+	// シーンマネージャーの初期化
+	Master::mpSceneManager->Initialize(); 
+	//エフェクトマネージャーの初期化
+	Master::mpEffectManager->Initalize();
+	
+
 
 	// 描画先画面を裏画面に設定する
 	SetDrawScreen(DX_SCREEN_BACK);

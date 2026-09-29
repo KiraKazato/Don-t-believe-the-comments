@@ -13,21 +13,19 @@ public:
 	void Finalize();
 	
 	// 入力内容表示場所の指定
-	void SetKeyInputDrawPosition(int _x, int _y) { mnKeyInputDrawX = _x; mnKeyInputDrawY = _y; }
+	void SetKeyInputDrawPosition(int _x, int _y);
 	// ポーズしたかどうか
-	void SetIsPause(bool _flag)
-	{
-		mbIsPause = _flag;
-		if (!_flag) { ReStartKeyInput(mnInputHandle); }	// 再度入力モードにする
-	}
+	void SetIsPause(bool _flag);
 
 	// @return
 	// 0:入力完了していない
 	// 1:入力完了
 	// 2:入力キャンセル(ESCキー)
-	int CheckInput() const { return mnKeyInputState; };
+	int CheckInput() const;
 
-	auto GetInputString() const { return mInputString; };
+	const char* GetInputString() const;
+
+	void StateInit();
 
 private:
 	int mnInputHandle = 0;		// 入力ハンドル

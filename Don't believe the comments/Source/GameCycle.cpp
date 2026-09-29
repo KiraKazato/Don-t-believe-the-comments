@@ -14,15 +14,15 @@ void GameCycle::Initialize()
 }
 void GameCycle::Update()
 {
-	
-	if (!isQuestionNumberDraw||!isQuestionDraw)
+
+	if (!isQuestionNumberDraw || !isQuestionDraw)
 	{
 		return;
 	}
 
 	InputAnswer();
 
-	if (isInputAnswer&& AnswerJudge())
+	if (isInputAnswer && AnswerJudge())
 	{
 		questionNumber++;
 		if (questionNumber > 10)
@@ -94,6 +94,7 @@ bool GameCycle::AnswerJudge()
 
 	if (answer == "")
 	{
+		mTextInputManager.StateInit();
 		answer = "";
 		return false;
 	}
@@ -101,11 +102,13 @@ bool GameCycle::AnswerJudge()
 	auto& data = Master::mpQuestionManager->GetQuestionData();
 	if (data.answer == answer)
 	{
+		mTextInputManager.StateInit();
 		answer = "";
 		return true;
 	}
 	else
 	{
+		mTextInputManager.StateInit();
 		answer = "";
 		return false;
 	}

@@ -41,7 +41,7 @@ void TextInputManager::Update()
 	if (mnKeyInputState == 1)
 	{
 		GetKeyInputString(mInputString, mnInputHandle);
-		Finalize();
+		return;
 	}
 	
 	if (!mbIsPause)
@@ -63,4 +63,36 @@ void TextInputManager::Update()
 void TextInputManager::Finalize()
 {
 	DeleteKeyInput(mnInputHandle);
+	mnInputHandle = -1;
+}
+
+void TextInputManager::SetKeyInputDrawPosition(int _x, int _y)
+{
+	mnKeyInputDrawX = _x;
+	mnKeyInputDrawY = _y;
+}
+
+void TextInputManager::SetIsPause(bool _flag)
+{
+	mbIsPause = _flag;
+	if (!_flag) 
+	{
+		SetActiveKeyInput(mnInputHandle); 	// Ä“x“ü—Íƒ‚[ƒh‚É‚·‚é
+	}
+}
+
+int TextInputManager::CheckInput() const
+{
+	return mnKeyInputState;
+}
+
+const char* TextInputManager::GetInputString() const
+{
+	return mInputString;
+}
+
+void TextInputManager::StateInit()
+{
+	mnKeyInputState = 0; 
+	SetActiveKeyInput(mnInputHandle);
 }

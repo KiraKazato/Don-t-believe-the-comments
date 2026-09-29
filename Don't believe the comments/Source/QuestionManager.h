@@ -9,8 +9,6 @@ enum StageNumber
 	STAGE_1 = 0,
 };
 
-
-
 struct GroupRate
 {
 	int group;
@@ -22,10 +20,10 @@ struct GroupRate
 struct QuestionData
 {
 	std::string question = "";	// 問題
-	std::string answer = "";	// 答え
+	std::string answer{};	// 答え
 	int difficulty = 0;			// 難易度
-	std::vector<std::string> trueComment;		// 真コメント
-	std::vector<std::string> falseComment;		// 偽コメント
+	std::vector<std::string> trueComment{};		// 真コメント
+	std::vector<std::string> falseComment{};		// 偽コメント
 
 	// コンストラクタ
 	// データを作る際、明示的に作ることができる
@@ -40,6 +38,9 @@ struct QuestionData
 
 class QuestionManager
 {
+private:
+	static const size_t DIFFICULT_MAX = 10;
+
 private:
 	std::vector<std::vector<QuestionData>> mQuestions{};	// クイズ
 	int mnCurrentIndex = 0;			// 今の問題の番号
@@ -80,6 +81,9 @@ private:
 	// コメント読み込み
 	// 特殊なため分ける
 	const std::vector<std::string> LoadComment(std::stringstream&, std::string&);
+
+	// 答え読み込み
+	const std::vector<std::string> LoadAnswer(std::string&);
 
 private:
 	//ステージと、そのステージで出る問題の難易度と難易度の出る確率

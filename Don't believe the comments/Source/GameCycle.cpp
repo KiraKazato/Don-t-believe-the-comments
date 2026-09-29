@@ -98,7 +98,7 @@ bool GameCycle::AnswerJudge()
 		return false;
 	}
 
-	auto data=Master::mpQuestionManager->GetQuestionData();
+	auto& data = Master::mpQuestionManager->GetQuestionData();
 	if (data.answer == answer)
 	{
 		answer = "";

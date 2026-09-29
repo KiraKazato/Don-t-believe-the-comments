@@ -39,6 +39,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	SetUseDirect3DVersion(DX_DIRECT3D_11);
 
+	SetUseIMEFlag(FALSE);
 
 	// DXライブラリ初期化
 	if(DxLib_Init() == -1)

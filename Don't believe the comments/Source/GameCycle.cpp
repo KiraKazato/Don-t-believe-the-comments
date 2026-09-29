@@ -10,53 +10,107 @@ GameCycle::~GameCycle()
 void GameCycle::Initialize()
 {
 	questionNumberStringHandle = Master::mpFontManager->GetFontHandle(Master::mpFontManager->FONT_TETUBINN, 90);
+	mTextInputManager.Initialize();
 }
 void GameCycle::Update()
 {
-	CommentDraw();
-	if (!QuestionNumberDraw())
+	
+	if (!isQuestionNumberDraw||!isQuestionDraw)
 	{
 		return;
 	}
 
-	if (!QuestinDraw())
-	{
-		return;
-	}
+	InputAnswer();
 
-	if (!InputAnswer)
+	if (isInputAnswer&& AnswerJudge())
 	{
-		return;
+		questionNumber++;
+		if (questionNumber > 10)
+		{
+			GameEnd();
+		}
 	}
-	AnswerJudge();
 }
+
+void GameCycle::Draw()
+{
+	CommentDraw();
+	if (!isQuestionNumberDraw)
+	{
+		QuestionNumberDraw();
+		return;
+	}
+	if (!isQuestionDraw)
+	{
+		QuestionDraw();
+		return;
+	}
+}
+
+
 void GameCycle::Finalize()
 {
-
+	mTextInputManager.Finalize();
 }
 void GameCycle::CommentDraw()
 {
 }
 
-bool GameCycle::QuestionNumberDraw()
+void GameCycle::QuestionNumberDraw()
 {
+	isQuestionNumberDraw = true;
 
-	return true;
 }
 
-bool GameCycle::QuestinDraw()
+void GameCycle::QuestionDraw()
 {
-	return true;
+	isQuestionDraw = true;
+	
 }
 
 void GameCycle::InputAnswer()
 {
-	//•¶Žš“ü—Í
-	
+	//Œ»Ý‚Ì“ü—Íó‘Ô
+	int nowState = mTextInputManager.CheckInput();
+
+	if (nowState == 0)
+	{
+		mTextInputManager.Update();
+	}
+	else if (nowState == 1)
+	{
+		//•¶Žš“ü—Í
+		answer = mTextInputManager.GetInputString();
+		isInputAnswer = true;
+	}
+	else if (nowState == 2)
+	{
+	}
 }
 
 bool GameCycle::AnswerJudge()
 {
+	isInputAnswer = false;
 
-	return true;
+	if (answer == "")
+	{
+		answer = "";
+		return false;
+	}
+
+	auto data=Master::mpQuestionManager->GetQuestionData();
+	if (data.answer == answer)
+	{
+		answer = "";
+		return true;
+	}
+	else
+	{
+		answer = "";
+		return false;
+	}
+}
+
+void GameCycle::GameEnd()
+{
 }

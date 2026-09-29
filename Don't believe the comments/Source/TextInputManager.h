@@ -1,11 +1,11 @@
 #pragma once
 #include "DxLib.h"
 
-class InputManager
+class TextInputManager
 {
 public:
-	InputManager();
-	~InputManager();
+	TextInputManager();
+	~TextInputManager();
 
 	void Initialize();
 	void Draw();
@@ -15,7 +15,7 @@ public:
 	// 入力内容表示場所の指定
 	void SetKeyInputDrawPosition(int _x, int _y) { mnKeyInputDrawX = _x; mnKeyInputDrawY = _y; }
 	// ポーズしたかどうか
-	void SetIsPause(bool _flag) 
+	void SetIsPause(bool _flag)
 	{
 		mbIsPause = _flag;
 		if (!_flag) { ReStartKeyInput(mnInputHandle); }	// 再度入力モードにする

@@ -1,22 +1,22 @@
-#include "InputManager.h"
+#include "TextInputManager.h"
 #include "DxLib.h"
 
-InputManager::InputManager()
+TextInputManager::TextInputManager()
 {
 }
 
-InputManager::~InputManager()
+TextInputManager::~TextInputManager()
 {
 	Finalize();
 }
 
-void InputManager::Initialize()
+void TextInputManager::Initialize()
 {
 	mnInputHandle = MakeKeyInput(256, TRUE, FALSE, FALSE);
 	SetActiveKeyInput(mnInputHandle);
 }
 
-void InputManager::Draw()
+void TextInputManager::Draw()
 {
 	if (mnKeyInputState == 0)
 	{
@@ -32,7 +32,7 @@ void InputManager::Draw()
 	}
 }
 
-void InputManager::Update()
+void TextInputManager::Update()
 {
 	// “ü—Ío—ˆ‚½‚©Šm”F
 	mnKeyInputState = CheckKeyInput(mnInputHandle);
@@ -60,7 +60,7 @@ void InputManager::Update()
 	}
 }
 
-void InputManager::Finalize()
+void TextInputManager::Finalize()
 {
 	DeleteKeyInput(mnInputHandle);
 }

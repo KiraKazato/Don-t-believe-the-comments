@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include <vector>
 #include "SoundManager.h"
+#include "GameCycle.h"
 
 class GameScene :public Scene
 {
@@ -14,5 +15,5 @@ public:
 	virtual void Finalize()override;
 
 private:
-
+	GameCycle mGameCycle;
 };

@@ -4,6 +4,10 @@
 class TextInputManager
 {
 public:
+	static const unsigned int KEYINPUUT_BACK_COLOR = 0xFFFFFFFF;	// 背景色	
+	static const unsigned int KEYINPUUT_STRING_COLOR = 0x00000000;	// 文字色
+
+public:
 	TextInputManager();
 	~TextInputManager();
 
@@ -11,7 +15,7 @@ public:
 	void Draw();
 	void Update();
 	void Finalize();
-	
+
 	// 入力内容表示場所の指定
 	void SetKeyInputDrawPosition(int _x, int _y);
 	// ポーズしたかどうか
@@ -27,8 +31,6 @@ public:
 
 	void StateInit();
 
-	void InputStringInit();
-
 private:
 	int mnInputHandle = 0;		// 入力ハンドル
 	int mnKeyInputState = 0;	// 入力状態
@@ -38,6 +40,6 @@ private:
 
 	int mbIsPause = false;		// ポーズしているかどうか
 private:
-	char mInputString[256]{};		// 入力文字の取得バッファ（決定）
-	char mPauseInputString[256]{};	// 入力文字の取得バッファ（ポーズによる中断）
+	char mInputString[(15 * 2) + 1]{};		// 入力文字の取得バッファ（決定）
+	char mPauseInputString[sizeof(mInputString)]{};	// 入力文字の取得バッファ（ポーズによる中断）
 };

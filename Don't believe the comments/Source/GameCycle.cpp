@@ -128,4 +128,5 @@ bool GameCycle::AnswerJudge()
 
 void GameCycle::GameEnd()
 {
+	mTextInputManager.Finalize();
 }

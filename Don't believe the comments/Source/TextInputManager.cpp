@@ -14,31 +14,36 @@ void TextInputManager::Initialize(int _fontHandle)
 {
 	SetKeyInputStringFont(_fontHandle);
 
-	mnInputHandle = MakeKeyInput(256, TRUE, FALSE, FALSE);
+	mnInputHandle = MakeKeyInput(sizeof(mInputString) - 1, TRUE, FALSE, FALSE);
+
+	SetKeyInputStringColor2(DX_KEYINPSTRCOLOR_IME_STR_BACK, KEYINPUUT_BACK_COLOR);			// 不確定文字列の背景色変更
+	SetKeyInputStringColor2(DX_KEYINPSTRCOLOR_IME_CONV_WIN_STR, KEYINPUUT_BACK_COLOR);		// 変換中文字列の背景色変更
+	
+	SetKeyInputStringColor2(DX_KEYINPSTRCOLOR_NORMAL_STR, KEYINPUUT_STRING_COLOR);	// 入力文字の色変更
+	SetKeyInputStringColor2(DX_KEYINPSTRCOLOR_IME_STR, KEYINPUUT_STRING_COLOR);		// 入力中文字列の色変更
+
+	SetInputStringMaxLengthIMESync(TRUE);
 
 	SetActiveKeyInput(mnInputHandle);
 }
 
 void TextInputManager::Draw()
 {
+	DrawBox(0, 0, 10000, 10000,GetColor(128, 128, 128),TRUE);
+
 	if (mnKeyInputState == 0)
 	{
-		char tmpStr[256] = "\0";
-		auto IMEData = GetIMEInputData();
+		char tmpStr[sizeof(mInputString)]{};
+		const IMEINPUTDATA* IMEData = GetIMEInputData();	// 入力中（変換中）データ取得
 
-		try
-		{
-			GetKeyInputString(tmpStr, mnInputHandle);
-		}
-		catch (...)
-		{
-			memset(tmpStr, '\0', sizeof(tmpStr));
-		}
-		
+		GetKeyInputString(tmpStr, mnInputHandle);	// 入力（変換決定済み）データ取得
+
+		// 横幅
 		int width = GetDrawFormatStringWidth("%s", tmpStr);
-		if (IMEData)
+		if (IMEData != nullptr)
+		{
 			width += GetDrawFormatStringWidth("%s", IMEData->InputString);
-		
+		}
 		DrawKeyInputString(mnKeyInputDrawX - (width / 2), mnKeyInputDrawY, mnInputHandle, FALSE);
 	}
 }
@@ -104,9 +109,10 @@ const char* TextInputManager::GetInputString() const
 void TextInputManager::StateInit()
 {
 	mnKeyInputState = 0; 
-	for (int i = 0; i < 256; i++)
+	for (size_t i = 0; i < sizeof(mInputString); i++)
 	{
 		mInputString[i] = mPauseInputString[i] = '\0';
 	}
 	SetActiveKeyInput(mnInputHandle);
+	SetKeyInputString("", mnInputHandle);
 }

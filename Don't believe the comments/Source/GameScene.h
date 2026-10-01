@@ -15,8 +15,9 @@ public:
 	virtual void Finalize()override;
 
 private:
-	int QuestionScreen = 0;
-	int InputField = 0;
+	int QuestionScreen = -1;
+	int InputField = -1;
+	int BackGround = -1;
 private:
 	GameCycle mGameCycle;
 };

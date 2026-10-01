@@ -1,5 +1,6 @@
 #include "GameCycle.h"
-#include "Master.h"
+
+
 GameCycle::GameCycle()
 {
 }
@@ -10,15 +11,16 @@ GameCycle::~GameCycle()
 void GameCycle::Initialize()
 {
 
-	inputStringHandle = Master::mpFontManager->GetFontHandle(Master::mpFontManager->FONT_NONE, 60);
+	inputStringHandle = Master::mpFontManager->GetFontHandle(Master::mpFontManager->FONT_NONE, 48);
 	mTextInputManager.Initialize(inputStringHandle);
-	mTextInputManager.SetKeyInputDrawPosition(Master::gridWidth * 36, Master::gridHeight * 86);
+	mTextInputManager.SetKeyInputDrawPosition(Master::gridWidth * 45, Master::gridHeight * 82);
 }
 void GameCycle::Update()
 {
 	if (!QuestionSpawned)
 	{
 		Master::mpQuestionManager->SpawnQuestion(stageNumber, questionNumber);
+		nowQuestionImageHandle = Master::mpQuestionManager->GetQuestionData().questionGraphHandle;
 		QuestionSpawned = true;
 	}
 	if (!isQuestionNumberDraw || !isQuestionDraw)
@@ -31,6 +33,8 @@ void GameCycle::Update()
 	if (isInputAnswer && AnswerJudge())
 	{
 		QuestionSpawned = false;
+		isQuestionNumberDraw = false;
+		isQuestionDraw = false;
 		questionNumber++;
 		if (questionNumber > maxQuestionNumber)
 		{
@@ -42,18 +46,15 @@ void GameCycle::Update()
 void GameCycle::Draw()
 {
 	CommentDraw();
-	if (!isQuestionNumberDraw)
-	{
-		QuestionNumberDraw();
-		return;
-	}
-	if (!isQuestionDraw)
-	{
-		QuestionDraw();
-		return;
-	}
 
-	mTextInputManager.Draw();
+	QuestionNumberDraw();
+
+	QuestionDraw();
+
+	if (isQuestionNumberDraw &&isQuestionDraw)
+	{
+		mTextInputManager.Draw();
+	}
 }
 
 
@@ -72,20 +73,19 @@ void GameCycle::CommentDraw()
 void GameCycle::QuestionNumberDraw()
 {
 	isQuestionNumberDraw = true;
-
 }
 
 void GameCycle::QuestionDraw()
 {
+	DrawExtendGraph(QuestionImageX1, QuestionImageY1, QuestionImageX2, QuestionImageY2, nowQuestionImageHandle, TRUE);
 	isQuestionDraw = true;
-	
 }
 
 void GameCycle::InputAnswer()
 {
 	//Œ»Ý‚Ì“ü—Íó‘Ô
 	int nowState = mTextInputManager.CheckInput();
-
+	
 	if (nowState == 0)
 	{
 		mTextInputManager.Update();
@@ -99,6 +99,7 @@ void GameCycle::InputAnswer()
 	}
 	else if (nowState == 2)
 	{
+		
 	}
 }
 
@@ -109,6 +110,7 @@ bool GameCycle::AnswerJudge()
 
 	if (answer == "")
 	{
+		mTextInputManager.StateInit();
 		answer = "";
 		return false;
 	}
@@ -116,11 +118,13 @@ bool GameCycle::AnswerJudge()
 	auto& data = Master::mpQuestionManager->GetQuestionData();
 	if (data.answer == answer)
 	{
+		mTextInputManager.StateInit();
 		answer = "";
 		return true;
 	}
 	else
 	{
+		mTextInputManager.StateInit();
 		answer = "";
 		return false;
 	}

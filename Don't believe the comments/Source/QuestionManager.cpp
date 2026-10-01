@@ -43,11 +43,8 @@ void QuestionManager::SpawnQuestion(StageNumber _number, int _questionNumber)
 	int setDifficultIndex = 0;
 	int setQuestionIndex = 0;
 
-
 	// ’TõŒÀŠE”
-	static const int LOOP_MAX = 5;
-
-
+	constexpr int LOOP_MAX = 5;
 
 	// stageData’Tõ
 	for (auto& data : stageData)
@@ -83,7 +80,7 @@ void QuestionManager::SpawnQuestion(StageNumber _number, int _questionNumber)
 			if (rate.rate > GetRand(100))
 			{
 				// “ïˆÕ“x
-				setDifficultIndex = GetRand(static_cast<int>(rate.difficultgroup.size() - 1));
+				setDifficultIndex = rate.difficultgroup[static_cast<size_t>(GetRand(static_cast<int>(rate.difficultgroup.size()) - 1))] - 1;
 				difficultGroupIndex = setDifficultIndex;
 
 				// ’Š‘I

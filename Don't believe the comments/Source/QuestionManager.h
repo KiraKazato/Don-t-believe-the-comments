@@ -41,17 +41,10 @@ class QuestionManager
 private:
 	static const size_t DIFFICULT_MAX = 10;
 
-private:
-	std::vector<std::vector<QuestionData>> mQuestions{};	// クイズ
-	int mnCurrentIndex = 0;			// 今の問題の番号
-	int mnCurrentDifficulty = 0;	// 今の問題の難易度の数値
-	std::vector<std::pair<int, int>>mSpawnedQuestion{};		// 既に出した問題
-
 public:
 	QuestionManager() = default;
 	~QuestionManager() = default;
 
-public:
 	void Intialize();
 	
 	void Finalize();
@@ -81,6 +74,15 @@ private:
 	// コメント読み込み
 	// 特殊なため分ける
 	const std::vector<std::string> LoadComment(std::stringstream&, std::string&);
+
+
+private:
+	std::vector<std::vector<QuestionData>> mQuestions{};	// クイズ
+
+	int mnCurrentIndex = 0;			// 今の問題の番号
+	int mnCurrentDifficulty = 0;	// 今の問題の難易度の数値
+	
+	std::vector<std::pair<int, int>>mSpawnedQuestion{};		// 既に出した問題
 
 private:
 	//ステージと、そのステージで出る問題の難易度と難易度の出る確率

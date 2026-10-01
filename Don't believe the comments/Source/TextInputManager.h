@@ -32,13 +32,15 @@ public:
 	void StateInit();
 
 private:
-	int mnInputHandle = 0;		// 入力ハンドル
+	int mnInputHandle = -1;		// 入力ハンドル
 	int mnKeyInputState = 0;	// 入力状態
 
 	int mnKeyInputDrawX = 0;	// 入力表示座標X
 	int mnKeyInputDrawY = 0;	// 入力表示座標Y
 
 	int mbIsPause = false;		// ポーズしているかどうか
+
+	int mnFontHandle = -1;
 private:
 	char mInputString[(15 * 2) + 1]{};		// 入力文字の取得バッファ（決定）
 	char mPauseInputString[sizeof(mInputString)]{};	// 入力文字の取得バッファ（ポーズによる中断）

@@ -12,6 +12,8 @@ TextInputManager::~TextInputManager()
 
 void TextInputManager::Initialize(int _fontHandle)
 {
+	mnFontHandle = _fontHandle;
+
 	SetKeyInputStringFont(_fontHandle);
 
 	mnInputHandle = MakeKeyInput(sizeof(mInputString) - 1, TRUE, FALSE, FALSE);
@@ -29,8 +31,6 @@ void TextInputManager::Initialize(int _fontHandle)
 
 void TextInputManager::Draw()
 {
-	
-
 	if (mnKeyInputState == 0)
 	{
 		char tmpStr[sizeof(mInputString)]{};
@@ -38,12 +38,17 @@ void TextInputManager::Draw()
 
 		GetKeyInputString(tmpStr, mnInputHandle);	// 入力（変換決定済み）データ取得
 
-		// 横幅
-		int width = GetDrawFormatStringWidth("%s", tmpStr);
+		// 1. 確定文字列と変換中文字列を結合して「全体の文字列」を作る
+		char displayText[sizeof(mInputString)] = "";
+		strcpy_s(displayText, sizeof(displayText), tmpStr);
 		if (IMEData != nullptr)
 		{
-			width += GetDrawFormatStringWidth("%s", IMEData->InputString);
+			strcat_s(displayText, sizeof(displayText), IMEData->InputString);
 		}
+
+		// 横幅
+		int width = GetDrawFormatStringWidthToHandle(mnFontHandle, "%s", displayText);
+
 		DrawKeyInputString(mnKeyInputDrawX - (width / 2), mnKeyInputDrawY, mnInputHandle, FALSE);
 	}
 }

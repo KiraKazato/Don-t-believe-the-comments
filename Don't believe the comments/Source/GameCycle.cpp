@@ -12,7 +12,7 @@ void GameCycle::Initialize()
 
 	inputStringHandle = Master::mpFontManager->GetFontHandle(Master::mpFontManager->FONT_NONE, 60);
 	mTextInputManager.Initialize(inputStringHandle);
-	mTextInputManager.SetKeyInputDrawPosition(Master::gridWidth* 16, Master::gridHeight* 86);
+	mTextInputManager.SetKeyInputDrawPosition(Master::gridWidth * 36, Master::gridHeight * 86);
 }
 void GameCycle::Update()
 {
@@ -52,6 +52,7 @@ void GameCycle::Draw()
 		QuestionDraw();
 		return;
 	}
+
 	mTextInputManager.Draw();
 }
 

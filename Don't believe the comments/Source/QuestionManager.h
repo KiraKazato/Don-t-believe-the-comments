@@ -75,7 +75,18 @@ private:
 	// 特殊なため分ける
 	const std::vector<std::string> LoadComment(std::stringstream&, std::string&);
 
+	// 確率の確定
+	// @return 出題に進んで行けないか
+	bool RateDecision(std::pair<StageNumber, std::vector<GroupRate>>& _data, StageNumber _stageNumber);
 
+	void Spawn(std::pair<StageNumber, std::vector<GroupRate>> _data, int* _questionIndex, int* _difficultIndex);
+
+	// 出題済み問題の探索
+	// @return 出題済みか
+	bool IsSpawnedQuestion(int _questionIndex, int _difficultIndex);
+
+	// 探索する難易度の変更
+	void SpawnDifficultChange(int* _loopCount,int* _difficultIndex, size_t _difficultSize);
 private:
 	std::vector<std::vector<QuestionData>> mQuestions{};	// クイズ
 
@@ -86,7 +97,7 @@ private:
 
 private:
 	//ステージと、そのステージで出る問題の難易度と難易度の出る確率
-	std::vector<std::pair<StageNumber, std::vector<GroupRate>>> stageData;
+	std::vector<std::pair<StageNumber, std::vector<GroupRate>>> mStageData;
 
 	//確率の最大値
 	static const int maxRate = 90;

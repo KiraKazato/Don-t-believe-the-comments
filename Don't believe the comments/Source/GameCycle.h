@@ -42,7 +42,7 @@ private:
 	//Å‰‚Íˆê–â–Ú‚È‚Ì‚Å1‚Éİ’è
 	int questionNumber = 1;
 	//Å‘å–â‘è”
-	int maxQuestionNumber = 1;
+	int maxQuestionNumber = 10;
 	
 private:
 	bool isQuestionNumberDraw = false;

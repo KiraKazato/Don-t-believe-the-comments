@@ -85,7 +85,7 @@ void GameCycle::InputAnswer()
 {
 	//Œ»Ý‚Ì“ü—Íó‘Ô
 	int nowState = mTextInputManager.CheckInput();
-	
+	mTextInputManager.ResetState();
 	if (nowState == 0)
 	{
 		mTextInputManager.Update();
@@ -106,11 +106,11 @@ void GameCycle::InputAnswer()
 bool GameCycle::AnswerJudge()
 {
 	isInputAnswer = false;
-	mTextInputManager.StateInit();
+	
 
 	if (answer == "")
 	{
-		mTextInputManager.StateInit();
+		mTextInputManager.ResetInput();
 		answer = "";
 		return false;
 	}
@@ -118,13 +118,13 @@ bool GameCycle::AnswerJudge()
 	auto& data = Master::mpQuestionManager->GetQuestionData();
 	if (data.answer == answer)
 	{
-		mTextInputManager.StateInit();
+		mTextInputManager.ResetInput();
 		answer = "";
 		return true;
 	}
 	else
 	{
-		mTextInputManager.StateInit();
+		mTextInputManager.ResetInput();
 		answer = "";
 		return false;
 	}

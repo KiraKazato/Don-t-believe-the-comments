@@ -111,9 +111,13 @@ const char* TextInputManager::GetInputString() const
 	return mInputString;
 }
 
-void TextInputManager::StateInit()
+void TextInputManager::ResetState()
 {
 	mnKeyInputState = 0; 
+}
+
+void TextInputManager::ResetInput()
+{
 	for (size_t i = 0; i < sizeof(mInputString); i++)
 	{
 		mInputString[i] = mPauseInputString[i] = '\0';

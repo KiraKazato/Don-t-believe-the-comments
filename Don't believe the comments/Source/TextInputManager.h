@@ -29,7 +29,11 @@ public:
 
 	const char* GetInputString() const;
 
-	void StateInit();
+	// 入力状態リセット
+	void ResetState();
+
+	// 入力内容リセット
+	void ResetInput();
 
 private:
 	int mnInputHandle = -1;		// 入力ハンドル

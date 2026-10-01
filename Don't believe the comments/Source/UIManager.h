@@ -13,7 +13,7 @@ class UIManager {
 public:
 
     // UIƒf[ƒ^‚ğV‚µ‚­“o˜^‚·‚éŠÖ”
-    static void AddUI(int _handle, float _x1, float _y1, float _x2, float _y2, float _ratio);
+    static void AddUI(int _handle, float _x1, float _y1, float _x2, float _y2);
 
     // “o˜^‚³‚ê‚Ä‚¢‚é‚·‚×‚Ä‚ÌUI‚ğˆêŠ‡‚ÅŒvZE•`‰æ‚·‚éŠÖ”
     static void DrawUI();

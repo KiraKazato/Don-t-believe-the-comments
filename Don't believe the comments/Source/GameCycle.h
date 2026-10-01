@@ -26,7 +26,7 @@ private:
 
 	void GameEnd();
 private:
-	int questionNumberStringHandle = 0;
+	int inputStringHandle;
 	int questionNumber = 1;
 	int maxQuestionNumber = 7;
 	

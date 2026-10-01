@@ -74,7 +74,7 @@ void QuestionManager::SpawnQuestion(StageNumber _number, int _questionNumber)
 		{
 			float normalizedRate = (float)rate.rate / totalRate;
 
-			rate.rate = normalizedRate * 100;
+			rate.rate = (int)(normalizedRate * 100);
 
 		}
 		for (auto& rate : data.second)

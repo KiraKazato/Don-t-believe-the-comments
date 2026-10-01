@@ -14,7 +14,8 @@ FontManager::~FontManager()
 void FontManager::Initialize()
 {
 	//ここで使いたいフォントを追加
-	LoadInputFont(FONT_TETUBINN, "07鉄瓶ゴシック", "Resource/TetubinGosikku.ttf");
+	LoadSystemFont(FONT_NONE, NULL);
+	LoadInputFont(FONT_TETUBINN, "07鉄瓶ゴシック", "Resource/Font/TetubinGosikku.ttf");
 }
 
 void FontManager::LoadInputFont(Font tag, const char* _fontName, LPCSTR _fileName)

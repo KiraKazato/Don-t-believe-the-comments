@@ -29,7 +29,7 @@ void TextInputManager::Initialize(int _fontHandle)
 
 void TextInputManager::Draw()
 {
-	DrawBox(0, 0, 10000, 10000,GetColor(128, 128, 128),TRUE);
+	
 
 	if (mnKeyInputState == 0)
 	{

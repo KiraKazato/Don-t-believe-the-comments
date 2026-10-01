@@ -9,9 +9,10 @@ GameCycle::~GameCycle()
 }
 void GameCycle::Initialize()
 {
-	questionNumberStringHandle = Master::mpFontManager->GetFontHandle(Master::mpFontManager->FONT_TETUBINN, 90);
-	mTextInputManager.Initialize();
-	mTextInputManager.SetKeyInputDrawPosition(Master::Width / 2, Master::Height / 2);
+
+	inputStringHandle = Master::mpFontManager->GetFontHandle(Master::mpFontManager->FONT_NONE, 60);
+	mTextInputManager.Initialize(inputStringHandle);
+	mTextInputManager.SetKeyInputDrawPosition(Master::gridWidth* 16, Master::gridHeight* 86);
 }
 void GameCycle::Update()
 {
@@ -103,10 +104,10 @@ void GameCycle::InputAnswer()
 bool GameCycle::AnswerJudge()
 {
 	isInputAnswer = false;
+	mTextInputManager.StateInit();
 
 	if (answer == "")
 	{
-		mTextInputManager.StateInit();
 		answer = "";
 		return false;
 	}
@@ -114,13 +115,11 @@ bool GameCycle::AnswerJudge()
 	auto& data = Master::mpQuestionManager->GetQuestionData();
 	if (data.answer == answer)
 	{
-		mTextInputManager.StateInit();
 		answer = "";
 		return true;
 	}
 	else
 	{
-		mTextInputManager.StateInit();
 		answer = "";
 		return false;
 	}

@@ -10,9 +10,22 @@ TextInputManager::~TextInputManager()
 	Finalize();
 }
 
-void TextInputManager::Initialize()
+void TextInputManager::Initialize(int _fontHandle)
 {
-	mnInputHandle = MakeKeyInput(256, TRUE, FALSE, FALSE);
+	mnFontHandle = _fontHandle;
+
+	SetKeyInputStringFont(_fontHandle);
+
+	mnInputHandle = MakeKeyInput(sizeof(mInputString) - 1, TRUE, FALSE, FALSE);
+
+	SetKeyInputStringColor2(DX_KEYINPSTRCOLOR_IME_STR_BACK, KEYINPUUT_BACK_COLOR);			// 不確定文字列の背景色変更
+	SetKeyInputStringColor2(DX_KEYINPSTRCOLOR_IME_CONV_WIN_STR, KEYINPUUT_BACK_COLOR);		// 変換中文字列の背景色変更
+	
+	SetKeyInputStringColor2(DX_KEYINPSTRCOLOR_NORMAL_STR, KEYINPUUT_STRING_COLOR);	// 入力文字の色変更
+	SetKeyInputStringColor2(DX_KEYINPSTRCOLOR_IME_STR, KEYINPUUT_STRING_COLOR);		// 入力中文字列の色変更
+
+	SetInputStringMaxLengthIMESync(TRUE);
+
 	SetActiveKeyInput(mnInputHandle);
 }
 
@@ -20,15 +33,23 @@ void TextInputManager::Draw()
 {
 	if (mnKeyInputState == 0)
 	{
-		char tmpStr[256] = "\0";
-		auto IMEData = GetIMEInputData();
+		char tmpStr[sizeof(mInputString)]{};
+		const IMEINPUTDATA* IMEData = GetIMEInputData();	// 入力中（変換中）データ取得
 
-		GetKeyInputString(tmpStr, mnInputHandle);
-		int width = GetDrawFormatStringWidth("%s", tmpStr);
-		width += GetDrawFormatStringWidth("%s", IMEData->InputString);
-		mnKeyInputDrawX = (mnKeyInputDrawX + width) / 2;
-		
-		DrawKeyInputString(mnKeyInputDrawX, mnKeyInputDrawY, mnInputHandle, FALSE);
+		GetKeyInputString(tmpStr, mnInputHandle);	// 入力（変換決定済み）データ取得
+
+		// 1. 確定文字列と変換中文字列を結合して「全体の文字列」を作る
+		char displayText[sizeof(mInputString)] = "";
+		strcpy_s(displayText, sizeof(displayText), tmpStr);
+		if (IMEData != nullptr)
+		{
+			strcat_s(displayText, sizeof(displayText), IMEData->InputString);
+		}
+
+		// 横幅
+		int width = GetDrawFormatStringWidthToHandle(mnFontHandle, "%s", displayText);
+
+		DrawKeyInputString(mnKeyInputDrawX - (width / 2), mnKeyInputDrawY, mnInputHandle, FALSE);
 	}
 }
 
@@ -36,7 +57,6 @@ void TextInputManager::Update()
 {
 	// 入力出来たか確認
 	mnKeyInputState = CheckKeyInput(mnInputHandle);
-	ProcessActKeyInput();
 
 	if (mnKeyInputState == 1)
 	{
@@ -91,8 +111,17 @@ const char* TextInputManager::GetInputString() const
 	return mInputString;
 }
 
-void TextInputManager::StateInit()
+void TextInputManager::ResetState()
 {
 	mnKeyInputState = 0; 
+}
+
+void TextInputManager::ResetInput()
+{
+	for (size_t i = 0; i < sizeof(mInputString); i++)
+	{
+		mInputString[i] = mPauseInputString[i] = '\0';
+	}
 	SetActiveKeyInput(mnInputHandle);
+	SetKeyInputString("", mnInputHandle);
 }

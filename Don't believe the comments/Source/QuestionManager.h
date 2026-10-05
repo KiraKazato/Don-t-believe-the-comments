@@ -19,16 +19,16 @@ struct GroupRate
 
 struct QuestionData
 {
-	std::string question = "";	// 問題
+	int questionGraphHandle = -1;	// 問題
 	std::string answer{};	// 答え
-	int difficulty = 0;			// 難易度
+	int difficulty = 0;		// 難易度
 	std::vector<std::string> trueComment{};		// 真コメント
-	std::vector<std::string> falseComment{};		// 偽コメント
+	std::vector<std::string> falseComment{};	// 偽コメント
 
 	// コンストラクタ
 	// データを作る際、明示的に作ることができる
-	QuestionData(const std::string& question, const std::string& answer, int difficulty, const std::vector<std::string>& trueComment, const std::vector<std::string>& falseComment)
-		: question(question), answer(answer), difficulty(difficulty), trueComment(trueComment), falseComment(falseComment)
+	QuestionData(int questionGraphHandle, const std::string& answer, int difficulty, const std::vector<std::string>& trueComment, const std::vector<std::string>& falseComment)
+		: questionGraphHandle(questionGraphHandle), answer(answer), difficulty(difficulty), trueComment(trueComment), falseComment(falseComment)
 	{
 	}
 	// 空データを作成可能
@@ -41,25 +41,18 @@ class QuestionManager
 private:
 	static const size_t DIFFICULT_MAX = 10;
 
-private:
-	std::vector<std::vector<QuestionData>> mQuestions{};	// クイズ
-	int mnCurrentIndex = 0;			// 今の問題の番号
-	int mnCurrentDifficulty = 0;	// 今の問題の難易度の数値
-	std::vector<std::pair<int, int>>mSpawnedQuestion{};		// 既に出した問題
-
 public:
 	QuestionManager() = default;
 	~QuestionManager() = default;
 
-public:
 	void Intialize();
 	
 	void Finalize();
 
 	//ステージごとの確率設定
-	// クイズ出現（出題） ※要素数は同数にしてください
-	// @param difficulties	出す難易度				書き方例）{5,4,3,2,1}
-	// @param probability	その難易度の問題が出る確率（単位:％）	書き方例）{5,20,40,50,60}
+	// クイズ出現（出題）
+	// @param stage	出すステージ
+	// @param group	その難易度とその確率
 	void SetQuestionRate(StageNumber _stage, std::vector<GroupRate> _group);
 
 	// クイズの出現
@@ -77,20 +70,37 @@ public:
 private:
 	// 読み込み
 	void Load(const std::string& _filePath);
-	
+
 	// コメント読み込み
 	// 特殊なため分ける
 	const std::vector<std::string> LoadComment(std::stringstream&, std::string&);
 
-	// 答え読み込み
-	const std::vector<std::string> LoadAnswer(std::string&);
+	// 確率の確定
+	// @return 出題に進んで行けないか
+	bool RateDecision(std::pair<StageNumber, std::vector<GroupRate>>& _data, StageNumber _stageNumber);
+
+	void Spawn(std::pair<StageNumber, std::vector<GroupRate>> _data, int* _questionIndex, int* _difficultIndex);
+
+	// 出題済み問題の探索
+	// @return 出題済みか
+	bool IsSpawnedQuestion(int _questionIndex, int _difficultIndex);
+
+	// 探索する難易度の変更
+	void SpawnDifficultChange(int* _loopCount,int* _difficultIndex, size_t _difficultSize);
+private:
+	std::vector<std::vector<QuestionData>> mQuestions{};	// クイズ
+
+	int mnCurrentIndex = 0;			// 今の問題の番号
+	int mnCurrentDifficulty = 0;	// 今の問題の難易度の数値
+	
+	std::vector<std::pair<int, int>>mSpawnedQuestion{};		// 既に出した問題
 
 private:
 	//ステージと、そのステージで出る問題の難易度と難易度の出る確率
-	std::vector<std::pair<StageNumber, std::vector<GroupRate>>> stageData;
+	std::vector<std::pair<StageNumber, std::vector<GroupRate>>> mStageData;
 
 	//確率の最大値
 	static const int maxRate = 90;
 	//確率の最小値
-	static const int minRate = 10;
+	static const int minRate = 5;
 };

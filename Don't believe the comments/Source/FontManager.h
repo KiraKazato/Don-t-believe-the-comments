@@ -9,7 +9,8 @@ public:
 	//フォントの識別タグ
 	enum Font
 	{
-		FONT_TETUBINN = 0
+		FONT_NONE = 0,
+		FONT_TETUBINN = 1,
 	};
 public:
 	//コンストラクタ

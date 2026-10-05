@@ -3,13 +3,14 @@
 #include <fstream>
 #include <sstream>
 #include "DxLib.h"
+#include "Master.h"
 
 // {1,2,3} {4,5,6} {7.8}  {9,10}
 // 減少大　減少中  増加大 増加中
 
 void QuestionManager::Intialize()
 {
-	Load("Data/Quiz.csv");
+	Load("Resource/QuizData/Quiz.csv");
 	std::vector<GroupRate> initializeGroup =
 	{
 		GroupRate({1,{1,2,3},50,-5}),
@@ -22,13 +23,13 @@ void QuestionManager::Intialize()
 
 void QuestionManager::Finalize()
 {
-	stageData.clear();
+	mStageData.clear();
 	ClearSpawnedQuestion();
 }
 
 void QuestionManager::SetQuestionRate(StageNumber _stage, std::vector<GroupRate> _group)
 {
-	stageData.push_back({ _stage,_group });
+	mStageData.push_back({ _stage,_group });
 }
 
 void QuestionManager::SpawnQuestion(StageNumber _number, int _questionNumber)
@@ -36,111 +37,18 @@ void QuestionManager::SpawnQuestion(StageNumber _number, int _questionNumber)
 	//乱数をランダムに
 	SRand((int)time(NULL));
 
-	/*auto random = [](int _min, int _max) {return _min + GetRand(_max - _min); };
-	auto isClampIn = [](int _value,int _min, int _max) {return _min < _value && _value < _max; };*/
-
-	int setDifficultIndex = 0;
 	int setQuestionIndex = 0;
-
-
-	// 探索限界数
-	static const int LOOP_MAX = 5;
-
-
-
+	int setDifficultIndex = 0;
 	// stageData探索
-	for (auto& data : stageData)
+	for (auto& data : mStageData)
 	{
 		// ステージ番号を確認
-		if (data.first != _number)
+		if (RateDecision(data, _number))
 		{
 			continue;
 		}
 
-		//確率の合計
-		int totalRate = 0;
-		//グループの確率の確定
-		//問題数が進んでいたならここで確率の増減を適用する。
-		for (auto& rate : data.second)
-		{
-			rate.rate += (_questionNumber - 1) * rate.changeRate;
-			rate.rate = min(max(minRate, rate.rate), maxRate);
-
-			totalRate += rate.rate;
-		}
-
-		int difficultGroupIndex = 0;
-		for (auto& rate : data.second)
-		{
-			rate.rate /= totalRate;
-
-			// 確率計算
-			if (rate.rate > GetRand(100))
-			{
-				// 難易度
-				setDifficultIndex = rate.difficultgroup[difficultGroupIndex];
-
-				// 抽選
-				setQuestionIndex = GetRand(static_cast<int>(mQuestions[setDifficultIndex].size()) - 1);
-
-				// 既に出題した問題があったか
-				bool isFound = true;
-				// 何回ループしたか
-				int loopCount = 0;
-				while (isFound)
-				{
-					// 同じものがないか探索
-					for (const auto& spawned : mSpawnedQuestion)
-					{
-						// もしも同じ問題があった場合
-						if (setQuestionIndex == spawned.first && setDifficultIndex == spawned.second)
-						{
-							// ループ（被った問題探し）を抜ける
-							break;
-						}
-						// 被った問題がないのなら
-						isFound = false;
-					}
-					// ループを抜ける
-					if (!isFound)
-					{
-						break;
-					}
-
-					// もう一度抽選
-					setQuestionIndex = GetRand(static_cast<int>(mQuestions[setDifficultIndex].size()) - 1);
-					loopCount++;
-					// 限界まで探しても見つからない場合
-					if (LOOP_MAX <= loopCount)
-					{
-						loopCount = 0;
-						// 入れる難易度を変える
-						if (setDifficultIndex < data.second.size())
-						{
-							setDifficultIndex++;
-							if (setDifficultIndex < 0)
-							{
-								setDifficultIndex = data.second.size() - 1;
-							}
-						}
-						// もう一度探索
-						isFound = true;
-					}
-				}
-
-				// 出す問題をもう出した問題としてカウント
-				mSpawnedQuestion.emplace_back
-				(
-					std::make_pair
-					(
-						setQuestionIndex,
-						setDifficultIndex
-					)
-				);
-			}
-			difficultGroupIndex++;
-		}
-
+		Spawn(data, &setQuestionIndex, &setDifficultIndex);
 	}
 
 	// 問題を設定
@@ -185,7 +93,24 @@ void QuestionManager::Load(const std::string& _filePath)
 		std::stringstream ss(line);
 		std::string cell;
 		// 問題
-		if (getline(ss, cell, ',')) inData.question = cell;
+		if (getline(ss, cell, ','))
+		{
+			int questionGraphID = -1;
+			try
+			{
+				// 問題IDを得る
+				questionGraphID = stoi(cell);
+			}
+			catch (...)
+			{
+				questionGraphID = -1;
+
+				inData.questionGraphHandle = -1;
+			}
+
+			if (questionGraphID != -1)
+				inData.questionGraphHandle = Master::mpResourceManager->LoadGraphics("Resource/QuizImage/Quiz" + std::to_string(questionGraphID) + ".png");
+		}
 
 		// 答え
 		if (getline(ss, cell, ',')) inData.answer = cell;
@@ -224,7 +149,7 @@ void QuestionManager::Load(const std::string& _filePath)
 		}
 
 		// 入れる
-		mQuestions[inData.difficulty].emplace_back(inData);
+		mQuestions[inData.difficulty - 1].emplace_back(inData);
 	}
 }
 
@@ -249,11 +174,118 @@ const std::vector<std::string> QuestionManager::LoadComment(std::stringstream& _
 	return ret;
 }
 
-const std::vector<std::string> QuestionManager::LoadAnswer(std::string& _cell)
+bool QuestionManager::RateDecision(std::pair<StageNumber, std::vector<GroupRate>>& _data, StageNumber _stageNumber)
 {
+	if (_data.first != _stageNumber)
+	{
+		return true;
+	}
 
+	//確率の合計
+	int totalRate = 0;
+	//グループの確率の確定
+	//問題数が進んでいたならここで確率の増減を適用する。
+	for (auto& rate : _data.second)
+	{
+		rate.rate += (_stageNumber - 1) * rate.changeRate;
+		rate.rate = std::min(std::max(minRate, rate.rate), maxRate);
+		totalRate += rate.rate;
+	}
 
-	return std::vector<std::string>();
+	for (auto& rate : _data.second)
+	{
+		float normalizedRate = (float)rate.rate / totalRate;
+
+		rate.rate = (int)(normalizedRate * 100);
+	}
+
+	return false;
+}
+
+void QuestionManager::Spawn(std::pair<StageNumber, std::vector<GroupRate>> _data, int* _questionIndex, int* _difficultIndex)
+{
+	int& questionIndex = *_questionIndex;
+	int& difficultIndex = *_difficultIndex;
+
+	int difficultGroupIndex = 0;
+	for (auto& rate : _data.second)
+	{
+		// 確率計算
+		if (!(rate.rate > GetRand(100)))
+		{
+			continue;
+		}
+
+		// 難易度
+		difficultIndex = rate.difficultgroup[static_cast<size_t>(GetRand(static_cast<int>(rate.difficultgroup.size()) - 1))] - 1;
+		difficultGroupIndex = difficultIndex;
+
+		// 抽選
+		questionIndex = GetRand(static_cast<int>(mQuestions[difficultIndex].size()) - 1);
+
+		bool isFound = true;
+		// 何回ループしたか
+		int loopCount = 0;
+		// 既に出題した問題があったか
+		while (true)
+		{
+			if (mSpawnedQuestion.empty() || !IsSpawnedQuestion(questionIndex, difficultIndex))
+			{
+				break;
+			}
+
+			// もう一度抽選
+			questionIndex = GetRand(static_cast<int>(mQuestions[difficultIndex].size()) - 1);
+			loopCount++;
+			
+			// 限界まで探しても見つからない場合
+			SpawnDifficultChange(&loopCount, _difficultIndex, _data.second.size());
+		}
+
+		// 出す問題をもう出した問題としてカウント
+		mSpawnedQuestion.emplace_back
+		(
+			std::make_pair
+			(
+				questionIndex,
+				difficultIndex
+			)
+		);
+	}
+	difficultGroupIndex++;
+}
+
+bool QuestionManager::IsSpawnedQuestion(int _questionIndex, int _difficultIndex)
+{
+	for (auto& spawned : mSpawnedQuestion)
+	{
+		if (spawned.first == _questionIndex && spawned.second == _difficultIndex)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void QuestionManager::SpawnDifficultChange(int* _loopCount, int* _difficultIndex, size_t _difficultSize)
+{
+	// 探索限界数
+	constexpr int LOOP_MAX = 5;
+
+	// 限界まで探しても見つからない場合
+	if (LOOP_MAX <= *_loopCount)
+	{
+		*_loopCount = 0;
+		// 入れる難易度を変える
+		if (*_difficultIndex < _difficultSize)
+		{
+			*_difficultIndex++;
+			if (*_difficultIndex < 0)
+			{
+				*_difficultIndex = static_cast<int>(_difficultSize - 1);
+			}
+		}
+	}
 }
 
 void QuestionManager::SetQuestion(int _index, int _difficulty)
@@ -267,11 +299,11 @@ const QuestionData& QuestionManager::GetQuestionData()
 	// mnCurrentIndexがエラー部分を参照したらエラーデータを返す
 	try
 	{
-		return mQuestions[mnCurrentDifficulty][mnCurrentIndex];
+		return mQuestions.at(mnCurrentDifficulty).at(mnCurrentIndex);
 	}
 	catch (...)
 	{
-		static const QuestionData ErrorData = QuestionData("エラー", "エラー", INT_MAX, { "エラー" }, { "エラー" });
+		static const QuestionData ErrorData = QuestionData(-1, "NULL_ERROR", INT_MAX, { "これはエラー用コメントです" }, { "これはエラー用コメントです" });
 		return  ErrorData;
 	}
 }

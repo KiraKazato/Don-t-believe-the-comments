@@ -20,7 +20,7 @@ SceneManager::~SceneManager()
 void SceneManager::Initialize()
 {
 	//初期シーンの設定
-	mnNextSceneType = SCENE_TYPE::SCENE_GAME;
+	mnNextSceneType = SCENE_TYPE::SCENE_TITLE;
 
 	// シーン遷移をさせる
 	ChageSceneIfNeeded();

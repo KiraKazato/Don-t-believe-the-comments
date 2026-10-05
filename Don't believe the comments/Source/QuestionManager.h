@@ -67,6 +67,9 @@ public:
 	// 現在の問題の情報を得る
 	const QuestionData& GetQuestionData();
 
+	// 乱数設定（乱数完全ランダム化）
+	void SetRandomNumber();
+
 private:
 	// 読み込み
 	void Load(const std::string& _filePath);
@@ -79,6 +82,7 @@ private:
 	// @return 出題に進んで行けないか
 	bool RateDecision(std::pair<StageNumber, std::vector<GroupRate>>& _data, StageNumber _stageNumber);
 
+	// 問題の確定
 	void Spawn(std::pair<StageNumber, std::vector<GroupRate>> _data, int* _questionIndex, int* _difficultIndex);
 
 	// 出題済み問題の探索

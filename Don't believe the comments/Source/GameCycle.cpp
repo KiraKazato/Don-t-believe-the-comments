@@ -116,6 +116,7 @@ bool GameCycle::AnswerJudge()
 	}
 
 	auto& data = Master::mpQuestionManager->GetQuestionData();
+	printfDx("%s\n",data.answer.c_str());
 	if (data.answer == answer)
 	{
 		mTextInputManager.ResetInput();

@@ -34,9 +34,6 @@ void QuestionManager::SetQuestionRate(StageNumber _stage, std::vector<GroupRate>
 
 void QuestionManager::SpawnQuestion(StageNumber _number, int _questionNumber)
 {
-	//乱数をランダムに
-	SRand((int)time(NULL));
-
 	int setQuestionIndex = 0;
 	int setDifficultIndex = 0;
 	// stageData探索
@@ -207,58 +204,90 @@ void QuestionManager::Spawn(std::pair<StageNumber, std::vector<GroupRate>> _data
 	int& questionIndex = *_questionIndex;
 	int& difficultIndex = *_difficultIndex;
 
-	int difficultGroupIndex = 0;
-	for (auto& rate : _data.second)
+	for (size_t i = _data.second.size() - 1; i <= 0; i--)
 	{
+		auto& rate = _data.second[i];
+
 		// 確率計算
-		if (!(rate.rate > GetRand(100)))
+		if (!(rate.rate > GetRand(99)))
 		{
 			continue;
 		}
 
+		// 出す問題の候補
+		std::vector<int>candidate{};
+
 		// 難易度
 		difficultIndex = rate.difficultgroup[static_cast<size_t>(GetRand(static_cast<int>(rate.difficultgroup.size()) - 1))] - 1;
-		difficultGroupIndex = difficultIndex;
 
-		// 抽選
-		questionIndex = GetRand(static_cast<int>(mQuestions[difficultIndex].size()) - 1);
-
-		bool isFound = true;
-		// 何回ループしたか
-		int loopCount = 0;
-		// 既に出題した問題があったか
-		while (true)
+		for (size_t i = 0; i < mQuestions[difficultIndex].size(); i++)
 		{
-			if (mSpawnedQuestion.empty() || !IsSpawnedQuestion(questionIndex, difficultIndex))
+			// 被っていない問題だったなら
+			if (!IsSpawnedQuestion(static_cast<int>(i), difficultIndex))
 			{
-				break;
+				// 候補に入れる
+				candidate.push_back(static_cast<int>(i));
 			}
-
-			// もう一度抽選
-			questionIndex = GetRand(static_cast<int>(mQuestions[difficultIndex].size()) - 1);
-			loopCount++;
-			
-			// 限界まで探しても見つからない場合
-			SpawnDifficultChange(&loopCount, _difficultIndex, _data.second.size());
 		}
 
+		if (candidate.empty())
+		{
+			printfDx("candidate EMPTY\n");
+
+			std::vector<int> difficultCandidate{};
+
+			for (auto& difficulty : rate.difficultgroup)
+			{
+				int index = difficulty - 1;
+
+				for (int i = 0; i < mQuestions[index].size(); i++)
+				{
+					if (!IsSpawnedQuestion(static_cast<int>(i), index))
+					{
+						difficultCandidate.push_back(index);
+						break;
+					}
+				}
+			}
+
+			if (!difficultCandidate.empty())
+			{
+				do
+				{
+					difficultIndex = difficultCandidate[static_cast<size_t>(GetRand(static_cast<int>(difficultCandidate.size()) - 1))];
+
+					candidate.clear();
+
+					for (size_t i = 0; i < mQuestions[difficultIndex].size(); i++)
+					{
+						if (!IsSpawnedQuestion(
+							static_cast<int>(i),
+							difficultIndex))
+						{
+							candidate.push_back(static_cast<int>(i));
+						}
+					}
+				} while (candidate.empty());
+			}
+		}
+
+		// 抽選
+		questionIndex = candidate[static_cast<size_t>(GetRand(static_cast<int>(candidate.size()) - 1))];
+
 		// 出す問題をもう出した問題としてカウント
-		mSpawnedQuestion.emplace_back
-		(
-			std::make_pair
-			(
-				questionIndex,
-				difficultIndex
-			)
-		);
+		mSpawnedQuestion.emplace_back(questionIndex, difficultIndex);
+
+		break;
 	}
-	difficultGroupIndex++;
 }
 
 bool QuestionManager::IsSpawnedQuestion(int _questionIndex, int _difficultIndex)
 {
-	for (auto& spawned : mSpawnedQuestion)
+	const size_t size = mSpawnedQuestion.size();
+
+	for (int i = 0; i < size; i++)
 	{
+		const auto& spawned = mSpawnedQuestion[i];
 		if (spawned.first == _questionIndex && spawned.second == _difficultIndex)
 		{
 			return true;
@@ -273,16 +302,16 @@ void QuestionManager::SpawnDifficultChange(int* _loopCount, int* _difficultIndex
 	constexpr int LOOP_MAX = 5;
 
 	// 限界まで探しても見つからない場合
-	if (LOOP_MAX <= *_loopCount)
+	if (LOOP_MAX <= (*_loopCount) || mQuestions[(*_difficultIndex)].empty())
 	{
-		*_loopCount = 0;
+		(*_loopCount) = 0;
 		// 入れる難易度を変える
-		if (*_difficultIndex < _difficultSize)
+		if ((*_difficultIndex) < _difficultSize)
 		{
-			*_difficultIndex++;
-			if (*_difficultIndex < 0)
+			(*_difficultIndex)++;
+			if ((*_difficultIndex) < 0)
 			{
-				*_difficultIndex = static_cast<int>(_difficultSize - 1);
+				(*_difficultIndex) = static_cast<int>(_difficultSize - 1);
 			}
 		}
 	}
@@ -303,7 +332,32 @@ const QuestionData& QuestionManager::GetQuestionData()
 	}
 	catch (...)
 	{
+		std::string&& errorStr = "";
+		
+		if (mnCurrentDifficulty > mQuestions.size())
+		{
+			errorStr += "DifficultError";
+		}
+		
+		if (mnCurrentIndex > mQuestions[mnCurrentDifficulty].size())
+		{
+			errorStr += "IndexError";
+		}
+
+		printfDx("Difficult:%d/%d | Index:%d/%d | Message:%s\n",
+			mnCurrentDifficulty, mQuestions.size() - 1,
+			mnCurrentIndex, mQuestions[mnCurrentDifficulty].size() - 1,
+			errorStr.c_str()
+		);
+
+		
 		static const QuestionData ErrorData = QuestionData(-1, "NULL_ERROR", INT_MAX, { "これはエラー用コメントです" }, { "これはエラー用コメントです" });
 		return  ErrorData;
 	}
+}
+
+void QuestionManager::SetRandomNumber()
+{
+	//乱数をランダムに
+	SRand((int)time(NULL));
 }

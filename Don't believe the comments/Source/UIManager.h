@@ -4,24 +4,34 @@
 
 struct UIData
 {
+    //画像のhandleを入れる
     int handle;
-    float x1, y1;
-    float x2, y2;
+    //もらった元の座標
+    float originalX1, originalY1;
+    float originalX2, originalY2;
+    //表示する座標
+    float drawX1, drawY1;
+    float drawX2, drawY2;
 };
 
 class UIManager {
 public:
 
     // UIデータを新しく登録する関数
-    static void AddUI(int _handle, float _x1, float _y1, float _x2, float _y2);
+     void AddUI(int _handle, float _x1, float _y1, float _x2, float _y2);
 
     // 登録されているすべてのUIを一括で計算・描画する関数
-    static void DrawUI();
+     void DrawUI();
 
     // データをすべてクリアする関数（シーン切り替え時など）
-    static void ClearUI();
+     void ClearUI();
 
+     //その画像の大きさ変更
+     void ChangeSize(int _handle, float _ratio);
+
+     //大きさを変更した画像を元に戻す
+     void ResetSize(int _handle);
 private:
-    // 複数のUIデータをまとめて保管しておくリスト（配列のようなもの）
-    static std::vector<UIData> mUIList;
+     //複数のUIデータをまとめて保管しておくリスト
+     std::vector<UIData> mUIList;
 };

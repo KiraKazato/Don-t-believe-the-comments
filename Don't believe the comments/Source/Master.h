@@ -5,6 +5,7 @@
 #include "EffectManager.h"
 #include "FontManager.h"
 #include "QuestionManager.h"
+#include "UIManager.h"
 
 // ゲーム内で1つだけしか存在しないものを管理するクラス
 //例えば、
@@ -23,6 +24,7 @@ public:
 	static EffectManager* mpEffectManager;//エフェクトマネージャーのポインタ
 	static FontManager* mpFontManager;
 	static QuestionManager* mpQuestionManager;
+	static UIManager* mpUIManager;
 
 public:
 	static const int Width = 1920;

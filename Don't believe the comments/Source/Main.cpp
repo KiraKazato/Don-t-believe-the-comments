@@ -8,6 +8,7 @@
 #include "EffekseerEffect.h"
 #include "FontManager.h"
 #include "QuestionManager.h"
+#include "UIManager.h"
 
 /**
 * @note リファレンス https://dxlib.xsrv.jp/dxfunc.html
@@ -20,6 +21,7 @@ ResourceManager* Master::mpResourceManager = new ResourceManager();
 EffectManager* Master::mpEffectManager = new EffectManager();
 FontManager* Master::mpFontManager = new FontManager();
 QuestionManager* Master::mpQuestionManager = new QuestionManager();
+UIManager* Master::mpUIManager = new UIManager();
 
 /**
 * @fn WinMain
@@ -105,6 +107,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	delete Master::mpFontManager;
 	Master::mpQuestionManager->Finalize();
 	delete Master::mpQuestionManager;
+	delete Master::mpUIManager;
 
 
 	Effkseer_End();

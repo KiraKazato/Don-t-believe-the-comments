@@ -2,11 +2,10 @@
 #include "Master.h"
 
 TitleScene::TitleScene()
-	: mnStartBotton(0)
-	, mnTitleBackGround(0)
-	, mnTitleGraphPath(0)
+	:titleBackGroundHandle(-1)
+	, startBottonHandle(-1)
+	, settingBottonHandle(-1)
 {
-	mnStartBotton = LoadGraph("Resource/StartButton.jpg");
 }
 
 TitleScene::~TitleScene()
@@ -16,17 +15,15 @@ TitleScene::~TitleScene()
 
 void TitleScene::Initialize()
 {
-	mnTitleBackGround = Master::mpResourceManager->LoadGraphics("Resource/TitleBackGround.png");
-
-	mnStartBotton = Master::mpResourceManager->LoadGraphics("Resource/StartButton.png");
-
-	mnSettingBotton = Master::mpResourceManager->LoadGraphics("Resource/Settings.png");
-
+	titleBackGroundHandle = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/TitleBackGround.png");
+	startBottonHandle = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/StartButton.png");
+	settingBottonHandle = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/SettingButton.png");
+	Master::mpUIManager->AddUI(titleBackGroundHandle, 0, 0, Master::Width, Master::gridHeight);
 }
 
 void TitleScene::Update()
 {
-	Scene::Update();
+	
 
 	GetMousePoint(&MouseX, &MouseY);
 
@@ -73,59 +70,37 @@ void TitleScene::Update()
 	{
 		inField2 = false;
 	}
+	if (inField)
+	{
+		Master::mpUIManager->ChangeSize(startBottonHandle, 1.2f);
+	}
+	else
+	{
+		Master::mpUIManager->ResetSize(startBottonHandle);
+	}
+
+
+	if (inField2)
+	{
+
+		Master::mpUIManager->ChangeSize(settingBottonHandle, 1.2f);
+	}
+	else
+	{
+		Master::mpUIManager->ResetSize(settingBottonHandle);
+	}
+	Scene::Update();
 }
 
 void TitleScene::Draw()
 {
-	//タイトル背景
-	DrawExtendGraph(0, 0, Master::Width, Master::Height, mnTitleBackGround, TRUE);
-
-	int addPosition = 0;
-	if (inField)
-	{
-		addPosition = 1;
-	}
-
-	int addPosition2 = 0;
-	if (inField2)
-	{
-		addPosition2 = 1;
-	}
-	//スタートボタン
-	DrawExtendGraph(
-		Master::gridWidth * (30-addPosition),
-		Master::gridHeight * (90 - addPosition),
-		Master::gridWidth * (57 + addPosition),
-		Master::gridHeight * (107+ addPosition), 
-		mnStartBotton, TRUE);
-
-
-	//設定ボタン
-	DrawExtendGraph(
-		Master::gridWidth * (63 - addPosition2),
-		Master::gridHeight * (90 - addPosition2),
-		Master::gridWidth*(90 + addPosition2), 
-		Master::gridHeight*(107 + addPosition2), 
-		mnSettingBotton, TRUE);
-	
-
-	/*for (int height = 0; height < Master::Height / Master::gridHeight; height++)
-	{
-		DrawLine(0, Master::gridHeight * height, Master::Width, Master::gridHeight * height, GetColor(0, 0, 0));
-	}
-	for (int width = 0; width < Master::Width / Master::gridWidth; width++)
-	{
-		DrawLine(Master::gridWidth * width, 0, Master::gridWidth * width, Master::Width , GetColor(0, 0, 0));
-	}*/
-
-	//X軸の中心線
-	int CenterLine = Master::gridWidth * 60; // 画面幅の半分（中心のX座標）
-	DrawLine(CenterLine, 0, CenterLine, Master::Height, GetColor(255, 0, 0));
+	Master::mpUIManager->DrawUI();
+	Scene::Draw();
 }
 
 void TitleScene::Finalize()
 {
-
+	Master::mpUIManager->ClearUI();
 }
 
 

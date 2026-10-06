@@ -14,14 +14,13 @@ public:
 	virtual void Finalize()override;
 
 private:
-	int mnTitleBackGround;
+	//‰æ‘œƒnƒ“ƒhƒ‹
+	int titleBackGroundHandle;
+	int startBottonHandle;
+	int settingBottonHandle;
 
-	int mnStartBotton;
 
 	int mnTitleGraphPath;
-
-	int mnSettingBotton;
-
 	int MouseX, MouseY;
 
 	bool inField = false;

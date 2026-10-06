@@ -85,14 +85,18 @@ private:
 	// 問題の確定
 	void Spawn(std::pair<StageNumber, std::vector<GroupRate>> _data, int* _questionIndex, int* _difficultIndex);
 
+	// 難易度の選出
+	std::vector<int> DifficultCandidate(const std::vector<int>& _group);
+
+	// 問題が存在する難易度の選出
+	std::vector<std::vector<QuestionData>> QuestionBeingDifficultCandidate(const std::vector<std::vector<QuestionData>>& _QuestionList);
+
 	// 出題済み問題の探索
 	// @return 出題済みか
 	bool IsSpawnedQuestion(int _questionIndex, int _difficultIndex);
 
-	// 探索する難易度の変更
-	void SpawnDifficultChange(int* _loopCount,int* _difficultIndex, size_t _difficultSize);
 private:
-	std::vector<std::vector<QuestionData>> mQuestions{};	// クイズ
+	std::vector<std::pair<std::vector<QuestionData>, bool>> mQuestions{};	// クイズ
 
 	int mnCurrentIndex = 0;			// 今の問題の番号
 	int mnCurrentDifficulty = 0;	// 今の問題の難易度の数値

@@ -38,6 +38,8 @@ void GameCycle::Update()
 		questionNumber++;
 		if (questionNumber > maxQuestionNumber)
 		{
+			clsDx();
+			printfDx("\n　デバッグ：最後まで行きました GameCycle.cpp 42行辺り");
 			GameEnd();
 		}
 	}
@@ -107,7 +109,6 @@ bool GameCycle::AnswerJudge()
 {
 	isInputAnswer = false;
 	
-
 	if (answer == "")
 	{
 		mTextInputManager.ResetInput();
@@ -116,15 +117,17 @@ bool GameCycle::AnswerJudge()
 	}
 
 	auto& data = Master::mpQuestionManager->GetQuestionData();
-	printfDx("%s\n",data.answer.c_str());
+	clsDx();
 	if (data.answer == answer)
 	{
+		printfDx("\n　デバッグ：%d/%d 問目正解 GameCycle.cpp 122行辺り", questionNumber, maxQuestionNumber);
 		mTextInputManager.ResetInput();
 		answer = "";
 		return true;
 	}
 	else
 	{
+		printfDx("\n　デバッグ：正解は %s　%s\n", data.answer.c_str(), "GameCycle.cpp 129行辺り");
 		mTextInputManager.ResetInput();
 		answer = "";
 		return false;

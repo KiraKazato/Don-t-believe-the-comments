@@ -31,6 +31,11 @@ public:
 
      //大きさを変更した画像を元に戻す
      void ResetSize(int _handle);
+
+     //指定UIの中に物体が入っているかの判定
+     bool InsideUI(int _handle, int _objectX, int objexctY_);
+
+    
 private:
      //複数のUIデータをまとめて保管しておくリスト
      std::vector<UIData> mUIList;

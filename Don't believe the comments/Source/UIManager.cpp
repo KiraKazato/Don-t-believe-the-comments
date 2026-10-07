@@ -61,3 +61,24 @@ void UIManager::ResetSize(int _handle)
 		}
 	}
 }
+
+bool UIManager::InsideUI(int _handle, int _objectX, int _objectY)
+{
+	bool isInsideX{}, isInsideY{};
+	for (auto& ui : mUIList)
+	{
+		if (ui.handle == _handle)
+		{
+			isInsideX = (ui.drawX1 < _objectX && _objectX < ui.drawX2);
+			isInsideY = (ui.drawY1 < _objectY && _objectY < ui.drawY2);
+			break;
+		}
+		
+	}
+	if (isInsideX && isInsideY)
+	{
+		return true;
+	}
+	return false;
+}
+

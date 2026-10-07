@@ -1,6 +1,5 @@
 #pragma once
 #include "Scene.h"
-#include <vector>
 #include "SoundManager.h"
 
 class TitleScene :public Scene
@@ -19,14 +18,8 @@ private:
 	int startBottonHandle;
 	int settingBottonHandle;
 
-
-	int mnTitleGraphPath;
-	int MouseX, MouseY;
-
-	bool inField = false;
-
-	bool inField2 = false;
-
-
+	//マウスの座標を受け取る
+	int MouseX{};
+	int MouseY{};
 };
 

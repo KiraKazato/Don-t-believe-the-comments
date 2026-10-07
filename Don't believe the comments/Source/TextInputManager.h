@@ -1,5 +1,7 @@
 #pragma once
 #include "DxLib.h"
+#include <unordered_map>
+#include <string>
 
 class TextInputManager
 {
@@ -34,6 +36,8 @@ public:
 
 	// 入力内容リセット
 	void ResetInput();
+
+	//const std::string& TextInputDictionary(const std::string& _roma);
 
 private:
 	int mnInputHandle = -1;		// 入力ハンドル

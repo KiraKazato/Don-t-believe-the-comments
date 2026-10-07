@@ -9,6 +9,7 @@
 #include "FontManager.h"
 #include "QuestionManager.h"
 #include "UIManager.h"
+#include "MouseManager.h"
 
 /**
 * @note リファレンス https://dxlib.xsrv.jp/dxfunc.html
@@ -22,6 +23,7 @@ EffectManager* Master::mpEffectManager = new EffectManager();
 FontManager* Master::mpFontManager = new FontManager();
 QuestionManager* Master::mpQuestionManager = new QuestionManager();
 UIManager* Master::mpUIManager = new UIManager();
+MouseManager* Master::mpMouseManager = new MouseManager();
 
 /**
 * @fn WinMain
@@ -74,12 +76,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	{
 		int time = GetNowCount();
 
+		Master::mpMouseManager->Update();
 		Master::mpSceneManager->Update();
 	
 		//画面を初期化する
 		ClearDrawScreen();
 
 		Master::mpSceneManager->Draw();
+		Master::mpMouseManager->Draw();
 		//裏画面の内容を表画面に映す
 		ScreenFlip();
 		//17ミリ秒　（秒間約６０フレームだった場合の１フレーム当たりの経過時間）
@@ -108,6 +112,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	Master::mpQuestionManager->Finalize();
 	delete Master::mpQuestionManager;
 	delete Master::mpUIManager;
+	delete Master::mpMouseManager;
 
 
 	Effkseer_End();

@@ -22,6 +22,8 @@ void GameScene::Initialize()
 	Master::mpUIManager->AddUI(InputField, Master::gridWidth * 22, Master::gridHeight * 80, Master::gridWidth * 68, Master::gridHeight * 90);
 
 	mGameCycle.Initialize();
+
+	Master::mpQuestionManager->SetRandomNumber();
 }
 
 void GameScene::Update()

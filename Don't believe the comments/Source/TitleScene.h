@@ -1,6 +1,5 @@
 #pragma once
 #include "Scene.h"
-#include <vector>
 #include "SoundManager.h"
 
 class TitleScene :public Scene
@@ -14,6 +13,13 @@ public:
 	virtual void Finalize()override;
 
 private:
+	//画像ハンドル
+	int titleBackGroundHandle;
+	int startBottonHandle;
+	int settingBottonHandle;
 
+	//マウスの座標を受け取る
+	int MouseX{};
+	int MouseY{};
 };
 

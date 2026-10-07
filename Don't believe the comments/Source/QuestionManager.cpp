@@ -227,6 +227,28 @@ void QuestionManager::Spawn(std::pair<StageNumber, std::vector<GroupRate>> _data
 	int rateSelected = 0;
 	for (size_t i = 0; i < _data.second.size(); i++)
 	{
+		// 強制変更を起こすか判定
+		// ラムダ式
+		auto forceSelect = [&](const std::vector<int>& list) -> bool
+			{
+				if (list.empty() && rateSelected == 0)
+				{
+					// 強制探索開始
+					// もう調べた問題番号を足す
+					rateSelected += 1 << _data.second[i].group;
+					i = 0;
+					return true;
+				}
+				else if (list.empty())
+				{
+					// 強制探索
+					// もう調べた問題番号を足す
+					rateSelected += 1 << _data.second[i].group;
+					return true;
+				}
+				return false;
+			};
+
 		// 既にその難易度のグループを選んでいた場合
 		if (rateSelected & (1 << _data.second[i].group))
 		{
@@ -249,6 +271,11 @@ void QuestionManager::Spawn(std::pair<StageNumber, std::vector<GroupRate>> _data
 		// 難易度の候補
 		std::vector<int>&& difficultCandidate = DifficultCandidate(rate.difficultgroup);
 		
+		if (forceSelect(difficultCandidate))
+		{
+			continue;
+		}
+
 		// 難易度候補なし（全て出題した）
 		if (difficultCandidate.empty() && rateSelected == 0)
 		{
@@ -267,10 +294,10 @@ void QuestionManager::Spawn(std::pair<StageNumber, std::vector<GroupRate>> _data
 		}
 
 		// 選んだ難易度の中で抽選する
-		int index = static_cast<size_t>(GetRand(static_cast<int>(difficultCandidate.size()) - 1));
+		int dIndex = static_cast<size_t>(GetRand(static_cast<int>(difficultCandidate.size()) - 1));
 
 		// 難易度
-		difficultIndex = difficultCandidate[index];
+		difficultIndex = difficultCandidate[dIndex];
 
 		for (size_t j = 0; j < mQuestions[difficultIndex].first.size(); j++)
 		{
@@ -282,25 +309,15 @@ void QuestionManager::Spawn(std::pair<StageNumber, std::vector<GroupRate>> _data
 			}
 		}
 
-		// 候補なし（全て出題した）
-		if (candidate.empty() && rateSelected == 0)
+		if (forceSelect(candidate))
 		{
-			// 強制探索開始
-			// もう調べた問題番号を足す
-			rateSelected += 1 << _data.second[i].group;
-			i = 0;
-			continue;
-		}
-		else if (candidate.empty())
-		{
-			// 強制探索
-			// もう調べた問題番号を足す
-			rateSelected += 1 << _data.second[i].group;
 			continue;
 		}
 
+		// 候補の問題から抽選
+		size_t qIndex = static_cast<size_t>(GetRand(static_cast<int>(candidate.size()) - 1));
 		// 抽選
-		questionIndex = candidate.at(static_cast<size_t>(GetRand(static_cast<int>(candidate.size()) - 1)));
+		questionIndex = candidate[qIndex];
 
 		// 出す問題をもう出した問題としてカウント
 		mSpawnedQuestion.emplace_back(questionIndex, difficultIndex);

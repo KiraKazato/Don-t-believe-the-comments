@@ -35,6 +35,9 @@ public:
      //指定UIの中に物体が入っているかの判定
      bool InsideUI(int _handle, int _objectX, int objexctY_);
 
+     //指定画像の座標取得
+     //int GetUIPosition()
+     //指定画像の座標変更
     
 private:
      //複数のUIデータをまとめて保管しておくリスト

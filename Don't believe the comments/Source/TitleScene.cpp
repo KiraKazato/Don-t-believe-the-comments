@@ -30,10 +30,10 @@ void TitleScene::Update()
 	Master::mpMouseManager->GetMousePosition(&MouseX, &MouseY);
 	
 	//マウスがボタンの範囲内だったら
-	if (Master::mpUIManager->InsideUI(startBottonHandle,MouseX,MouseY))
+	if (Master::mpUIManager->InsideUI(startBottonHandle,(float)MouseX,(float)MouseY))
 	{
 		//少し拡大
-		Master::mpUIManager->ChangeSize(startBottonHandle, 1.1f);
+		Master::mpUIManager->ChangeUISize(startBottonHandle, 1.1f);
 		//左クリック押されたとき
 		if (Master::mpMouseManager->IsLeftClick())
 		{
@@ -43,15 +43,15 @@ void TitleScene::Update()
 	else
 	{
 		//元の大きさに戻しておく
-		Master::mpUIManager->ResetSize(startBottonHandle);
+		Master::mpUIManager->ResetUISize(startBottonHandle);
 	}
 
 
 	//マウスがボタンの範囲内だったら
-	if (Master::mpUIManager->InsideUI(settingBottonHandle, MouseX, MouseY))
+	if (Master::mpUIManager->InsideUI(settingBottonHandle, (float)MouseX, (float)MouseY))
 	{
 		//少し拡大
-		Master::mpUIManager->ChangeSize(settingBottonHandle, 1.1f);
+		Master::mpUIManager->ChangeUISize(settingBottonHandle, 1.1f);
 		if (Master::mpMouseManager->IsLeftClick())
 		{
 			Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_GAME);
@@ -60,7 +60,7 @@ void TitleScene::Update()
 	else
 	{
 		//元の大きさに戻しておく
-		Master::mpUIManager->ResetSize(settingBottonHandle);
+		Master::mpUIManager->ResetUISize(settingBottonHandle);
 	}
 
 	Scene::Update();

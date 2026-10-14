@@ -7,6 +7,7 @@
 #include "QuestionManager.h"
 #include "UIManager.h"
 #include "MouseManager.h"
+#include "CommenterManager.h"
 
 // ゲーム内で1つだけしか存在しないものを管理するクラス
 //例えば、
@@ -27,7 +28,7 @@ public:
 	static QuestionManager* mpQuestionManager;
 	static UIManager* mpUIManager;
 	static MouseManager* mpMouseManager;
-
+	static CommenterManager* mpCommenterManager;
 public:
 	static const int Width = 1920;
 	static const int Height = 1080;

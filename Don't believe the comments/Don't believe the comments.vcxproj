@@ -143,6 +143,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Commenter.cpp" />
+    <ClCompile Include="Source\CommenterManager.cpp" />
     <ClCompile Include="Source\MouseManager.cpp" />
     <ClCompile Include="Source\TextInputManager.cpp" />
     <ClCompile Include="Source\QuestionManager.cpp" />
@@ -163,6 +165,8 @@
     <ClCompile Include="Source\UIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Commenter.h" />
+    <ClInclude Include="Source\CommenterManager.h" />
     <ClInclude Include="Source\MouseManager.h" />
     <ClInclude Include="Source\TextInputManager.h" />
     <ClInclude Include="Source\QuestionManager.h" />

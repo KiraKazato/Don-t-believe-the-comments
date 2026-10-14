@@ -18,25 +18,29 @@ class UIManager {
 public:
 
     // UIデータを新しく登録する関数
-     void AddUI(int _handle, float _x1, float _y1, float _x2, float _y2);
+    void AddUI(int _handle, float _x1, float _y1, float _x2, float _y2);
 
     // 登録されているすべてのUIを一括で計算・描画する関数
-     void DrawUI();
+    void DrawUI();
 
     // データをすべてクリアする関数（シーン切り替え時など）
-     void ClearUI();
+    void ClearUI();
 
-     //その画像の大きさ変更
-     void ChangeSize(int _handle, float _ratio);
+    //その画像の大きさ変更
+    void ChangeUISize(int _handle, float _ratio);
 
-     //大きさを変更した画像を元に戻す
-     void ResetSize(int _handle);
+    //大きさを変更した画像を元に戻す
+    void ResetUISize(int _handle);
 
-     //指定UIの中に物体が入っているかの判定
-     bool InsideUI(int _handle, int _objectX, int objexctY_);
+    //指定UIの中に物体が入っているかの判定
+    bool InsideUI(int _handle, float _objectX, float objexctY_);
 
-    
+    //指定UIの座標取得
+    void GetUIPosition(int _handle, float* _x1, float* _y1, float* _x2, float* _y2);
+    //指定uiの座標変更
+    void SetUIPosition(int _handle, float _x1, float _y1, float _x2, float _y2);
+
 private:
-     //複数のUIデータをまとめて保管しておくリスト
-     std::vector<UIData> mUIList;
+    //複数のUIデータをまとめて保管しておくリスト
+    std::vector<UIData> mUIList;
 };

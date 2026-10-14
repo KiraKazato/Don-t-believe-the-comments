@@ -33,10 +33,10 @@ private:
 	//¡‚Ì–â‘è‰æ‘œ‚ğ“ü‚ê‚é
 	int nowQuestionImageHandle = -1;
 	//–â‘è‚Ì‰æ‘œ‚Ì•\¦ˆÊ’u
-	int QuestionImageX1 = Master::gridWidth * 18;
-	int QuestionImageX2 = Master::gridWidth * 72;
-	int QuestionImageY1 = Master::gridHeight * 12;
-	int QuestionImageY2 = Master::gridHeight * 73;
+	int QuestionImageX1 = Master::gridWidth * 20;
+	int QuestionImageX2 = Master::gridWidth * 70;
+	int QuestionImageY1 = Master::gridHeight * 22;
+	int QuestionImageY2 = Master::gridHeight * 63;
 private:
 	//–â‘è”Ô†
 	//Å‰‚Íˆê–â–Ú‚È‚Ì‚Å1‚Éİ’è

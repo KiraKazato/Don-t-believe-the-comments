@@ -4,10 +4,14 @@
 
 class Commenter
 {
+public:
 	Commenter(std::string _name, int _state, std::string _comment, int _number);
 	~Commenter();
 
 	void Draw();
+
+	int GetState() { return commenterState; }
+	std::string GetName() { return commenterName; }
 private:
 	//コメンターの名前
 	std::string commenterName{};

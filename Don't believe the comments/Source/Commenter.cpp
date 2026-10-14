@@ -12,4 +12,5 @@ Commenter::~Commenter()
 
 void Commenter::Draw()
 {
+
 }

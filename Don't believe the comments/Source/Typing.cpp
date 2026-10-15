@@ -152,7 +152,7 @@ const std::unordered_map<std::string_view, std::string_view> Typing::ROMA_DICTIO
 	{"ー", "-"},{"　"," "},{"、",","},{"。","."},{"？","?"},{"！","!"}
 };
 
-const std::string Typing::KanaDictionary(const std::string& _roma)
+const std::string Typing::KanaDictionary(std::string& _roma)
 {
 	// 変換情報があるのなら余計な情報になるため一度クリア
 	if (!mConvertionUnits.empty())
@@ -202,9 +202,27 @@ const std::string Typing::KanaDictionary(const std::string& _roma)
 	// 入力途中で残ったローマ字を追加
 	if (!tmp.empty())
 	{
-		ret.append(tmp.begin(), tmp.end());
-		AddConvertionUnits(romaBegin, static_cast<int>(ret.size()), _roma.data(), kanaBegin, kanaCharBegin);
+		std::string pending(tmp.begin(), tmp.end());
+
+		ret += pending;
+
+		//for (int i = 0; i < pending.size(); i++)
+		//{
+		//	char alphabet = pending[i];
+		//	AddConvertionUnits(
+		//		romaBegin + i,
+		//		1,
+		//		std::string(1, alphabet),
+		//		kanaBegin,
+		//		kanaCharBegin
+		//	);
+		//
+		//	// 変換できない文字は半角アルファベットを全角に変換して返す
+		//	ret += AlphabetHalfToFull(alphabet);
+		//}
 	}
+
+	_roma = RomaDictionary(_roma);
 
 	// 変換できた場合は、変換後の文字列を返す
 	if (!ret.empty())
@@ -236,7 +254,7 @@ const std::string Typing::RomaDictionary(const std::string& _kana)
 
 		// 文字を取り出す
 		std::string kana = _kana.substr(i, charLength);
-		
+
 		auto itr = ROMA_DICTIONARY.find(kana);
 		if (itr != ROMA_DICTIONARY.end())
 		{
@@ -363,6 +381,46 @@ bool Typing::ConstantConvertion(char _charactor, char _nextCharactor, std::strin
 	return true;
 }
 
+std::string Typing::AlphabetHalfToFull(char _charactor)
+{
+	if (!IsAlphabet(_charactor))
+	{
+		// 半角アルファベット以外はそのまま返す
+		return std::string(1,_charactor);
+	}
+
+	// 半角アルファベットを全角文字に変換
+	// 全角文字のコードポイントは、半角文字のコードポイントに 0xFEE0 を足したものになる
+
+	// 変換後のコードポイントを求める
+	int codePoint = static_cast<int>(_charactor) + 0xFEE0;
+
+	unsigned char highByte = (codePoint >> 8) & 0xFF;		// 上位ビットを取得
+	unsigned char lowByte = codePoint & 0xFF;	// 下位ビットを取得
+
+	// 変換後の文字列を返す
+	return std::string({ static_cast<char>(highByte), static_cast<char>(lowByte) });
+}
+
+char Typing::AlphabetFullToHalf(const std::string& _fullCharactor)
+{
+	// 全角アルファベットの文字列が2バイトであることを確認
+	// 2バイト未満の場合は、全角アルファベットではないため、そのまま返す
+	if (_fullCharactor.size() < 2)
+	{
+		// 全角アルファベットは2バイトなので、2バイト以外はそのまま返す
+		return _fullCharactor[0];
+	}
+
+	// 全角アルファベットのコードポイントを求める
+	int codePoint = _fullCharactor[0] | _fullCharactor[1];
+
+	// 全角アルファベットのコードポイントから 0xFEE0 を引くことで、半角アルファベットのコードポイントを求める
+	int halfCodePoint = codePoint - 0xFEE0;
+
+	return static_cast<char>(halfCodePoint - 128);	// 128を引くことで、ASCIIコードに変換する
+}
+
 bool Typing::IsRomaVowel(char _charactor)
 {
 	// 母音あいうえお確認
@@ -412,87 +470,97 @@ void Typing::DeleteChar(std::string& _kana, std::string& _roma, int* _kanaCursor
 		return;
 	}
 
-	// ローマ字再生成
-	_roma = RomaDictionary(_kana);
-	
-	// 再生成したものをもう一度変換
-	_kana = KanaDictionary(_roma);
-
 	int& romaCursor = *_romaCursorPosition;
 	int& kanaCursor = *_kanaCursorPosition;
 	int& drawCursor = *_drawCursorPosition;
 
-	// 入力途中のローマ字が残っている場合
-	if (romaCursor > 0 &&
-		romaCursor == static_cast<int>(_roma.size()))
+	//if (drawCursor <)
 	{
-		_roma.erase(romaCursor - 1, 1);
-		romaCursor--;
 
-		_kana = KanaDictionary(_roma);
-		drawCursor--;
-		return;
 	}
 
-	if (mConvertionUnits.empty() || drawCursor <= 0 || mConvertionUnits.size() <= (static_cast<size_t>(drawCursor) - 1))
-	{
-		return;
-	}
+	//// 入力途中のローマ字が残っている場合
+	//if (romaCursor > 0 &&
+	//	romaCursor == static_cast<int>(_roma.size()))
+	//{
+	//	_roma.erase(romaCursor - 1, 1);
+	//	romaCursor--;
 
-	const auto& unit = mConvertionUnits.at(static_cast<size_t>(drawCursor - 1));
+	//	_kana = KanaDictionary(_roma);
+	//	//drawCursor--;
+	//	return;
+	//}
 
-	kanaCursor = unit.GetKanaEnd();
-	romaCursor = unit.GetRomaEnd();
+	//// ローマ字再生成
+	//_roma = RomaDictionary(_kana);
 
-	if (kanaCursor <= 0 ||
-		kanaCursor > static_cast<int>(_kana.size()))
-	{
-		return;
-	}
+	//// 再生成したものをもう一度変換
+	//_kana = KanaDictionary(_roma);
 
-	// カーソル直前のバイト
-	int deletePosition = kanaCursor - 1;
+	//if (mConvertionUnits.empty() || drawCursor <= 0 || mConvertionUnits.size() <= (static_cast<size_t>(drawCursor) - 1))
+	//{
+	//	return;
+	//}
 
-	unsigned char lastByte =
-		static_cast<unsigned char>(_kana[deletePosition]);
+	//const auto& unit = mConvertionUnits.at(static_cast<size_t>(drawCursor - 1));
 
-	int deleteCount = 1;
+	//kanaCursor = unit.GetKanaEnd();
+	//romaCursor = unit.GetRomaEnd();
 
-	if (deletePosition > 0)
-	{
-		unsigned char previousByte =
-			static_cast<unsigned char>(_kana[static_cast<size_t>(deletePosition) - 1]);
+	//if (kanaCursor <= 0 ||
+	//	kanaCursor > static_cast<int>(_kana.size()))
+	//{
+	//	return;
+	//}
 
-		// 全角文字の区画ならば
-		if ((0x81 <= previousByte && previousByte <= 0x9F) ||
-			(0xE0 <= previousByte && previousByte <= 0xFC))
-		{
-			// その中でかなの区画ならば
-			if ((0x40 <= lastByte && lastByte <= 0xFC) &&
-				lastByte != 0x7F)
-			{
-				deletePosition--;
-				deleteCount = 2;
-			}
-		}
-	}
+	//// カーソル直前のバイト
+	//int deletePosition = kanaCursor - 1;
 
-	// かな削除
-	_kana.erase(deletePosition, deleteCount);
-	kanaCursor -= deleteCount;
+	//unsigned char lastByte =
+	//	static_cast<unsigned char>(_kana[deletePosition]);
 
-	// 削除後のかなに合わせてローマ字も更新する
-	_roma = RomaDictionary(_kana);
+	//int deleteCount = 1;
 
-	// 削除位置のかなをローマ字変換
-	// ローマ字側のカーソル位置を求める
-	std::string prefix = _kana.substr(0, kanaCursor);
-	romaCursor = static_cast<int>(RomaDictionary(prefix).size());
+	//if (deletePosition > 0)
+	//{
+	//	unsigned char previousByte =
+	//		static_cast<unsigned char>(_kana[static_cast<size_t>(deletePosition) - 1]);
 
-	if (drawCursor > 0)
-	{
-		drawCursor--;
-	}
+	//	// 全角文字の区画ならば
+	//	if ((0x81 <= previousByte && previousByte <= 0x9F) ||
+	//		(0xE0 <= previousByte && previousByte <= 0xFC))
+	//	{
+	//		// その中でかなの区画ならば
+	//		if ((0x40 <= lastByte && lastByte <= 0xFC) &&
+	//			lastByte != 0x7F)
+	//		{
+	//			deletePosition--;
+	//			deleteCount = 2;
+	//		}
+	//	}
+	//}
+
+	//// かな削除
+	//_kana.erase(
+	//	static_cast<size_t>(unit.kanaBegin),
+	//	static_cast<size_t>(unit.kanaLength)
+	//);
+
+	//// 削除後のかな側カーソル位置
+	//kanaCursor = deletePosition;
+
+	//// 削除後のかなに合わせてローマ字も更新する
+	//_roma = RomaDictionary(_kana);
+
+	//// 削除位置のかなをローマ字変換
+	//// ローマ字側のカーソル位置を求める
+	//std::string prefix = _kana.substr(0, kanaCursor);
+	//romaCursor = static_cast<int>(RomaDictionary(prefix).size());
+
+	//if (drawCursor > 0)
+	//{
+	//	drawCursor--;
+	//}
 }
 
 void Typing::ShiftLeftCursor(int* _kanaCursorPosition, int* _romaCursorPosition, int* _drawCursorPosition)

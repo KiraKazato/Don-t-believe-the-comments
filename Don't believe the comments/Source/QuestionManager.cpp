@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 #include "DxLib.h"
 #include "Master.h"
 
@@ -104,21 +105,21 @@ void QuestionManager::Load(const std::string& _filePath)
 		// 問題
 		if (getline(ss, cell, ','))
 		{
-			int questionGraphID = -1;
+			inData.questionID = -1;
 			try
 			{
 				// 問題IDを得る
-				questionGraphID = stoi(cell);
+				inData.questionID = stoi(cell);
 			}
 			catch (...)
 			{
-				questionGraphID = -1;
+				inData.questionID = -1;
 
 				inData.questionGraphHandle = -1;
 			}
 
-			if (questionGraphID != -1)
-				inData.questionGraphHandle = Master::mpResourceManager->LoadGraphics("Resource/QuizImage/Quiz" + std::to_string(questionGraphID) + ".png");
+			if (inData.questionID != -1)
+				inData.questionGraphHandle = Master::mpResourceManager->LoadGraphics("Resource/QuizImage/Quiz" + std::to_string(inData.questionID) + ".png");
 		}
 
 		// 答え
@@ -164,6 +165,11 @@ void QuestionManager::Load(const std::string& _filePath)
 	for (auto& question : mQuestions)
 	{
 		question.second = !question.first.empty();
+		if (question.second)
+		{
+			// 難易度ごとに問題IDでソートする
+			std::sort(question.first.begin(), question.first.end(), [](const QuestionData& a, const QuestionData& b) {return a.questionID < b.questionID;});
+		}
 	}
 }
 
@@ -395,12 +401,12 @@ const QuestionData& QuestionManager::GetQuestionData()
 	catch (...)
 	{
 		std::string&& errorStr = "";
-		
+
 		if (mnCurrentDifficulty > mQuestions.size())
 		{
 			errorStr += "DifficultError";
 		}
-		
+
 		if (mnCurrentIndex > mQuestions[mnCurrentDifficulty].first.size())
 		{
 			errorStr += "IndexError";
@@ -412,8 +418,8 @@ const QuestionData& QuestionManager::GetQuestionData()
 			errorStr.c_str()
 		);
 
-		
-		static const QuestionData ErrorData = QuestionData(-1, "NULL_ERROR", INT_MAX, { "これはエラー用コメントです" }, { "これはエラー用コメントです" });
+
+		static const QuestionData ErrorData = QuestionData(-1, -1, "NULL_ERROR", INT_MAX, { "これはエラー用コメントです" }, { "これはエラー用コメントです" });
 		return  ErrorData;
 	}
 }

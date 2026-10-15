@@ -55,6 +55,7 @@ private:
 private:
 	std::string mInputString{};		// ローマ字入力
 	std::string mOutputString{};	// かな文字入力
+	std::string mDrawString{};		// 描画文字列
 
 	int mnKanaCursorPosition = 0;	// （かな文字）カーソル位置
 	int mnRomaCursorPosition = 0;	// （ローマ字）カーソル位置

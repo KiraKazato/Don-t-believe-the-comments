@@ -41,9 +41,9 @@ void TextInputManager::Draw()
 		int width = 0, height = 0;
 		int cursorLineX = 0;
 		GetDrawFormatStringSizeToHandle(&width, &height, NULL, mnFontHandle, "%s", mOutputString.c_str());
-		cursorLineX += (mnKeyInputDrawX - (width / 2)) + GetDrawFormatStringWidthToHandle(mnFontHandle,"あ") * mnDrawCursorPosition; // カーソル位置を計算
+		//cursorLineX += (mnKeyInputDrawX - (width / 2)) + GetDrawFormatStringWidthToHandle(mnFontHandle, "あ") * mnDrawCursorPosition; // カーソル位置を計算
 		DrawFormatStringToHandle(mnKeyInputDrawX - (width / 2), mnKeyInputDrawY, KEYINPUT_STRING_COLOR, mnFontHandle, "%s", mOutputString.c_str());
-		DrawLine(cursorLineX, mnKeyInputDrawY, cursorLineX, mnKeyInputDrawY + height, GetColor(128, 128, 128), 2);
+		//DrawLine(cursorLineX, mnKeyInputDrawY, cursorLineX, mnKeyInputDrawY + height, GetColor(128, 128, 128), 2);
 	}
 }
 
@@ -64,10 +64,11 @@ void TextInputManager::Update()
 
 	if(mnKeyInputState == 0)
 	{
+		// 押したボタン（入力した文字）を得る
 		char inputChar = GetInputChar(TRUE);
 
-		bool isStringMaxLength = (mOutputString.size() < static_cast<size_t>(KETINPUT_STRING_MAX_LENGTH_FULL_CHARACTOR * 2 + 1));
-		if (inputChar != 0 && isStringMaxLength);
+		// 
+		if (inputChar != 0)
 		{
 			ControllInput(inputChar);
 		}
@@ -128,9 +129,17 @@ void TextInputManager::ResetInput()
 
 void TextInputManager::ControllInput(char _input)
 {
+	// 全角文字の数
+	bool isStringMaxLength = (mOutputString.size() <= static_cast<size_t>(KETINPUT_STRING_MAX_LENGTH_FULL_CHARACTOR * 2 + 1));
 	if (_input >= CTRL_CODE_CMP)
 	{
+		if (!isStringMaxLength)
+		{
+			return;
+		}
+		// 入力を加える
 		mInputString += _input;
+		// 入力を変換
 		mOutputString = mTyping.KanaDictionary(mInputString);
 
 		if (!mTyping.GetConvertionUnits().empty())
@@ -140,15 +149,15 @@ void TextInputManager::ControllInput(char _input)
 	{
 		if (_input == CTRL_CODE_LEFT)
 		{
-			mTyping.ShiftLeftCursor(&mnKanaCursorPosition, &mnRomaCursorPosition, &mnDrawCursorPosition);
+			//mTyping.ShiftLeftCursor(&mnKanaCursorPosition, &mnRomaCursorPosition, &mnDrawCursorPosition);
 		}
 		else if (_input == CTRL_CODE_RIGHT)
 		{
-			mTyping.ShiftRightCursor(&mnKanaCursorPosition, &mnRomaCursorPosition, &mnDrawCursorPosition);
+			//mTyping.ShiftRightCursor(&mnKanaCursorPosition, &mnRomaCursorPosition, &mnDrawCursorPosition);
 		}
 		else if (_input == CTRL_CODE_BS)
 		{
-			mTyping.DeleteChar(mOutputString, mInputString, &mnKanaCursorPosition, &mnRomaCursorPosition, &mnDrawCursorPosition);
+			//mTyping.DeleteChar(mOutputString, mInputString, &mnKanaCursorPosition, &mnRomaCursorPosition, &mnDrawCursorPosition);
 		}
 
 	}

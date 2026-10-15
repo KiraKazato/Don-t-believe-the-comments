@@ -41,7 +41,7 @@ public:
 
 	// アルファベット -> かな の変換
 	// @return かな に変換した文字列
-	const std::string KanaDictionary(const std::string& _roma);
+	const std::string KanaDictionary(std::string& _roma);
 
 	// かな -> アルファベット の変換
 	// @return アルファベット に変換した文字列
@@ -58,6 +58,12 @@ public:
 	// @return 「っ」へ変換すべきか
 	bool ConstantConvertion(char _charactor, char _nextCharactor, std::string& _str, std::vector<char>& _roma, int& _index, int& _romaBegin, int& _kanaBegin, int& _kanaCharBegin);
 
+	// 半角アルファベットを全角文字に変換
+	std::string AlphabetHalfToFull(char _charactor);
+
+	// 全角アルファベットを半角文字に変換
+	char AlphabetFullToHalf(const std::string& _fullCharactor);
+
 	// @return あいうえお（母音）かどうか
 	bool IsRomaVowel(char _charactor);
 
@@ -73,14 +79,19 @@ public:
 	// 文字削除
 	void DeleteChar(std::string& _kana, std::string& _roma, int* _kanaCursorPosition, int* _romaCursorPosition, int* _drawCursorPosition);
 
+	// カーソル位置左移動
 	void ShiftLeftCursor(int* _kanaCursorPosition, int* _romaCursorPosition, int* _drawCursorPosition);
 
+	// カーソル位置右移動
 	void ShiftRightCursor(int* _kanaCursorPosition, int* _romaCursorPosition, int* _drawCursorPosition);
 
+	// 変換した文字の単位を登録
 	void AddConvertionUnits(int _romaBegin, int _romaLength, const std::string& _kana, int& _kanaBegin, int& _kanaCharBegin);
 
+	// 変換文章の情報
 	const std::vector<ConversionUnit>& GetConvertionUnits() { return mConvertionUnits; }
 
 private:
+	// 変換した文字列の確認
 	std::vector<ConversionUnit> mConvertionUnits;
 };

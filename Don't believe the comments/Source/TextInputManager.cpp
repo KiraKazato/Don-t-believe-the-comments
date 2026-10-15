@@ -36,6 +36,11 @@ int ketBuffer[256] = { 0 };
 
 void TextInputManager::Draw()
 {
+	if (mbIsFinal)
+	{
+		return;
+	}
+
 	if (mnKeyInputState == 0)
 	{
 		int width = 0, height = 0;
@@ -49,13 +54,17 @@ void TextInputManager::Draw()
 
 void TextInputManager::Update()
 {
-	GetHitKeyStateAllEx(ketBuffer);
+	if (mbIsFinal)
+	{
+		return;
+	}
+
 	// 入力出来たか確認
 	//mnKeyInputState = CheckKeyInput(mnInputHandle);
-	if (ketBuffer[KEY_INPUT_RETURN] == 1)
+	if (CheckHitKey(KEY_INPUT_RETURN))
 	{
 		mnKeyInputState = 1;
-		if (mInputString == "/p")
+		if (mInputString == "/p" || mInputString == "/ｐ" || mInputString == "・p" || mInputString == "・ｐ")
 		{
 			mbIsPause = true;
 			mnKeyInputState = 2;
@@ -88,7 +97,8 @@ void TextInputManager::Update()
 
 void TextInputManager::Finalize()
 {
-	
+	// ゲームが終了したことを伝える
+	mbIsFinal = true;
 }
 
 void TextInputManager::SetKeyInputDrawPosition(int _x, int _y)

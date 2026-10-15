@@ -152,7 +152,7 @@ const std::unordered_map<std::string_view, std::string_view> Typing::ROMA_DICTIO
 	{"ー", "-"},{"　"," "},{"、",","},{"。","."},{"？","?"},{"！","!"}
 };
 
-const std::string Typing::KanaDictionary(std::string& _roma)
+const std::string Typing::KanaDictionary(const std::string& _roma)
 {
 	// 変換情報があるのなら余計な情報になるため一度クリア
 	if (!mConvertionUnits.empty())
@@ -204,25 +204,21 @@ const std::string Typing::KanaDictionary(std::string& _roma)
 	{
 		std::string pending(tmp.begin(), tmp.end());
 
-		ret += pending;
-
-		//for (int i = 0; i < pending.size(); i++)
-		//{
-		//	char alphabet = pending[i];
-		//	AddConvertionUnits(
-		//		romaBegin + i,
-		//		1,
-		//		std::string(1, alphabet),
-		//		kanaBegin,
-		//		kanaCharBegin
-		//	);
-		//
-		//	// 変換できない文字は半角アルファベットを全角に変換して返す
-		//	ret += AlphabetHalfToFull(alphabet);
-		//}
+		for (int i = 0; i < pending.size(); i++)
+		{
+			char alphabet = pending[i];
+			AddConvertionUnits(
+				romaBegin + i,
+				1,
+				std::string(1, alphabet),
+				kanaBegin,
+				kanaCharBegin
+			);
+		
+			// 変換できない文字は半角アルファベットを全角に変換して返す
+			ret += AlphabetHalfToFull(alphabet);
+		}
 	}
-
-	_roma = RomaDictionary(_roma);
 
 	// 変換できた場合は、変換後の文字列を返す
 	if (!ret.empty())
@@ -390,13 +386,11 @@ std::string Typing::AlphabetHalfToFull(char _charactor)
 	}
 
 	// 半角アルファベットを全角文字に変換
-	// 全角文字のコードポイントは、半角文字のコードポイントに 0xFEE0 を足したものになる
-
 	// 変換後のコードポイントを求める
-	int codePoint = static_cast<int>(_charactor) + 0xFEE0;
+	int codePoint = static_cast<int>(_charactor) + 0x8220;
 
-	unsigned char highByte = (codePoint >> 8) & 0xFF;		// 上位ビットを取得
-	unsigned char lowByte = codePoint & 0xFF;	// 下位ビットを取得
+	unsigned char highByte = (codePoint >> 8) & 0xFF;	// 上位ビットを取得
+	unsigned char lowByte = codePoint & 0xFF;			// 下位ビットを取得
 
 	// 変換後の文字列を返す
 	return std::string({ static_cast<char>(highByte), static_cast<char>(lowByte) });
@@ -440,13 +434,14 @@ bool Typing::IsRomaConsonant(char _charactor, char _nextCharactor)
 {
 	// 今の文字と次の文字のどちらかが母音なら っ は出さない
 	// どちらも n -> ん のになるので っ は出さない
+	// スペースの時も変換しない
 	if (IsRomaVowel(_charactor) || IsRomaVowel(_nextCharactor)
-		|| (_charactor == _nextCharactor && _charactor == 'n'))
+		|| (_charactor == _nextCharactor && (_charactor == 'n' || _charactor == ' ')))
 	{
 		return false;
 	}
 
-	// 同じ文字ならばそれ っ に変換
+	// 同じ文字ならば っ に変換
 	return _charactor == _nextCharactor;
 }
 

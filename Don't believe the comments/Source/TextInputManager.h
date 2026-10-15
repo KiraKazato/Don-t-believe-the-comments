@@ -25,10 +25,9 @@ public:
 	// ポーズしたかどうか
 	void SetIsPause(bool _flag);
 
-	// @return
-	// 0:入力完了していない
-	// 1:入力完了
-	// 2:入力キャンセル
+	// @return 0:入力完了していない
+	// @return 1:入力完了
+	// @return 2:入力キャンセル（/p）と入力した時
 	int CheckInput() const;
 
 	const std::string& GetInputString() const;
@@ -51,6 +50,8 @@ private:
 	int mnKeyInputDrawY = 0;	// 入力表示座標Y
 
 	bool mbIsPause = false;		// ポーズしているかどうか
+
+	bool mbIsFinal = false;		// ゲームが終わったか
 
 private:
 	std::string mInputString{};		// ローマ字入力

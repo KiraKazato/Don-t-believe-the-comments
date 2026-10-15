@@ -41,7 +41,7 @@ public:
 
 	// アルファベット -> かな の変換
 	// @return かな に変換した文字列
-	const std::string KanaDictionary(std::string& _roma);
+	const std::string KanaDictionary(const std::string& _roma);
 
 	// かな -> アルファベット の変換
 	// @return アルファベット に変換した文字列

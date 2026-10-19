@@ -17,7 +17,7 @@ void MouseManager::Update()
 
 void MouseManager::Draw()
 {
-	DrawFormatString(0, 0, GetColor(0,0,0), "%d : %d", mMousePoint.mouseX, mMousePoint.mouseY);
+	//DrawFormatString(0, 0, GetColor(0,0,0), "%d : %d", mMousePoint.mouseX, mMousePoint.mouseY);
 }
 
 void MouseManager::GetMousePosition(int* _x, int* _y)

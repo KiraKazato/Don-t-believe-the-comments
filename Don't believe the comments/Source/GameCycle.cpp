@@ -1,6 +1,5 @@
 #include "GameCycle.h"
 
-
 GameCycle::GameCycle()
 {
 }
@@ -11,39 +10,38 @@ GameCycle::~GameCycle()
 void GameCycle::Initialize()
 {
 
-	inputStringHandle = Master::mpFontManager->GetFontHandle(Master::mpFontManager->FONT_NONE, 48);
-	mTextInputManager.Initialize(inputStringHandle);
+	mnInputStringHandle = Master::mpFontManager->GetFontHandle(Master::mpFontManager->FONT_NONE, 48);
+	mTextInputManager.Initialize(mnInputStringHandle);
 	mTextInputManager.SetKeyInputDrawPosition(Master::gridWidth * 45, Master::gridHeight * 82);
 }
 void GameCycle::Update()
 {
-	if (!QuestionSpawned)
+	Master::mpCommenterManager->Update();
+	if (!mbQuestionSpawned)
 	{
-		Master::mpQuestionManager->SpawnQuestion(stageNumber, questionNumber);
-		nowQuestionImageHandle = Master::mpQuestionManager->GetQuestionData().questionGraphHandle;
-		QuestionSpawned = true;
+		Master::mpQuestionManager->SpawnQuestion(stageNumber, mnQuestionNumber);
+		mnNowQuestionImageHandle = Master::mpQuestionManager->GetQuestionData().questionGraphHandle;
+		mbQuestionSpawned = true;
 	}
-	if (!isQuestionNumberDraw || !isQuestionDraw)
+	if (!mbQuestionNumberDrawn || !mbQuestionDrawn)
 	{
 		return;
 	}
-
 	InputAnswer();
 
-	if (isInputAnswer && AnswerJudge())
+	if (mbInputAnswered && AnswerJudge())
 	{
-		QuestionSpawned = false;
-		isQuestionNumberDraw = false;
-		isQuestionDraw = false;
-		questionNumber++;
-		if (questionNumber > maxQuestionNumber)
+		mbQuestionSpawned = false;
+		mbQuestionNumberDrawn = false;
+		mbQuestionDrawn = false;
+		mnQuestionNumber++;
+		if (mnQuestionNumber > mnMaxQuestionNumber)
 		{
-			clsDx();
-			printfDx("\n　デバッグ：最後まで行きました GameCycle.cpp 42行辺り");
 			GameEnd();
 		}
 	}
 }
+
 
 void GameCycle::Draw()
 {
@@ -53,7 +51,7 @@ void GameCycle::Draw()
 
 	QuestionDraw();
 
-	if (isQuestionNumberDraw &&isQuestionDraw)
+	if (mbQuestionNumberDrawn &&mbQuestionDrawn)
 	{
 		mTextInputManager.Draw();
 	}
@@ -70,17 +68,21 @@ void GameCycle::SetStage(StageNumber _stageNumber)
 }
 void GameCycle::CommentDraw()
 {
+	SetDrawArea(Master::gridWidth * 89, Master::gridHeight * 7, Master::gridWidth * 117, Master::gridHeight * 109);
+	//DrawBox(Master::gridWidth * 80, Master::gridHeight * 5, Master::gridWidth * 120, Master::gridHeight * 115, GetColor(0, 0, 0), TRUE);
+	Master::mpCommenterManager->Draw();
+	SetDrawAreaFull();
 }
 
 void GameCycle::QuestionNumberDraw()
 {
-	isQuestionNumberDraw = true;
+	mbQuestionNumberDrawn = true;
 }
 
 void GameCycle::QuestionDraw()
 {
-	DrawExtendGraph(QuestionImageX1, QuestionImageY1, QuestionImageX2, QuestionImageY2, nowQuestionImageHandle, TRUE);
-	isQuestionDraw = true;
+	DrawExtendGraph(mnQuestionImageX1, mnQuestionImageY1, mnQuestionImageX2, mnQuestionImageY2, mnNowQuestionImageHandle, TRUE);
+	mbQuestionDrawn = true;
 }
 
 void GameCycle::InputAnswer()
@@ -97,7 +99,7 @@ void GameCycle::InputAnswer()
 		//文字入力
 		answer = mTextInputManager.GetInputString();
 		
-		isInputAnswer = true;
+		mbInputAnswered = true;
 	}
 	else if (nowState == 2)
 	{
@@ -107,7 +109,7 @@ void GameCycle::InputAnswer()
 
 bool GameCycle::AnswerJudge()
 {
-	isInputAnswer = false;
+	mbInputAnswered = false;
 	
 	if (answer == "")
 	{
@@ -120,7 +122,7 @@ bool GameCycle::AnswerJudge()
 	clsDx();
 	if (data.answer == answer)
 	{
-		printfDx("\n　デバッグ：%d/%d 問目正解 GameCycle.cpp 122行辺り", questionNumber, maxQuestionNumber);
+		printfDx("\n　デバッグ：%d/%d 問目正解 GameCycle.cpp 122行辺り", mnQuestionNumber, mnMaxQuestionNumber);
 		mTextInputManager.ResetInput();
 		answer = "";
 		return true;

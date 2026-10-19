@@ -28,27 +28,27 @@ private:
 	void GameEnd();
 private:
 	//入力する文字のフォントハンドルを入れる
-	int inputStringHandle = -1;
+	int mnInputStringHandle = -1;
 private:
 	//今の問題画像を入れる
-	int nowQuestionImageHandle = -1;
+	int mnNowQuestionImageHandle = -1;
 	//問題の画像の表示位置
-	int QuestionImageX1 = Master::gridWidth * 20;
-	int QuestionImageX2 = Master::gridWidth * 70;
-	int QuestionImageY1 = Master::gridHeight * 22;
-	int QuestionImageY2 = Master::gridHeight * 63;
+	int mnQuestionImageX1 = Master::gridWidth * 20;
+	int mnQuestionImageX2 = Master::gridWidth * 70;
+	int mnQuestionImageY1 = Master::gridHeight * 22;
+	int mnQuestionImageY2 = Master::gridHeight * 63;
 private:
 	//問題番号
 	//最初は一問目なので1に設定
-	int questionNumber = 1;
+	int mnQuestionNumber = 1;
 	//最大問題数
-	int maxQuestionNumber = 10;
+	int mnMaxQuestionNumber = 10;
 	
 private:
-	bool isQuestionNumberDraw = false;
-	bool isQuestionDraw = false;
-	bool isInputAnswer = false;
-	bool QuestionSpawned = false;
+	bool mbQuestionNumberDrawn = false;
+	bool mbQuestionDrawn = false;
+	bool mbInputAnswered = false;
+	bool mbQuestionSpawned = false;
 private:
 	std::string answer{};
 private:

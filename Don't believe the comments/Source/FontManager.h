@@ -18,7 +18,7 @@ public:
 	//デストラクタ
 	~FontManager();
 	void Initialize();//イニシャライズ
-	void LoadInputFont(Font tag, const char* _fontName,LPCSTR _fileName );//外部ファイルからフォント読み込み
+	void LoadInputFont(Font tag, const char* _fontName,const LPCSTR&_fileName );//外部ファイルからフォント読み込み
 	void LoadSystemFont(Font tag, const char* _fontName);//Windowsにもともとあるフォント読み込み
 	int GetFontHandle(Font tag,int _size);//指定フォントのハンドル取得
 	void Finalize();//ファイナライズ

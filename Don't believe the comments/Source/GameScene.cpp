@@ -15,7 +15,7 @@ GameScene::~GameScene()
 void GameScene::Initialize()
 {
 	backGroundHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/BackGround/Stage1.png");
-	questionScreenHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/WhiteBoard.png");
+	questionScreenHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/BackBoard.png");
 	inputFieldHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/InputPlace.png");
 	commentFieldHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/CommentField.png");
 	Master::mpUIManager->AddUI(backGroundHandle, Master::gridWidth * 4, Master::gridHeight * 6, Master::gridWidth * 86, Master::gridHeight * 95);
@@ -35,12 +35,10 @@ void GameScene::Update()
 
 void GameScene::Draw()
 {
-	DrawBox(0, 0, Master::Width, Master::Height, GetColor(255, 255, 255), TRUE);
+	DrawBox(0, 0, Master::Width, Master::Height, GetColor(229, 242, 248), TRUE);
 	
 	Master::mpUIManager->DrawUI();
-	SetDrawArea(Master::gridWidth * 89, Master::gridHeight * 7, Master::gridWidth * 117, Master::gridHeight * 109);
-	//DrawBox(Master::gridWidth * 80, Master::gridHeight * 5, Master::gridWidth * 120, Master::gridHeight * 115, GetColor(0, 0, 0), TRUE);
-	SetDrawAreaFull();
+	mGameCycle.Draw();
 	Scene::Draw();
 }
 

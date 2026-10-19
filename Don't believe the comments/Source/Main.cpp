@@ -116,6 +116,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	delete Master::mpQuestionManager;
 	delete Master::mpUIManager;
 	delete Master::mpMouseManager;
+	Master::mpCommenterManager->Finalize();
 	delete Master::mpCommenterManager;
 
 

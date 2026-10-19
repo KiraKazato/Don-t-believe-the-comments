@@ -47,6 +47,10 @@ public:
 	// @return アルファベット に変換した文字列
 	const std::string RomaDictionary(const std::string& _kana);
 
+	// 派生形の入力が多いため、一意にする
+	// 拗音は分割し、「ん」は「nn」にし、「っ」はxtuに変換
+	const std::string KanaNormalize(std::string& _roma);
+
 	// 基本的な文字変換
 	bool CharactorConvertion(char _charactor,std::string& _str, std::vector<char>& _roma, int& _kanaBegin, int& _romaBegin, int& _kanaCharBegin);
 
@@ -77,21 +81,32 @@ public:
 	bool IsN(char _charactor, char _nextCharactor);
 
 	// 文字削除
-	void DeleteChar(std::string& _kana, std::string& _roma, int* _kanaCursorPosition, int* _romaCursorPosition, int* _drawCursorPosition);
+	void DeleteChar();
 
 	// カーソル位置左移動
-	void ShiftLeftCursor(int* _kanaCursorPosition, int* _romaCursorPosition, int* _drawCursorPosition);
+	void ShiftLeftCursor();
 
 	// カーソル位置右移動
-	void ShiftRightCursor(int* _kanaCursorPosition, int* _romaCursorPosition, int* _drawCursorPosition);
+	void ShiftRightCursor();
 
-	// 変換した文字の単位を登録
-	void AddConvertionUnits(int _romaBegin, int _romaLength, const std::string& _kana, int& _kanaBegin, int& _kanaCharBegin);
+	// 変換単位変換した
+	const std::vector<ConversionUnit>& GetConvertionUnits();
 
-	// 変換文章の情報
-	const std::vector<ConversionUnit>& GetConvertionUnits() { return mConvertionUnits; }
+	const std::string& GetRoma() const { return mRoma; };
+	const std::string& GetKana() const { return mKana; };
 
-private:
 	// 変換した文字列の確認
+private:
 	std::vector<ConversionUnit> mConvertionUnits;
+
+	// 文字列の情報カウント
+private:
+	int mnCurrentRomaByte = 0;
+	int mnCurrentKanaByte = 0;
+	int mnCurrentDraw = 0;
+
+	// 入力文字
+private:
+	std::string mRoma{};
+	std::string mKana{};
 };

@@ -207,18 +207,13 @@ const std::string Typing::KanaDictionary(const std::string& _roma)
 		for (int i = 0; i < pending.size(); i++)
 		{
 			char alphabet = pending[i];
-			AddConvertionUnits(
-				romaBegin + i,
-				1,
-				std::string(1, alphabet),
-				kanaBegin,
-				kanaCharBegin
-			);
-		
+
 			// 変換できない文字は半角アルファベットを全角に変換して返す
 			ret += AlphabetHalfToFull(alphabet);
 		}
 	}
+	mRoma = RomaDictionary(ret);
+	mKana = KanaDictionary(_roma);
 
 	// 変換できた場合は、変換後の文字列を返す
 	if (!ret.empty())
@@ -267,6 +262,11 @@ const std::string Typing::RomaDictionary(const std::string& _kana)
 	return ret;
 }
 
+const std::string Typing::KanaNormalize(std::string& _roma)
+{
+	return std::string();
+}
+
 bool Typing::CharactorConvertion(char _charactor, std::string& _str, std::vector<char>& _roma, int& _kanaBegin, int& _romaBegin, int& _kanaCharBegin)
 {
 	// 母音じゃない -> 変換ができていない
@@ -289,15 +289,6 @@ bool Typing::CharactorConvertion(char _charactor, std::string& _str, std::vector
 		_roma.pop_back();	// 末尾のヌル文字を除外
 		int romaLength = static_cast<int>(_roma.size());		// 変換するローマ字の長さ（バイト）
 		int kanaLength = static_cast<int>(itr->second.size());	// 変換後のかなの長さ（バイト）
-
-		// 変換情報を入れる
-		AddConvertionUnits(
-			_romaBegin,
-			romaLength,
-			itr->second.data(),
-			_kanaBegin,
-			_kanaCharBegin
-		);
 
 		// 変換文字を入れる
 		_str += itr->second;
@@ -328,14 +319,6 @@ bool Typing::NConvertion(char _charactor, char _nextCharactor, std::string& _str
 
 	int romaLength = (_charactor == 'n') ? 2 : 1;
 
-	AddConvertionUnits(
-		_index,
-		romaLength,          // ローマ字の長さ
-		kana,
-		_kanaBegin,
-		_kanaCharBegin
-	);
-
 	_str += kana;
 
 	// AddConvertionUnits が kanaBegin を更新するなら、
@@ -360,14 +343,6 @@ bool Typing::ConstantConvertion(char _charactor, char _nextCharactor, std::strin
 	}
 
 	std::string kana = "っ";
-
-	AddConvertionUnits(
-		_index,
-		1,          // ローマ字の長さ
-		kana,
-		_kanaBegin,
-		_kanaCharBegin
-	);
 
 	_str += kana;
 	_romaBegin = _index + 1;
@@ -453,186 +428,15 @@ bool Typing::IsN(char _charactor, char _nextCharactor)
 		return false;
 	}
 
-	
 	// 次の文字が母音なら ん ではない
 	return _nextCharactor == 'n' || !IsRomaVowel(_nextCharactor);
 }
 
-void Typing::DeleteChar(std::string& _kana, std::string& _roma, int* _kanaCursorPosition, int* _romaCursorPosition, int* _drawCursorPosition)
+void Typing::ShiftRightCursor()
 {
-	if (_kana.empty() || _kanaCursorPosition == nullptr || _romaCursorPosition == nullptr || _drawCursorPosition == nullptr)
-	{
-		return;
-	}
-
-	int& romaCursor = *_romaCursorPosition;
-	int& kanaCursor = *_kanaCursorPosition;
-	int& drawCursor = *_drawCursorPosition;
-
-	//if (drawCursor <)
-	{
-
-	}
-
-	//// 入力途中のローマ字が残っている場合
-	//if (romaCursor > 0 &&
-	//	romaCursor == static_cast<int>(_roma.size()))
-	//{
-	//	_roma.erase(romaCursor - 1, 1);
-	//	romaCursor--;
-
-	//	_kana = KanaDictionary(_roma);
-	//	//drawCursor--;
-	//	return;
-	//}
-
-	//// ローマ字再生成
-	//_roma = RomaDictionary(_kana);
-
-	//// 再生成したものをもう一度変換
-	//_kana = KanaDictionary(_roma);
-
-	//if (mConvertionUnits.empty() || drawCursor <= 0 || mConvertionUnits.size() <= (static_cast<size_t>(drawCursor) - 1))
-	//{
-	//	return;
-	//}
-
-	//const auto& unit = mConvertionUnits.at(static_cast<size_t>(drawCursor - 1));
-
-	//kanaCursor = unit.GetKanaEnd();
-	//romaCursor = unit.GetRomaEnd();
-
-	//if (kanaCursor <= 0 ||
-	//	kanaCursor > static_cast<int>(_kana.size()))
-	//{
-	//	return;
-	//}
-
-	//// カーソル直前のバイト
-	//int deletePosition = kanaCursor - 1;
-
-	//unsigned char lastByte =
-	//	static_cast<unsigned char>(_kana[deletePosition]);
-
-	//int deleteCount = 1;
-
-	//if (deletePosition > 0)
-	//{
-	//	unsigned char previousByte =
-	//		static_cast<unsigned char>(_kana[static_cast<size_t>(deletePosition) - 1]);
-
-	//	// 全角文字の区画ならば
-	//	if ((0x81 <= previousByte && previousByte <= 0x9F) ||
-	//		(0xE0 <= previousByte && previousByte <= 0xFC))
-	//	{
-	//		// その中でかなの区画ならば
-	//		if ((0x40 <= lastByte && lastByte <= 0xFC) &&
-	//			lastByte != 0x7F)
-	//		{
-	//			deletePosition--;
-	//			deleteCount = 2;
-	//		}
-	//	}
-	//}
-
-	//// かな削除
-	//_kana.erase(
-	//	static_cast<size_t>(unit.kanaBegin),
-	//	static_cast<size_t>(unit.kanaLength)
-	//);
-
-	//// 削除後のかな側カーソル位置
-	//kanaCursor = deletePosition;
-
-	//// 削除後のかなに合わせてローマ字も更新する
-	//_roma = RomaDictionary(_kana);
-
-	//// 削除位置のかなをローマ字変換
-	//// ローマ字側のカーソル位置を求める
-	//std::string prefix = _kana.substr(0, kanaCursor);
-	//romaCursor = static_cast<int>(RomaDictionary(prefix).size());
-
-	//if (drawCursor > 0)
-	//{
-	//	drawCursor--;
-	//}
 }
 
-void Typing::ShiftLeftCursor(int* _kanaCursorPosition, int* _romaCursorPosition, int* _drawCursorPosition)
+const std::vector<ConversionUnit>& Typing::GetConvertionUnits()
 {
-	if (_kanaCursorPosition == nullptr || _romaCursorPosition == nullptr || _drawCursorPosition == nullptr)
-	{
-		return;
-	}
-
-	int& kanaCursor = *_kanaCursorPosition;
-	int& romaCursor = *_romaCursorPosition;
-	int& drawCursor = *_drawCursorPosition;
-
-	if (mConvertionUnits.empty() || drawCursor <= 0)
-	{
-		return;
-	}
-
-	const auto& unit = mConvertionUnits.at(static_cast<size_t>(drawCursor) - 1);
-	
-	romaCursor = unit.romaBegin;
-	kanaCursor = unit.kanaBegin;
-
-	drawCursor--;
-}
-
-void Typing::ShiftRightCursor(int* _kanaCursorPosition, int* _romaCursorPosition, int* _drawCursorPosition)
-{
-	if (_kanaCursorPosition == nullptr || _romaCursorPosition == nullptr || _drawCursorPosition == nullptr)
-	{
-		return;
-	}
-
-	int& kanaCursor = *_kanaCursorPosition;
-	int& romaCursor = *_romaCursorPosition;
-	int& drawCursor = *_drawCursorPosition;
-
-	if (mConvertionUnits.empty() || drawCursor < 0 || mConvertionUnits.size() <= drawCursor)
-	{
-		return;
-	}
-
-	const auto& unit = mConvertionUnits.at(static_cast<size_t>(drawCursor));
-
-	romaCursor = unit.romaBegin;
-	kanaCursor = unit.kanaBegin;
-
-	drawCursor++;
-}
-
-void Typing::AddConvertionUnits(int _romaBegin, int _romaLength, const std::string& _kana, int& _kanaBegin, int& _kanaCharBegin)
-{
-	for (size_t i = 0; i < _kana.size();)
-	{
-		// SJISの全角文字は通常2バイト
-		int charLength = 1;
-
-		unsigned char c = static_cast<unsigned char>(_kana[i]);
-
-		// 全角文字の区画ならば
-		if (0x81 <= c && c <= 0x9F
-			|| 0xE0 <= c && c <= 0xFC)
-		{
-			charLength = 2;
-		}
-
-		// 表示文字1文字分を登録
-		mConvertionUnits.emplace_back(
-			_romaLength,
-			_romaBegin,
-			charLength,
-			_kanaBegin,
-			_kanaCharBegin
-		);
-
-		_kanaBegin += charLength;
-		_kanaCharBegin++;
-		i += charLength;
-	}
+	return mConvertionUnits;
 }

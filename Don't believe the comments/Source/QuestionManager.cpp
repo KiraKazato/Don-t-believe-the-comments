@@ -80,7 +80,7 @@ void QuestionManager::Load(const std::string& _filePath)
 
 	if (!ifs)
 	{
-		printfDx("クイズが読み込めませんでした");
+		//printfDx("クイズが読み込めませんでした");
 		return;
 	}
 
@@ -371,34 +371,7 @@ void QuestionManager::SetQuestion(int _index, int _difficulty)
 const QuestionData& QuestionManager::GetQuestionData()
 {
 	// mnCurrentIndexがエラー部分を参照したらエラーデータを返す
-	try
-	{
-		return mQuestions.at(mnCurrentDifficulty).first.at(mnCurrentIndex);
-	}
-	catch (...)
-	{
-		std::string&& errorStr = "";
-		
-		if (mnCurrentDifficulty > mQuestions.size())
-		{
-			errorStr += "DifficultError";
-		}
-		
-		if (mnCurrentIndex > mQuestions[mnCurrentDifficulty].first.size())
-		{
-			errorStr += "IndexError";
-		}
-
-		printfDx("Difficult:%d/%d | Index:%d/%d | Message:%s\n",
-			mnCurrentDifficulty, mQuestions.size() - 1,
-			mnCurrentIndex, mQuestions[mnCurrentDifficulty].first.size() - 1,
-			errorStr.c_str()
-		);
-
-		
-		static const QuestionData ErrorData = QuestionData(-1, "NULL_ERROR", INT_MAX, { "これはエラー用コメントです" }, { "これはエラー用コメントです" });
-		return  ErrorData;
-	}
+	return mQuestions.at(mnCurrentDifficulty).first.at(mnCurrentIndex);
 }
 
 void QuestionManager::SetRandomNumber()

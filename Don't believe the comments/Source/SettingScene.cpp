@@ -127,8 +127,42 @@ void SettingScene::Update()
 		//設定した音量を反映させる
 		Master::mpSoundManager->ChangeBGMVolume(int(volume));
 
+		nowVolume = Master::mpSoundManager->GetBGMVolume();
+
 		//ゲージと同期させるためここで更新
 		volumeRatio = (volume / 100.0f);
+	}
+
+	bool isVolumeChanged = false; 
+
+	if (CheckHitKey(KEY_INPUT_RIGHT))
+	{
+		nowVolume++; 
+		if (nowVolume > 100)
+		{
+			nowVolume = 100; 
+		}
+		isVolumeChanged = true; 
+	}
+
+	
+	if (CheckHitKey(KEY_INPUT_LEFT))
+	{
+		nowVolume--;
+		if (nowVolume < 0)
+		{
+			nowVolume = 0;
+		}
+		isVolumeChanged = true; 
+	}
+
+	if (isVolumeChanged == true)
+	{
+		Master::mpSoundManager->ChangeBGMVolume(nowVolume);
+
+		volumeRatio = (nowVolume / 100.0f);
+
+		dialX = barLeftX + (overallLength * volumeRatio);
 	}
 
 	//バックスペースキーでタイトルに戻る
@@ -180,6 +214,28 @@ void SettingScene::Draw()
 		volumeDial,                 // 描きたい画像のハンドル
 		TRUE                        // 背景を透過するかどうか
 	);
+
+	int color = GetColor(0, 0, 0);
+	
+	int size = GetFontSize();
+
+	SetFontSize(32);
+
+	//位置がおかしかったので調整
+	if (nowVolume >= 10 && nowVolume <= 99)
+	{
+		DrawFormatString((int)dialX - 8, (int)dialY - 50, color, "%d", nowVolume);
+	}
+	if (nowVolume <= 9)
+	{
+		DrawFormatString((int)dialX+2, (int)dialY - 50, color, "%d", nowVolume);
+	}
+	if (nowVolume == 100)
+	{
+		DrawFormatString((int)dialX - 15, (int)dialY - 50, color, "%d", nowVolume);
+
+	}
+	SetFontSize(size);
 	Scene::Draw();
 }
 

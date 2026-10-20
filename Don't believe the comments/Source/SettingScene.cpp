@@ -224,18 +224,25 @@ void SettingScene::Draw()
 	//ˆÊ’u‚ª‚¨‚©‚µ‚©‚Á‚½‚Ì‚Å’²®
 	if (nowVolume >= 10 && nowVolume <= 99)
 	{
-		DrawFormatString((int)dialX - 8, (int)dialY - 50, color, "%d", nowVolume);
+		DrawFormatString((int)dialX - 8, (int)dialY + 60, color, "%d", nowVolume);
 	}
 	if (nowVolume <= 9)
 	{
-		DrawFormatString((int)dialX+2, (int)dialY - 50, color, "%d", nowVolume);
+		DrawFormatString((int)dialX+2, (int)dialY + 60, color, "%d", nowVolume);
 	}
 	if (nowVolume == 100)
 	{
-		DrawFormatString((int)dialX - 15, (int)dialY - 50, color, "%d", nowVolume);
+		DrawFormatString((int)dialX - 15, (int)dialY + 60, color, "%d", nowVolume);
 
 	}
 	SetFontSize(size);
+
+	SetFontSize(45);
+
+	DrawString(Master::gridHeight *84, Master::gridWidth * 49, "  ‰¹  —Ê  Ý  ’è  ", color);
+
+	SetFontSize(size);
+
 	Scene::Draw();
 }
 

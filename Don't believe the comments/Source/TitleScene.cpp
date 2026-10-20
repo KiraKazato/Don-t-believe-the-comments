@@ -54,7 +54,7 @@ void TitleScene::Update()
 		Master::mpUIManager->ChangeSize(settingBottonHandle, 1.1f);
 		if (Master::mpMouseManager->IsLeftClick())
 		{
-			Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_GAME);
+			Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_SETTING);
 		}
 	}
 	else

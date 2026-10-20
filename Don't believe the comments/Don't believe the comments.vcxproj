@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\MouseManager.cpp" />
+    <ClCompile Include="Source\SettingScene.cpp" />
     <ClCompile Include="Source\TextInputManager.cpp" />
     <ClCompile Include="Source\QuestionManager.cpp" />
     <ClCompile Include="Source\EffectManager.cpp" />
@@ -164,6 +165,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\MouseManager.h" />
+    <ClInclude Include="Source\SettingScene.h" />
     <ClInclude Include="Source\TextInputManager.h" />
     <ClInclude Include="Source\QuestionManager.h" />
     <ClInclude Include="Source\EffekseerEffect.h" />

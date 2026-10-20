@@ -18,6 +18,8 @@ SoundManager::~SoundManager()
 
 void SoundManager::Initialize()
 {
+	LoadBGM(SOUND_BGM::BGM_SETTING, "Resource/SettingScene/audiostock_1570406.mp3");
+
 
 }
 

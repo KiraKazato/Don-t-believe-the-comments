@@ -32,8 +32,6 @@ void TextInputManager::Initialize(int _fontHandle)
 	//SetActiveKeyInput(mnInputHandle);
 }
 
-int ketBuffer[256] = { 0 };
-
 void TextInputManager::Draw()
 {
 	if (mbIsFinal)
@@ -43,12 +41,16 @@ void TextInputManager::Draw()
 
 	if (mnKeyInputState == 0)
 	{
+		// サイズ計測
 		int width = 0, height = 0;
 		int cursorLineX = 0;
 		GetDrawFormatStringSizeToHandle(&width, &height, NULL, mnFontHandle, "%s", mOutputString.c_str());
-		//cursorLineX += (mnKeyInputDrawX - (width / 2)) + GetDrawFormatStringWidthToHandle(mnFontHandle, "あ") * mnDrawCursorPosition; // カーソル位置を計算
-		DrawFormatStringToHandle(mnKeyInputDrawX - (width / 2), mnKeyInputDrawY, KEYINPUT_STRING_COLOR, mnFontHandle, "%s", mOutputString.c_str());
-		//DrawLine(cursorLineX, mnKeyInputDrawY, cursorLineX, mnKeyInputDrawY + height, GetColor(128, 128, 128), 2);
+		int centerX = (mnKeyInputDrawX - (width / 2));
+		cursorLineX = centerX + GetDrawFormatStringWidthToHandle(mnFontHandle, "あ") * mnDrawCursorPosition; // カーソル位置を計算
+		
+		// サイズに合わせて中央表示
+		DrawFormatStringToHandle(centerX, mnKeyInputDrawY, KEYINPUT_STRING_COLOR, mnFontHandle, "%s", mOutputString.c_str());
+		DrawLine(cursorLineX, mnKeyInputDrawY, cursorLineX, mnKeyInputDrawY + height, GetColor(128, 128, 128), 2);
 	}
 }
 
@@ -152,6 +154,11 @@ void TextInputManager::ControllInput(char _input)
 		// 入力を変換
 		mOutputString = mTyping.KanaDictionary(mInputString);
 
+		mTyping.KanaNormalize(mOutputString);
+
+		mInputString = mTyping.GetRoma();
+		mOutputString = mTyping.GetKana();
+
 		if (!mTyping.GetConvertionUnits().empty())
 			mnDrawCursorPosition = mTyping.GetConvertionUnits().back().GetKanaCharEnd();
 	}
@@ -159,16 +166,22 @@ void TextInputManager::ControllInput(char _input)
 	{
 		if (_input == CTRL_CODE_LEFT)
 		{
-			//mTyping.ShiftLeftCursor(&mnKanaCursorPosition, &mnRomaCursorPosition, &mnDrawCursorPosition);
+			mTyping.ShiftLeftCursor();
 		}
 		else if (_input == CTRL_CODE_RIGHT)
 		{
-			//mTyping.ShiftRightCursor(&mnKanaCursorPosition, &mnRomaCursorPosition, &mnDrawCursorPosition);
+			mTyping.ShiftRightCursor();
 		}
 		else if (_input == CTRL_CODE_BS)
 		{
-			//mTyping.DeleteChar(mOutputString, mInputString, &mnKanaCursorPosition, &mnRomaCursorPosition, &mnDrawCursorPosition);
-		}
+			mTyping.DeleteChar();
 
+			mInputString = mTyping.GetRoma();
+			mOutputString = mTyping.GetKana();
+		}
+		
+		mnDrawCursorPosition = mTyping.GetCurrentDraw();
+		mnRomaCursorPosition = mTyping.GetCurrentRomaByte();
+		mnKanaCursorPosition = mTyping.GetCurrentKanaByte();
 	}
 }

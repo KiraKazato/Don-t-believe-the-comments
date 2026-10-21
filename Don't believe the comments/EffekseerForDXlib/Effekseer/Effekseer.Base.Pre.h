@@ -1,5 +1,4 @@
-﻿
-#ifndef __EFFEKSEER_BASE_PRE_H__
+﻿#ifndef __EFFEKSEER_BASE_PRE_H__
 #define __EFFEKSEER_BASE_PRE_H__
 
 //----------------------------------------------------------------------------------
@@ -914,8 +913,8 @@ struct Gradient
 
 	int ColorCount = 0;
 	int AlphaCount = 0;
-	std::array<ColorKey, KeyMax> Colors;
-	std::array<AlphaKey, KeyMax> Alphas;
+	std::array<ColorKey, KeyMax> Colors{};
+	std::array<AlphaKey, KeyMax> Alphas{};
 
 	std::array<float, 4> GetColor(float x) const;
 
@@ -1150,6 +1149,7 @@ public:
 };
 
 //----------------------------------------------------------------------------------
+//
 //
 //----------------------------------------------------------------------------------
 } // namespace Effekseer

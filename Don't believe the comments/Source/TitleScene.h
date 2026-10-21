@@ -14,12 +14,12 @@ public:
 
 private:
 	//画像ハンドル
-	int titleBackGroundHandle;
-	int startBottonHandle;
-	int settingBottonHandle;
+	int mnTitleBackGroundHandle;
+	int mnStartBottonHandle;
+	int mnSettingBottonHandle;
 
 	//マウスの座標を受け取る
-	int MouseX{};
-	int MouseY{};
+	int mnMouseX{};
+	int mnMouseY{};
 };
 

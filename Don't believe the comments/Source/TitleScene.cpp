@@ -2,9 +2,9 @@
 #include "Master.h"
 
 TitleScene::TitleScene()
-	:titleBackGroundHandle(-1)
-	, startBottonHandle(-1)
-	, settingBottonHandle(-1)
+	:mnTitleBackGroundHandle(-1)
+	, mnStartBottonHandle(-1)
+	, mnSettingBottonHandle(-1)
 {
 }
 
@@ -16,24 +16,24 @@ TitleScene::~TitleScene()
 void TitleScene::Initialize()
 {
 	//ハンドルの取得とUIManaerへの追加
-	titleBackGroundHandle = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/TitleBackGround.png");
-	startBottonHandle = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/StartButton.png");
-	settingBottonHandle = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/SettingButton.png");
-	Master::mpUIManager->AddUI(titleBackGroundHandle, 0, 0, Master::Width, Master::Height);
-	Master::mpUIManager->AddUI(startBottonHandle, Master::gridWidth * 30, Master::gridHeight * 90, Master::gridWidth * 57, Master::gridHeight * 107);
-	Master::mpUIManager->AddUI(settingBottonHandle, Master::gridWidth * 63, Master::gridHeight * 90, Master::gridWidth * 90, Master::gridHeight * 107);
+	mnTitleBackGroundHandle = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/TitleBackGround.png");
+	mnStartBottonHandle = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/StartButton.png");
+	mnSettingBottonHandle = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/SettingButton.png");
+	Master::mpUIManager->AddUI(mnTitleBackGroundHandle, 0, 0, Master::Width, Master::Height);
+	Master::mpUIManager->AddUI(mnStartBottonHandle, Master::gridWidth * 30, Master::gridHeight * 90, Master::gridWidth * 57, Master::gridHeight * 107);
+	Master::mpUIManager->AddUI(mnSettingBottonHandle, Master::gridWidth * 63, Master::gridHeight * 90, Master::gridWidth * 90, Master::gridHeight * 107);
 }
 
 void TitleScene::Update()
 {
 	//マウス座標受け取り
-	Master::mpMouseManager->GetMousePosition(&MouseX, &MouseY);
+	Master::mpMouseManager->GetMousePosition(&mnMouseX, &mnMouseY);
 	
 	//マウスがボタンの範囲内だったら
-	if (Master::mpUIManager->InsideUI(startBottonHandle,MouseX,MouseY))
+	if (Master::mpUIManager->InsideUI(mnStartBottonHandle,(float)mnMouseX,(float)mnMouseY))
 	{
 		//少し拡大
-		Master::mpUIManager->ChangeSize(startBottonHandle, 1.1f);
+		Master::mpUIManager->ChangeUISize(mnStartBottonHandle, 1.1f);
 		//左クリック押されたとき
 		if (Master::mpMouseManager->IsLeftClick())
 		{
@@ -43,24 +43,24 @@ void TitleScene::Update()
 	else
 	{
 		//元の大きさに戻しておく
-		Master::mpUIManager->ResetSize(startBottonHandle);
+		Master::mpUIManager->ResetUISize(mnStartBottonHandle);
 	}
 
 
 	//マウスがボタンの範囲内だったら
-	if (Master::mpUIManager->InsideUI(settingBottonHandle, MouseX, MouseY))
+	if (Master::mpUIManager->InsideUI(mnSettingBottonHandle, (float)mnMouseX, (float)mnMouseY))
 	{
 		//少し拡大
-		Master::mpUIManager->ChangeSize(settingBottonHandle, 1.1f);
+		Master::mpUIManager->ChangeUISize(mnSettingBottonHandle, 1.1f);
 		if (Master::mpMouseManager->IsLeftClick())
 		{
-			Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_GAME);
+			Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_SETTING);
 		}
 	}
 	else
 	{
 		//元の大きさに戻しておく
-		Master::mpUIManager->ResetSize(settingBottonHandle);
+		Master::mpUIManager->ResetUISize(mnSettingBottonHandle);
 	}
 
 	Scene::Update();

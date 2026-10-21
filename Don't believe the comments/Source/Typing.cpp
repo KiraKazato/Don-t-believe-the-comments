@@ -457,11 +457,8 @@ char Typing::AlphabetFullToHalf(const std::string& _fullCharactor)
 
 std::string Typing::NumberHalfToFull(char _charactor)
 {
-	constexpr char minNumberCharactor = '0';
-	constexpr char maxNumberCharactor = '9';
-
 	// それが数字でないのならば
-	if (_charactor < minNumberCharactor && _charactor > maxNumberCharactor)
+	if (IsNumber(_charactor))
 	{
 		return std::string(_charactor, 1);
 	}
@@ -498,7 +495,7 @@ char Typing::NumberFullToHalf(const std::string& _fullCharactor)
 	// 全角数字のコードポイントを求める
 	int codePoint = (code.first << 8) | code.second;
 
-	// 全角アルファベットのコードポイントから 0x8220 を引くことで、半角アルファベットのコードポイントを求める
+	// 全角文字のコードポイントから 0x821F を引くことで、半角文字のコードポイントを求める
 	int halfCodePoint = codePoint - convertionNumberCharactor;
 
 	return static_cast<char>(halfCodePoint);
@@ -507,16 +504,25 @@ char Typing::NumberFullToHalf(const std::string& _fullCharactor)
 bool Typing::IsRomaVowel(char _charactor)
 {
 	// 母音あいうえお確認
-	return ('a' == _charactor)
-		|| ('i' == _charactor)
-		|| ('u' == _charactor)
-		|| ('e' == _charactor)
-		|| ('o' == _charactor);
+	return (_charactor == 'a')
+		|| (_charactor == 'i')
+		|| (_charactor == 'u')
+		|| (_charactor == 'e')
+		|| (_charactor == 'o');
 }
 
 bool Typing::IsAlphabet(char _charactor)
 {
-	return ('a' <= _charactor && _charactor <= 'z') || ('A' <= _charactor && _charactor <= 'Z');
+	return (_charactor >= 'a' && _charactor <= 'z')
+		|| (_charactor >= 'A' && _charactor <= 'Z');
+}
+
+bool Typing::IsNumber(char _charactor)
+{
+	constexpr char minNumberCharactor = '0';
+	constexpr char maxNumberCharactor = '9';
+
+	return _charactor >= minNumberCharactor && _charactor <= maxNumberCharactor;
 }
 
 bool Typing::IsRomaConsonant(char _charactor, char _nextCharactor)

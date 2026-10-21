@@ -99,6 +99,9 @@ public:
 	// @return a-zA-Zかどうか
 	bool IsAlphabet(char _charactor);
 
+	// @return 0-9の文字コードかどうか
+	bool IsNumber(char _charactor);
+
 	// @return ttyaやkkyaなどで「っ」を出すか
 	bool IsRomaConsonant(char _charactor, char _nextCharactor);
 

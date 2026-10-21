@@ -87,6 +87,12 @@ public:
 	// 全角アルファベットを半角文字に変換
 	char AlphabetFullToHalf(const std::string& _fullCharactor);
 
+	// 半角数字を全角数字に変換
+	std::string NumberHalfToFull(char _charactor);
+
+	// 全角数字を半角数字に変換
+	char NumberFullToHalf(const std::string& _fullCharactor);
+
 	// @return あいうえお（母音）かどうか
 	bool IsRomaVowel(char _charactor);
 

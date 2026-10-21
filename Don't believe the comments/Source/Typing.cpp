@@ -106,7 +106,7 @@ const std::unordered_map<std::string_view, std::string_view> Typing::KANA_DICTIO
 
 		{"ca","か"},{"ci","し"},{"cu","く"},{"ce","せ"},{"co","こ"},
 
-		{",","、"}, {".","。"}, {"?","？"}, {"!","！"},{" ","　"},{"-","ー"},
+		{",","、"}, {".","。"}, {"?","？"}, {"!","！"},{"-","ー"},
 	};
 
 // 逆引き変換辞書。
@@ -312,7 +312,7 @@ bool Typing::CharactorConvertion(char _charactor, std::string& _str, std::vector
 
 		if (_isNormalize)
 		{
-			AddConvertion(2, static_cast<int>(_roma.size()), 2, static_cast<int>(_roma.size()), 1);
+			AddConvertion(static_cast<int>(_roma.size()), static_cast<int>(itr->second.size()), static_cast<int>(_roma.size()), static_cast<int>(itr->second.size()), 1);
 			mnCurrentKanaByte = mInConvertion.GetKanaEnd();
 			mnCurrentRomaByte = mInConvertion.GetRomaEnd();
 			mnCurrentDraw++;
@@ -416,13 +416,18 @@ std::string Typing::AlphabetHalfToFull(char _charactor)
 		return std::string(1,_charactor);
 	}
 
+	// アルファベットの 半角 -> 全角 
+	// 変換用の数
+	constexpr int convertionCharactorAlphabet = 0x8220;
+
 	// 半角アルファベットを全角文字に変換
 	// 変換後のコードポイントを求める
-	int codePoint = static_cast<int>(_charactor) + 0x8220;
+	int codePoint = static_cast<int>(_charactor) + convertionCharactorAlphabet;
 
-	unsigned char highByte = (codePoint >> 8) & 0xFF;	// 上位ビットを取得
-	unsigned char lowByte = codePoint & 0xFF;			// 下位ビットを取得
-
+	// 16進数単位の上位バイトと下位バイト取得
+	unsigned char highByte = (codePoint >> 8) & 0xFF;	// 上位バイトを取得
+	unsigned char lowByte = codePoint & 0xFF;			// 下位バイトを取得
+	
 	// 変換後の文字列を返す
 	return std::string({ static_cast<char>(highByte), static_cast<char>(lowByte) });
 }
@@ -437,16 +442,66 @@ char Typing::AlphabetFullToHalf(const std::string& _fullCharactor)
 		return _fullCharactor[0];
 	}
 
-	unsigned char first = static_cast<unsigned char>(_fullCharactor[0]);
-	unsigned char second = static_cast<unsigned char>(_fullCharactor[1]);
+	constexpr int convertionCharactorAlphabet = 0x8220;
+
+	std::pair<unsigned char, unsigned char> code = { static_cast<unsigned char>(_fullCharactor[0]),static_cast<unsigned char>(_fullCharactor[1]) };
 
 	// 全角アルファベットのコードポイントを求める
-	int codePoint = (first << 8) | second;
+	int codePoint = (code.first << 8) | code.second;
 
 	// 全角アルファベットのコードポイントから 0x8220 を引くことで、半角アルファベットのコードポイントを求める
-	int halfCodePoint = codePoint - 0x8220;
+	int halfCodePoint = codePoint - convertionCharactorAlphabet;
 
-	return static_cast<char>(halfCodePoint);	// 128を引くことで、ASCIIコードに変換する
+	return static_cast<char>(halfCodePoint);
+}
+
+std::string Typing::NumberHalfToFull(char _charactor)
+{
+	constexpr char minNumberCharactor = '0';
+	constexpr char maxNumberCharactor = '9';
+
+	// それが数字でないのならば
+	if (_charactor < minNumberCharactor && _charactor > maxNumberCharactor)
+	{
+		return std::string(_charactor, 1);
+	}
+
+	// 数字の 半角 -> 全角
+	// 変換用の数
+	constexpr int convertionNumberCharactor = 0x821F;
+
+	int codePoint = static_cast<int>(_charactor) + convertionNumberCharactor;
+
+	// 16進数単位の上位バイトと下位バイト取得
+	unsigned char highByte = (codePoint >> 8) & 0xFF;	// 上位ビットを取得
+	unsigned char lowByte = codePoint & 0xFF;			// 下位ビットを取得
+
+	return std::string({ static_cast<char>(highByte),static_cast<char>(lowByte) });
+}
+
+char Typing::NumberFullToHalf(const std::string& _fullCharactor)
+{
+	// 全角数字の文字列が2バイトであることを確認
+	// 2バイト未満の場合は、全角数字ではないため、そのまま返す
+	if (_fullCharactor.size() < 2)
+	{
+		// 全角数字は2バイトなので、2バイト以外はそのまま返す
+		return _fullCharactor[0];
+	}
+
+	// 数字の 全角 -> 半角
+	// 変換用の数
+	constexpr int convertionNumberCharactor = 0x821F;
+
+	std::pair<unsigned char, unsigned char> code = { static_cast<unsigned char>(_fullCharactor[0]),static_cast<unsigned char>(_fullCharactor[1]) };
+
+	// 全角数字のコードポイントを求める
+	int codePoint = (code.first << 8) | code.second;
+
+	// 全角アルファベットのコードポイントから 0x8220 を引くことで、半角アルファベットのコードポイントを求める
+	int halfCodePoint = codePoint - convertionNumberCharactor;
+
+	return static_cast<char>(halfCodePoint);
 }
 
 bool Typing::IsRomaVowel(char _charactor)
@@ -537,8 +592,8 @@ void Typing::DeleteChar()
 	{
 		decltype(auto) modify = mConvertionUnits[i];
 		
-		modify.romaBegin = deleteUnit.romaLength;
-		modify.kanaBegin = deleteUnit.kanaLength;
+		modify.romaBegin -= deleteUnit.romaLength;
+		modify.kanaBegin -= deleteUnit.kanaLength;
 		modify.kanaCharBegin--;
 	}
 
@@ -605,7 +660,6 @@ void Typing::AddConvertion(int _romaLength, int _kanaLength, int _addRomaBegin, 
 	mInConvertion.kanaBegin += _addKanaBegin;
 	mInConvertion.kanaCharBegin += _addKanaCharLength;
 }
-
 
 const std::vector<ConversionUnit>& Typing::GetConvertionUnits()
 {

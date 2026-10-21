@@ -149,8 +149,9 @@ void TextInputManager::ControllInput(char _input)
 		{
 			return;
 		}
-		// 入力を加える
-		mInputString += _input;
+		// 入力を加えるただし、スペースは無視する
+		if (_input != ' ')
+			mInputString += _input;
 		// 入力を変換
 		mOutputString = mTyping.KanaDictionary(mInputString);
 

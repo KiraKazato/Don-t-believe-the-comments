@@ -224,16 +224,16 @@ const std::string Typing::KanaDictionary(const std::string& _roma, bool _isNorma
 
 			if(_isNormalize)
 			{
-				mInConvertion.kanaLength = 1;
+				mInConvertion.kanaLength = 2;
 				mInConvertion.romaLength = 1;
 
 				AddConvertion();
 
-				mInConvertion.kanaBegin++;
+				mInConvertion.kanaBegin += 2;
 				mInConvertion.kanaCharBegin++;
 				mInConvertion.romaBegin++;
 				mnCurrentDraw++;
-				mnCurrentKanaByte++;
+				mnCurrentKanaByte += 2;
 				mnCurrentRomaByte++;
 			}
 		}
@@ -526,8 +526,8 @@ void Typing::DeleteChar()
 	decltype(auto) unit = mConvertionUnits.at(static_cast<size_t>(deletePosition));
 
 	// 削除
-	mRoma.erase(deletePosition, unit.romaLength);
-	mKana.erase(deletePosition, unit.kanaLength);
+	mRoma.erase(unit.romaBegin, unit.romaLength);
+	mKana.erase(unit.kanaBegin, unit.kanaLength);
 
 	// 消した情報を得る
 	decltype(auto) deleteUnit = unit;
@@ -588,12 +588,11 @@ void Typing::ShiftRightCursor()
 	}
 
 	// 次位置を求める
-	int position = mnCurrentDraw;
+	int position = mnCurrentDraw++;
 
 	// そのカーソル位置の情報を得る
 	const auto& unit = mConvertionUnits.at(static_cast<size_t>(position));
-
-	mnCurrentDraw++;
+	
 	mnCurrentRomaByte += unit.romaLength;
 	mnCurrentKanaByte += unit.kanaLength;
 }

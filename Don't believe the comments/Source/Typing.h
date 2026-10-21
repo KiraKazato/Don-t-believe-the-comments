@@ -72,7 +72,7 @@ public:
 
 	// 「ん」変換
 	// @return 「ん」へ変換すべきか
-	bool NConvertion(char _charactor, char _nextCharactor, std::string& _str, std::vector<char>& _roma, int& _index);
+	bool NConvertion(char _charactor, char _nextCharactor, std::string& _str, std::vector<char>& _roma, int& _index, bool _isNormalize);
 
 	// 「っ」変換
 	// @return 「っ」へ変換すべきか
@@ -112,7 +112,7 @@ public:
 	void ShiftRightCursor();
 
 	// 変換確認とその情報の追加
-	void AddConvertion();
+	void AddConvertion(int _romaLength, int _kanaLength, int _addRomaBegin, int _addKanaBegin, int _addKanaCharLength);
 
 	// 変換単位変換した
 	const std::vector<ConversionUnit>& GetConvertionUnits();

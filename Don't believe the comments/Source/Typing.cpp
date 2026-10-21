@@ -199,7 +199,7 @@ const std::string Typing::KanaDictionary(const std::string& _roma, bool _isNorma
 			int nextRomaLower = tolower(_roma[i + 1]);
 
 			int index = static_cast<int>(i);
-			if (NConvertion(romaLower, nextRomaLower, ret, tmp, index)
+			if (NConvertion(romaLower, nextRomaLower, ret, tmp, index, _isNormalize)
 				|| ConstantConvertion(romaLower, nextRomaLower, ret, tmp, index))
 			{
 				mKana = ret;
@@ -222,19 +222,13 @@ const std::string Typing::KanaDictionary(const std::string& _roma, bool _isNorma
 			// 変換できない文字は半角アルファベットを全角に変換して返す
 			ret += AlphabetHalfToFull(alphabet);
 
-			if(_isNormalize)
+			// アルファベット（全角の変換）
+			if (_isNormalize)
 			{
-				mInConvertion.kanaLength = 2;
-				mInConvertion.romaLength = 1;
-
-				AddConvertion();
-
-				mInConvertion.kanaBegin += 2;
-				mInConvertion.kanaCharBegin++;
-				mInConvertion.romaBegin++;
-				mnCurrentDraw++;
+				AddConvertion(1, 2, 2, 2, 1);
 				mnCurrentKanaByte += 2;
-				mnCurrentRomaByte++;
+				mnCurrentRomaByte += 2;
+				mnCurrentDraw++;
 			}
 		}
 	}
@@ -318,14 +312,7 @@ bool Typing::CharactorConvertion(char _charactor, std::string& _str, std::vector
 
 		if (_isNormalize)
 		{
-			mInConvertion.kanaLength = 2;
-			mInConvertion.romaLength = static_cast<int>(_roma.size());
-
-			AddConvertion();
-
-			mInConvertion.kanaBegin += 2;
-			mInConvertion.romaBegin += static_cast<int>(_roma.size());
-			mInConvertion.kanaCharBegin++;
+			AddConvertion(2, static_cast<int>(_roma.size()), 2, static_cast<int>(_roma.size()), 1);
 			mnCurrentKanaByte = mInConvertion.GetKanaEnd();
 			mnCurrentRomaByte = mInConvertion.GetRomaEnd();
 			mnCurrentDraw++;
@@ -346,7 +333,7 @@ bool Typing::CharactorConvertion(char _charactor, std::string& _str, std::vector
 	return true;
 }
 
-bool Typing::NConvertion(char _charactor, char _nextCharactor, std::string& _str, std::vector<char>& _roma, int& _index)
+bool Typing::NConvertion(char _charactor, char _nextCharactor, std::string& _str, std::vector<char>& _roma, int& _index, bool _isNormalize)
 {
 	if (!IsN(_charactor,_nextCharactor))
 	{
@@ -358,6 +345,15 @@ bool Typing::NConvertion(char _charactor, char _nextCharactor, std::string& _str
 	if (_charactor == _nextCharactor && _charactor == 'n')
 	{
 		_index += 1;
+
+		if(_isNormalize)
+		{
+			AddConvertion(2, 2, 2, 2, 1);
+
+			mnCurrentDraw++;
+			mnCurrentKanaByte += 2;
+			mnCurrentRomaByte += 2;
+		}
 	}
 
 	_str += kana;
@@ -380,6 +376,7 @@ bool Typing::ConstantConvertion(char _charactor, char _nextCharactor, std::strin
 	_index += 1;
 
 	_roma.clear();
+	_roma.push_back(_nextCharactor);
 
 	return true;
 }
@@ -597,10 +594,18 @@ void Typing::ShiftRightCursor()
 	mnCurrentKanaByte += unit.kanaLength;
 }
 
-void Typing::AddConvertion()
+void Typing::AddConvertion(int _romaLength, int _kanaLength, int _addRomaBegin, int _addKanaBegin, int _addKanaCharLength)
 {
+	mInConvertion.romaLength = _romaLength;
+	mInConvertion.kanaLength = _kanaLength;
+
 	mConvertionUnits.emplace_back(mInConvertion);
+
+	mInConvertion.romaBegin += _addRomaBegin;
+	mInConvertion.kanaBegin += _addKanaBegin;
+	mInConvertion.kanaCharBegin += _addKanaCharLength;
 }
+
 
 const std::vector<ConversionUnit>& Typing::GetConvertionUnits()
 {

@@ -19,7 +19,8 @@ struct GroupRate
 
 struct QuestionData
 {
-	int questionGraphHandle = -1;	// 問題
+	int questionID = -1;	// 問題番号
+	int questionGraphHandle = -1;	// 問題画像ハンドル
 	std::string answer{};	// 答え
 	int difficulty = 0;		// 難易度
 	std::vector<std::string> trueComment{};		// 真コメント
@@ -27,8 +28,8 @@ struct QuestionData
 
 	// コンストラクタ
 	// データを作る際、明示的に作ることができる
-	QuestionData(int questionGraphHandle, const std::string& answer, int difficulty, const std::vector<std::string>& trueComment, const std::vector<std::string>& falseComment)
-		: questionGraphHandle(questionGraphHandle), answer(answer), difficulty(difficulty), trueComment(trueComment), falseComment(falseComment)
+	QuestionData(int questionID, int questionGraphHandle, const std::string& answer, int difficulty, const std::vector<std::string>& trueComment, const std::vector<std::string>& falseComment)
+		: questionID(questionID), questionGraphHandle(questionGraphHandle), answer(answer), difficulty(difficulty), trueComment(trueComment), falseComment(falseComment)
 	{
 	}
 	// 空データを作成可能

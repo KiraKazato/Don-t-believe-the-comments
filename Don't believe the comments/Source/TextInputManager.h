@@ -1,11 +1,15 @@
 #pragma once
 #include "DxLib.h"
+#include <string>
+#include "Typing.h"
 
 class TextInputManager
 {
 public:
-	static const unsigned int KEYINPUUT_BACK_COLOR = 0xFFFFFFFF;	// 背景色	
-	static const unsigned int KEYINPUUT_STRING_COLOR = 0x00000000;	// 文字色
+	static const unsigned int KEYINPUT_BACK_COLOR = 0xFFFFFFFF;	// 背景色	
+	static const unsigned int KEYINPUT_STRING_COLOR = 0x00000000;	// 文字色
+
+	static const int KETINPUT_STRING_MAX_LENGTH_FULL_CHARACTOR = 15;	// 全角文字最大
 
 public:
 	TextInputManager();
@@ -21,13 +25,12 @@ public:
 	// ポーズしたかどうか
 	void SetIsPause(bool _flag);
 
-	// @return
-	// 0:入力完了していない
-	// 1:入力完了
-	// 2:入力キャンセル(ESCキー)
+	// @return 0:入力完了していない
+	// @return 1:入力完了
+	// @return 2:入力キャンセル（/p）と入力した時
 	int CheckInput() const;
 
-	const char* GetInputString() const;
+	const std::string& GetInputString() const;
 
 	// 入力状態リセット
 	void ResetState();
@@ -35,17 +38,28 @@ public:
 	// 入力内容リセット
 	void ResetInput();
 
+	// 削除やカーソル移動等
+	void ControllInput(char _input);
+
 private:
-	int mnInputHandle = -1;		// 入力ハンドル
+	int mnFontHandle = -1;		// フォントハンドル
+	
 	int mnKeyInputState = 0;	// 入力状態
 
 	int mnKeyInputDrawX = 0;	// 入力表示座標X
 	int mnKeyInputDrawY = 0;	// 入力表示座標Y
 
-	int mbIsPause = false;		// ポーズしているかどうか
+	bool mbIsPause = false;		// ポーズしているかどうか
 
-	int mnFontHandle = -1;
+	bool mbIsFinal = false;		// ゲームが終わったか
+
 private:
-	char mInputString[(15 * 2) + 1]{};		// 入力文字の取得バッファ（決定）
-	char mPauseInputString[sizeof(mInputString)]{};	// 入力文字の取得バッファ（ポーズによる中断）
+	std::string mInputString{};		// ローマ字入力
+	std::string mOutputString{};	// かな文字入力
+
+	int mnKanaCursorPosition = 0;	// （かな文字）カーソル位置
+	int mnRomaCursorPosition = 0;	// （ローマ字）カーソル位置
+	int mnDrawCursorPosition = 0;	// （描画文字）カーソル位置
+
+	Typing mTyping{};
 };

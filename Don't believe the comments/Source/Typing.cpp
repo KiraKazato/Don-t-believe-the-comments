@@ -175,18 +175,20 @@ const std::string Typing::KanaDictionary(const std::string& _roma, bool _isNorma
 
 	std::string ret = "";
 
-	std::vector<char> tmp{};
+	std::vector<char> dictionaryTmp{};
 
-	int romaBegin = 0;
-	int kanaBegin = 0;
-	int kanaCharBegin = 0;
 	for (size_t i = 0; i < _roma.size(); i++)
 	{
 		// 小文字に変換
 		int romaLower = tolower(_roma[i]);
 
+		if (!IsAlphabet(romaLower))
+		{
+			continue;
+		}
+
 		// 子音 + 母音の変換
-		if (CharactorConvertion(romaLower, ret, tmp, _isNormalize))
+		if (CharactorConvertion(romaLower, ret, dictionaryTmp, _isNormalize))
 		{
 			mKana = ret;
 			continue;
@@ -199,33 +201,39 @@ const std::string Typing::KanaDictionary(const std::string& _roma, bool _isNorma
 			int nextRomaLower = tolower(_roma[i + 1]);
 
 			int index = static_cast<int>(i);
-			if (NConvertion(romaLower, nextRomaLower, ret, tmp, index, _isNormalize)
-				|| ConstantConvertion(romaLower, nextRomaLower, ret, tmp, index))
+			if (NConvertion(romaLower, nextRomaLower, ret, dictionaryTmp, index, _isNormalize)
+				|| ConstantConvertion(romaLower, nextRomaLower, ret, dictionaryTmp, index))
 			{
 				mKana = ret;
 				i = static_cast<size_t>(index);
 				continue;
 			}
 		}
-		tmp.push_back(romaLower);
+		dictionaryTmp.push_back(romaLower);
 	}
 
 	// 入力途中で残ったローマ字を追加
-	if (!tmp.empty())
+	if (!dictionaryTmp.empty())
 	{
-		std::string pending(tmp.begin(), tmp.end());
-
+		std::string pending(dictionaryTmp.begin(), dictionaryTmp.end());
 		for (int i = 0; i < pending.size(); i++)
 		{
-			char alphabet = pending[i];
+			char modify = pending[i];
 
-			// 変換できない文字は半角アルファベットを全角に変換して返す
-			ret += AlphabetHalfToFull(alphabet);
+			// 変換できない文字は半角を全角に変換して返す
+			if(IsAlphabet(modify))	
+			{
+				ret += AlphabetHalfToFull(modify);
+			}
+			else if(IsNumber(modify))
+			{
+				ret += NumberHalfToFull(modify);
+			}
 
 			// アルファベット（全角の変換）
 			if (_isNormalize)
 			{
-				AddConvertion(1, 2, 2, 2, 1);
+				AddConvertion(1, 2, 1, 2, 1);
 				mnCurrentKanaByte += 2;
 				mnCurrentRomaByte += 2;
 				mnCurrentDraw++;
@@ -312,7 +320,12 @@ bool Typing::CharactorConvertion(char _charactor, std::string& _str, std::vector
 
 		if (_isNormalize)
 		{
-			AddConvertion(static_cast<int>(_roma.size()), static_cast<int>(itr->second.size()), static_cast<int>(_roma.size()), static_cast<int>(itr->second.size()), 1);
+			AddConvertion(
+				static_cast<int>(_roma.size()),
+				static_cast<int>(itr->second.size()),
+				static_cast<int>(_roma.size()),
+				static_cast<int>(itr->second.size()),
+				1);
 			mnCurrentKanaByte = mInConvertion.GetKanaEnd();
 			mnCurrentRomaByte = mInConvertion.GetRomaEnd();
 			mnCurrentDraw++;
@@ -373,9 +386,13 @@ bool Typing::ConstantConvertion(char _charactor, char _nextCharactor, std::strin
 	std::string kana = "っ";
 
 	_str += kana;
-	_index += 1;
+
+	// 探索1つ進める
+	_index++;
 
 	_roma.clear();
+
+	// 次文字を入れる
 	_roma.push_back(_nextCharactor);
 
 	return true;
@@ -383,13 +400,14 @@ bool Typing::ConstantConvertion(char _charactor, char _nextCharactor, std::strin
 
 void Typing::ConvertionFullToHalf(std::string& _roma)
 {
-	for (int i = 0; i < _roma.size(); i++)
+	for (int i = 0; i < _roma.size();)
 	{
 		unsigned char charByte = static_cast<unsigned char>(_roma[static_cast<size_t>(i)]);
 
 		// 全角の区間じゃないならば変換の必要はない
 		if (!IsCharFullByte(charByte))
 		{
+			i++;
 			continue;
 		}
 
@@ -397,14 +415,22 @@ void Typing::ConvertionFullToHalf(std::string& _roma)
 		// 全角のバイトを得る
 		std::string tmp = _roma.substr(static_cast<size_t>(i), 2);
 
-		// アルファベットを全角から半角へ
-		char alphabet = AlphabetFullToHalf(tmp);
+		char modify = '\0';	// 全角から半角に変換する文字
+		if (IsFullAlphabet(tmp))
+		{
+			// 全角アルファベットを半角アルファベットへ
+			modify = AlphabetFullToHalf(tmp);
+		}
+		else if (IsFullNumber(tmp))
+		{
+			modify = NumberFullToHalf(tmp);
+		}
 
 		// アルファベットの全角削除
 		_roma.erase(static_cast<size_t>(i), 2);
 		// 変換したアルファベットを入れる
-		_roma += alphabet;
-		i = -1;
+		_roma += modify;
+		i = 0;
 	}
 }
 
@@ -458,7 +484,7 @@ char Typing::AlphabetFullToHalf(const std::string& _fullCharactor)
 std::string Typing::NumberHalfToFull(char _charactor)
 {
 	// それが数字でないのならば
-	if (IsNumber(_charactor))
+	if (!IsNumber(_charactor))
 	{
 		return std::string(_charactor, 1);
 	}
@@ -513,8 +539,13 @@ bool Typing::IsRomaVowel(char _charactor)
 
 bool Typing::IsAlphabet(char _charactor)
 {
-	return (_charactor >= 'a' && _charactor <= 'z')
-		|| (_charactor >= 'A' && _charactor <= 'Z');
+	constexpr char minAlphabetSmallCharactor = 'a';	// a
+	constexpr char maxAlphabetSmallCharactor = 'z';	// z
+	constexpr char minAlphabetLargeCharactor = 'A';	// A
+	constexpr char maxAlphabetLargeCharactor = 'Z';	// Z
+
+	return (_charactor >= minAlphabetSmallCharactor && _charactor <= maxAlphabetSmallCharactor)
+		|| (_charactor >= minAlphabetLargeCharactor && _charactor <= maxAlphabetLargeCharactor);
 }
 
 bool Typing::IsNumber(char _charactor)
@@ -527,16 +558,20 @@ bool Typing::IsNumber(char _charactor)
 
 bool Typing::IsRomaConsonant(char _charactor, char _nextCharactor)
 {
-	// 今の文字と次の文字のどちらかが母音なら っ は出さない
-	// どちらも n -> ん のになるので っ は出さない
-	// スペースの時も変換しない
-	if (IsRomaVowel(_charactor) || IsRomaVowel(_nextCharactor)
-		|| (_charactor == _nextCharactor && (_charactor == 'n' || _charactor == ' ')))
+	// 今の文字と次の文字のどちらかが母音なら
+	bool isVowel = IsRomaVowel(_charactor) || IsRomaVowel(_nextCharactor);
+	// どちらかがアルファベットで無いか 
+	bool isNotAlphabet = !IsAlphabet(_charactor) || !IsAlphabet(_nextCharactor);
+	// どっちも「n」であるか（nn -> ん）
+	bool isN = (_charactor == _nextCharactor) && (_charactor == 'n');
+
+	// 「っ」への変換判定をしていいのか
+	if (isVowel || isNotAlphabet || isN)
 	{
 		return false;
 	}
 
-	// 同じ文字ならば っ に変換
+	// 同じ文字ならば「っ」に変換
 	return _charactor == _nextCharactor;
 }
 
@@ -562,6 +597,30 @@ bool Typing::IsCharFullByte(unsigned char _charactorByte)
 	
 	return (_charactorByte >= minFullCharactorHighByte[0] && _charactorByte <= maxFullCharactorHighByte[0])
 		|| (_charactorByte >= minFullCharactorHighByte[1] && _charactorByte <= maxFullCharactorHighByte[1]);
+}
+
+bool Typing::IsFullAlphabet(const std::string& _fullCharactor)
+{
+	constexpr int minFullLargeCharactor = 0x8260;	// Ａ
+	constexpr int maxFullLargeCharactor = 0x8279;	// Ｚ
+	constexpr int minFullSmallCharactor = 0x8281;	// ａ
+	constexpr int maxFullSmallCharactor = 0x829A;	// ｚ
+
+	int codePoint = (static_cast<unsigned char>(_fullCharactor[0]) << 8) | static_cast<unsigned char>(_fullCharactor[1]);
+
+	return ((codePoint >= minFullLargeCharactor) && (codePoint <= maxFullSmallCharactor))
+		|| ((codePoint >= minFullSmallCharactor) && (codePoint <= maxFullLargeCharactor));
+}
+
+bool Typing::IsFullNumber(const std::string& _fullCharactor)
+{
+	constexpr int minFullNumberCharactor = 0x824F;	// ０
+	constexpr int maxFullNumberCharactor = 0x8258;	// ９
+
+	int codePoint = (static_cast<unsigned char>(_fullCharactor[0]) << 8) | static_cast<unsigned char>(_fullCharactor[1]);
+
+	return (codePoint >= minFullNumberCharactor)
+		&& (codePoint <= maxFullNumberCharactor);
 }
 
 void Typing::DeleteChar()
@@ -592,6 +651,7 @@ void Typing::DeleteChar()
 
 	mConvertionUnits.erase(mConvertionUnits.begin() + deletePosition);
 
+	clsDx();
 	// 消した分の情報を修正
 	// 消した文字の右側にある数は全て修正
 	for (size_t i = deletePosition; i < mConvertionUnits.size(); i++)
@@ -601,6 +661,8 @@ void Typing::DeleteChar()
 		modify.romaBegin -= deleteUnit.romaLength;
 		modify.kanaBegin -= deleteUnit.kanaLength;
 		modify.kanaCharBegin--;
+
+		printfDx("romaBegin:%d romaLength:%d kanaLength:%d kanaBegin:%d %d文字目\n", modify.romaBegin, modify.romaLength, modify.kanaBegin, modify.kanaLength, modify.kanaCharBegin);
 	}
 
 	// 各変数を変更
@@ -695,4 +757,16 @@ const std::string& Typing::GetRoma() const
 const std::string& Typing::GetKana() const
 {
 	return mKana;
+}
+
+void Typing::ClearString()
+{
+	mRoma.clear();
+	mKana.clear();
+	mConvertionUnits.clear();
+	mnCurrentDraw = 0;
+	mnCurrentKanaByte = 0;
+	mnCurrentRomaByte = 0;
+	mInConvertion = ConversionUnit();
+\
 }

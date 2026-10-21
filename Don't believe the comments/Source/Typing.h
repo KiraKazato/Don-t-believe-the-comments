@@ -53,6 +53,8 @@ public:
 	//Typing();
 	//~Typing();
 
+	// 変換関係
+public:
 	// アルファベット -> かな の変換
 	// @return かな に変換した文字列
 	const std::string KanaDictionary(const std::string& _roma, bool _isNormalize = false);
@@ -78,7 +80,7 @@ public:
 	// @return 「っ」へ変換すべきか
 	bool ConstantConvertion(char _charactor, char _nextCharactor, std::string& _str, std::vector<char>& _roma, int& _index);
 
-	// ローマ字の中に入った全角アルファベットを消す
+	// ローマ字の中に入った全角アルファベットを半角アルファベットに変換
 	void ConvertionFullToHalf(std::string& _roma);
 
 	// 半角アルファベットを全角文字に変換
@@ -93,6 +95,9 @@ public:
 	// 全角数字を半角数字に変換
 	char NumberFullToHalf(const std::string& _fullCharactor);
 
+
+	// 判定関係
+public:
 	// @return あいうえお（母音）かどうか
 	bool IsRomaVowel(char _charactor);
 
@@ -111,6 +116,16 @@ public:
 	// @return それが全角の頭のバイトか
 	bool IsCharFullByte(unsigned char _charactorByte);
 
+	// @return 全角のアルファベットか
+	bool IsFullAlphabet(const std::string& _fullCharactor);
+
+	// @return 全角の数字か
+	bool IsFullNumber(const std::string& _fullCharactor);
+
+
+
+	// 文字操作関係
+public:
 	// 文字削除
 	void DeleteChar();
 
@@ -126,12 +141,17 @@ public:
 	// 変換単位変換した
 	const std::vector<ConversionUnit>& GetConvertionUnits();
 
+
+	// ゲッター
+public:
 	int GetCurrentRomaByte()const;	// ローマ字のバイトカウント取得
 	int GetCurrentKanaByte()const;	// かな文字のバイトカウント取得
 	int GetCurrentDraw()	const;	// 描画の文字単位カウント取得
 
 	const std::string& GetRoma() const;	// ローマ字取得
 	const std::string& GetKana() const;	// かな文字取得
+
+	void ClearString();
 
 	// 変換した文字列の確認
 private:

@@ -137,6 +137,7 @@ void TextInputManager::ResetInput()
 {
 	mInputString = "";
 	mOutputString = "";
+	mTyping.ClearString();
 }
 
 void TextInputManager::ControllInput(char _input)
@@ -165,15 +166,15 @@ void TextInputManager::ControllInput(char _input)
 	}
 	else
 	{
-		if (_input == CTRL_CODE_LEFT)
+		/*if (_input == CTRL_CODE_LEFT)
 		{
 			mTyping.ShiftLeftCursor();
 		}
 		else if (_input == CTRL_CODE_RIGHT)
 		{
 			mTyping.ShiftRightCursor();
-		}
-		else if (_input == CTRL_CODE_BS)
+		}*/
+		if (_input == CTRL_CODE_BS)
 		{
 			mTyping.DeleteChar();
 

@@ -5,7 +5,7 @@
 #include <fstream>
 #include <sstream>
 
-CommenterManager::CommenterManager():mnBaseCommentGridPositionX(89), mnBaseCommentGridPositionY(7)
+CommenterManager::CommenterManager()
 {
 
 }
@@ -17,7 +17,7 @@ CommenterManager::~CommenterManager()
 void CommenterManager::Initialize()
 {
 	LoadTemplateComment("Resource/TemplateComment/Comment.csv");
-	LoadCommenterName("");
+	LoadCommenterName("Resource/CommenterName/NameData.csv");
 	while (!mCommenterNames.empty())
 	{
 		GenerateCommenter();
@@ -48,7 +48,6 @@ void CommenterManager::LoadTemplateComment(const std::string& _filepath)
 	std::string line;
 	if (!ifs)
 	{
-		printfDx("コメントが読み込めませんでした");
 		return;
 	}
 
@@ -65,12 +64,24 @@ void CommenterManager::LoadTemplateComment(const std::string& _filepath)
 
 void CommenterManager::LoadCommenterName(const std::string& _filepath)
 {
-	mCommenterNames.push_back("あ");
-	mCommenterNames.push_back("べ");
-	mCommenterNames.push_back("し");
-	mCommenterNames.push_back("ん");
-	mCommenterNames.push_back("ぞ");
-	mCommenterNames.push_back("う");
+	std::ifstream ifs(_filepath, std::ios::in);
+	std::string line;
+
+	if (!ifs)
+	{
+		
+		return;
+	}
+
+	
+	while (getline(ifs, line))
+	{
+		if (!line.empty() && line.back() == '\r')
+		{
+			line.pop_back();
+		}
+		mCommenterNames.push_back(line);
+	}
 }
 
 void CommenterManager::GenerateCommenter()
@@ -108,7 +119,7 @@ void CommenterManager::GenerateCommenter()
 
 void CommenterManager::ChooseDisplayCommenter()
 {
-	if (mCommenters.empty() || mDisplayCommenters.size() > 9)
+	if (mCommenters.empty() || !IsOneSecond())
 	{
 		return;
 	}
@@ -130,7 +141,15 @@ void CommenterManager::ChooseDisplayCommenter()
 		}
 		comment = GetDisplayComment(commenter->GetState());
 		new Commenter(commenter->GetName(), commenter->GetState(), comment, ID);
+		
+		int commentY = mnBaseCommentGridPositionY + (commenter->GetTotalHeight() * (ID+1));
+		if (mnMaxCommentGridPositionY <= commentY)
+		{
+			int diff = commentY - mnMaxCommentGridPositionY;
+			mnBaseCommentGridPositionY -= diff;
+		}
 		ID++;
+
 		break;
 	}
 
@@ -138,39 +157,46 @@ void CommenterManager::ChooseDisplayCommenter()
 
 std::string CommenterManager::GetDisplayComment(int _state)
 {
-	
 	int index{};
-
+	int continued{};
 	float rate = GetRand(10000) / 10000.0f;
-
-	if (rate < 0.6f && !mTemplateComments.empty())
+	do
 	{
-		index = GetRand(static_cast<int>(mTemplateComments.size() - 1));
-		return mTemplateComments[index];
-	}
-
-	if (_state == 0)
-	{
-		auto comment = Master::mpQuestionManager->GetQuestionData().trueComment;
-		if (!comment.empty())
+		if (continued > 5)
 		{
-			index = GetRand(static_cast<int>(comment.size() - 1));
-			return comment[index];
+			return "やっほー";
 		}
-	}
-	else if (_state == 1)
-	{
-		auto comment = Master::mpQuestionManager->GetQuestionData().falseComment;
-		if (!comment.empty())
+		if (!mbQuestionStarted || (rate < 0.6f && !mTemplateComments.empty()))
 		{
-			index = GetRand(static_cast<int>(comment.size() - 1));
-			return comment[index];
+			index = GetRand(static_cast<int>(mTemplateComments.size() - 1));
+			return mTemplateComments[index];
 		}
-	}
 
+		const auto comments = (_state == 0) ? Master::mpQuestionManager->GetQuestionData().trueComment : Master::mpQuestionManager->GetQuestionData().falseComment;
 
-	return "やっほー";
+		if (comments.empty())
+		{
+			continued++;
+			continue;
+		}
+
+		index = GetRand(static_cast<int>(comments.size() - 1));
+
+		auto same = std::find(mUsedComments.begin(), mUsedComments.end(), comments[index]);
+
+		if (same != mUsedComments.end())
+		{
+			continued++;
+			continue;
+		}
+
+		mUsedComments.push_back(comments[index]);
+
+		return comments[index];
+
+	} while (true);
 }
+
 
 void CommenterManager::Update()
 {
@@ -182,10 +208,13 @@ void CommenterManager::Update()
 void CommenterManager::Draw()
 {
 	if (mDisplayCommenters.empty())return;
+	int totalHeight{};
 	for (const auto& commenter : mDisplayCommenters)
 	{
-		commenter->Draw();
+		commenter->Draw(totalHeight);
+		totalHeight += commenter->GetTotalHeight();
 	}
+
 }
 
 void CommenterManager::SetCommenter(Commenter* _commenter)
@@ -200,6 +229,50 @@ void CommenterManager::SetDisplayCommenter(Commenter* _commenter)
 
 void CommenterManager::GetBasePosition(int* _x, int* _y)
 {
-	*_x = mnBaseCommentGridPositionX;
-	*_y = mnBaseCommentGridPositionY;
+	if (_x)
+	{
+		*_x = mnBaseCommentGridPositionX;
+	}
+	if (_y)
+	{
+		*_y = mnBaseCommentGridPositionY;
+	}
+}
+
+void CommenterManager::SetBaseWidthPosition(int _x)
+{
+	mnBaseCommentGridPositionX = _x;
+}
+
+void CommenterManager::SetBaseHeightPosition(int _y)
+{
+	mnBaseCommentGridPositionY = _y;
+}
+
+
+void CommenterManager::QuestionStarted(bool _start)
+{
+	mbQuestionStarted = _start;
+}
+
+void CommenterManager::ChangeQuestion()
+{
+	mUsedComments.clear();
+}
+
+bool CommenterManager::IsOneSecond()
+{
+	//基準の時間
+	static int lastTime = GetNowCount();
+	int currentTime = GetNowCount();
+
+	int diffTime = currentTime - lastTime;
+
+	if (diffTime >= 2000)
+	{
+		lastTime = currentTime;
+		return true;
+	}
+
+	return false;
 }

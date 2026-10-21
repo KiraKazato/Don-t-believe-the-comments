@@ -19,6 +19,7 @@ void GameCycle::Update()
 	Master::mpCommenterManager->Update();
 	if (!mbQuestionSpawned)
 	{
+		Master::mpCommenterManager->ChangeQuestion();
 		Master::mpQuestionManager->SpawnQuestion(stageNumber, mnQuestionNumber);
 		mnNowQuestionImageHandle = Master::mpQuestionManager->GetQuestionData().questionGraphHandle;
 		mbQuestionSpawned = true;
@@ -27,6 +28,11 @@ void GameCycle::Update()
 	{
 		return;
 	}
+	else
+	{
+		Master::mpCommenterManager->QuestionStarted(true);
+	}
+
 	InputAnswer();
 
 	if (mbInputAnswered && AnswerJudge())
@@ -35,6 +41,7 @@ void GameCycle::Update()
 		mbQuestionNumberDrawn = false;
 		mbQuestionDrawn = false;
 		mnQuestionNumber++;
+		Master::mpCommenterManager->QuestionStarted(false);
 		if (mnQuestionNumber > mnMaxQuestionNumber)
 		{
 			GameEnd();
@@ -68,7 +75,7 @@ void GameCycle::SetStage(StageNumber _stageNumber)
 }
 void GameCycle::CommentDraw()
 {
-	SetDrawArea(Master::gridWidth * 89, Master::gridHeight * 7, Master::gridWidth * 117, Master::gridHeight * 109);
+	SetDrawArea(Master::gridWidth * 89, Master::gridHeight * 12, Master::gridWidth * 117, Master::gridHeight * 113);
 	//DrawBox(Master::gridWidth * 80, Master::gridHeight * 5, Master::gridWidth * 120, Master::gridHeight * 115, GetColor(0, 0, 0), TRUE);
 	Master::mpCommenterManager->Draw();
 	SetDrawAreaFull();
@@ -139,4 +146,5 @@ bool GameCycle::AnswerJudge()
 void GameCycle::GameEnd()
 {
 	mTextInputManager.Finalize();
+	Master::mpCommenterManager->QuestionStarted(false);
 }

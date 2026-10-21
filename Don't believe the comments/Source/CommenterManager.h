@@ -36,6 +36,22 @@ public:
 
 	//基準座標取得
 	void GetBasePosition(int* _x, int* _y);
+
+	//基準座標変更
+	void SetBaseWidthPosition(int _x);
+	void SetBaseHeightPosition(int _y);
+
+	int GetMaxWidthPosition() { return mnMaxCommentGridPositionX; }
+	int GetMaxHeightPosition() { return mnMaxCommentGridPositionY; }
+
+	//問題が出ているかを知る
+	void QuestionStarted(bool _start);
+
+	//問題が変わった時の処理
+	void ChangeQuestion();
+
+	//一秒を測る関数
+	bool IsOneSecond();
 private:
 	//コメンターの情報
 	std::vector<Commenter*>mCommenters;
@@ -45,16 +61,22 @@ private:
 
 	//テンプレコメント
 	std::vector<std::string>mTemplateComments;
-	//テンプレコメントと問題専用コメントの選択
-
-
+	
 	//名前の配列(使い捨て
 	std::vector<std::string>mCommenterNames;
 
+	//すでに出した問題コメント
+	std::vector<std::string>mUsedComments;
+
 	//コメントの表示基準場所
 	int mnBaseCommentGridPositionX = 89;
-	int mnBaseCommentGridPositionY = 7;
+	int mnBaseCommentGridPositionY = 12;
 
+	//コメント表示の最大場所
+	int mnMaxCommentGridPositionX = 117;
+	int mnMaxCommentGridPositionY = 113;
 
-	bool mbOneSecond = false;
+	//ゲームがスタートしたかのフラグ
+	bool mbQuestionStarted = false;
+
 };

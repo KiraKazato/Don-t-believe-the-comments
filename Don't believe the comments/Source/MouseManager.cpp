@@ -1,6 +1,6 @@
 #include "MouseManager.h"
 
-MouseManager::MouseManager()
+MouseManager::MouseManager() :mMousePoint({ 0,0 })
 {
 
 }
@@ -17,14 +17,14 @@ void MouseManager::Update()
 
 void MouseManager::Draw()
 {
-	DrawFormatString(0, 0, GetColor(0,0,0), "%d : %d", mMousePoint.mouseX, mMousePoint.mouseY);
+	//DrawFormatString(0, 0, GetColor(0,0,0), "%d : %d", mMousePoint.mouseX, mMousePoint.mouseY);
 }
 
-int MouseManager::GetMousePosition(int* X, int* Y)
+void MouseManager::GetMousePosition(int* _x, int* _y)
 {
-	if (!X || !Y) return -1;
-	*X = mMousePoint.mouseX;
-	*Y = mMousePoint.mouseY;
+	if (!_x || !_y)return;
+	*_x = mMousePoint.mouseX;
+	*_y = mMousePoint.mouseY;
 }
 
 bool MouseManager::IsLeftClick()

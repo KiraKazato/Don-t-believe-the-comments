@@ -43,7 +43,7 @@ void Texture::Draw()
 		TRUE                           // “§‰ß
 	);
 	//enemy‚Ì‰ŠúˆÊ’u‚Ìİ’è
-	DrawGraph(static_cast<int>(mvPosition.x - (mnSizeX / 2)), static_cast<int>( mvPosition.y - (mnSizeY / 2)), mnHandle, mnTransFlag);
+	DrawGraph(static_cast<int>(mvPosition.x - (static_cast<float>(mnSizeX) / 2)), static_cast<int>( mvPosition.y - (static_cast<float>(mnSizeY) / 2)), mnHandle, mnTransFlag);
 }
 
 void Texture::Update()

@@ -20,7 +20,7 @@ void UIManager::ClearUI()
 	mUIList.clear();
 }
 
-void UIManager::ChangeSize(int _handle, float _ratio)
+void UIManager::ChangeUISize(int _handle, float _ratio)
 {
 	float half = 0.5f;//半分
 	float centerX, centerY;//オリジナル座標での真ん中
@@ -47,7 +47,7 @@ void UIManager::ChangeSize(int _handle, float _ratio)
 }
 
 
-void UIManager::ResetSize(int _handle)
+void UIManager::ResetUISize(int _handle)
 {
 	for (auto&ui : mUIList)
 	{
@@ -62,10 +62,10 @@ void UIManager::ResetSize(int _handle)
 	}
 }
 
-bool UIManager::InsideUI(int _handle, int _objectX, int _objectY)
+bool UIManager::InsideUI(int _handle, float _objectX, float _objectY)
 {
 	bool isInsideX{}, isInsideY{};
-	for (auto& ui : mUIList)
+	for (const auto& ui : mUIList)
 	{
 		if (ui.handle == _handle)
 		{
@@ -80,5 +80,35 @@ bool UIManager::InsideUI(int _handle, int _objectX, int _objectY)
 		return true;
 	}
 	return false;
+}
+
+void UIManager::GetUIPosition(int _handle, float* _x1, float* _y1, float* _x2, float* _y2)
+{
+	for (const auto& ui : mUIList)
+	{
+		if (ui.handle == _handle)
+		{
+			*_x1 = ui.drawX1;
+			*_y1 = ui.drawY1;
+			*_x2 = ui.drawX2;
+			*_y2 = ui.drawY2;
+			break;
+		}
+	}
+}
+
+void UIManager::SetUIPosition(int _handle, float _x1, float _y1, float _x2, float _y2)
+{
+	for (auto& ui : mUIList)
+	{
+		if (ui.handle == _handle)
+		{
+			ui.drawX1 = _x1;
+			ui.drawY1 = _y1;
+			ui.drawX2 = _x2;
+			ui.drawY2 = _y2;
+			break;
+		}
+	}
 }
 

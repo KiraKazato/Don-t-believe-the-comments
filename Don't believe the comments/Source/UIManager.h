@@ -4,12 +4,12 @@
 
 struct UIData
 {
-    //‰æ‘œ‚Ìhandle‚ğ“ü‚ê‚é
+    //ç”»åƒã®handleã‚’å…¥ã‚Œã‚‹
     int handle;
-    //‚à‚ç‚Á‚½Œ³‚ÌÀ•W
+    //ã‚‚ã‚‰ã£ãŸå…ƒã®åº§æ¨™
     float originalX1, originalY1;
     float originalX2, originalY2;
-    //•\¦‚·‚éÀ•W
+    //è¡¨ç¤ºã™ã‚‹åº§æ¨™
     float drawX1, drawY1;
     float drawX2, drawY2;
 };
@@ -17,30 +17,34 @@ struct UIData
 class UIManager {
 public:
 
-    // UIƒf[ƒ^‚ğV‚µ‚­“o˜^‚·‚éŠÖ”
+    // UIãƒ‡ãƒ¼ã‚¿ã‚’æ–°ã—ãç™»éŒ²ã™ã‚‹é–¢æ•°
     void AddUI(int _handle, float _x1, float _y1, float _x2, float _y2);
 
-    // “o˜^‚³‚ê‚Ä‚¢‚é‚·‚×‚Ä‚ÌUI‚ğˆêŠ‡‚ÅŒvZE•`‰æ‚·‚éŠÖ”
+    // ç™»éŒ²ã•ã‚Œã¦ã„ã‚‹ã™ã¹ã¦ã®UIã‚’ä¸€æ‹¬ã§è¨ˆç®—ãƒ»æç”»ã™ã‚‹é–¢æ•°
     void DrawUI();
 
-    // ƒf[ƒ^‚ğ‚·‚×‚ÄƒNƒŠƒA‚·‚éŠÖ”iƒV[ƒ“Ø‚è‘Ö‚¦‚È‚Çj
+    // ãƒ‡ãƒ¼ã‚¿ã‚’ã™ã¹ã¦ã‚¯ãƒªã‚¢ã™ã‚‹é–¢æ•°ï¼ˆã‚·ãƒ¼ãƒ³åˆ‡ã‚Šæ›¿ãˆæ™‚ãªã©ï¼‰
     void ClearUI();
 
-    //‚»‚Ì‰æ‘œ‚Ì‘å‚«‚³•ÏX
+    //ãã®ç”»åƒã®å¤§ãã•å¤‰æ›´
     void ChangeUISize(int _handle, float _ratio);
 
-    //‘å‚«‚³‚ğ•ÏX‚µ‚½‰æ‘œ‚ğŒ³‚É–ß‚·
+    //å¤§ãã•ã‚’å¤‰æ›´ã—ãŸç”»åƒã‚’å…ƒã«æˆ»ã™
     void ResetUISize(int _handle);
 
-    //w’èUI‚Ì’†‚É•¨‘Ì‚ª“ü‚Á‚Ä‚¢‚é‚©‚Ì”»’è
+    //æŒ‡å®šUIã®ä¸­ã«ç‰©ä½“ãŒå…¥ã£ã¦ã„ã‚‹ã‹ã®åˆ¤å®š
     bool InsideUI(int _handle, float _objectX, float objexctY_);
 
-    //w’èUI‚ÌÀ•Wæ“¾
+    //æŒ‡å®šUIã®åº§æ¨™å–å¾—
     void GetUIPosition(int _handle, float* _x1, float* _y1, float* _x2, float* _y2);
-    //w’èui‚ÌÀ•W•ÏX
+    //æŒ‡å®šuiã®åº§æ¨™å¤‰æ›´
     void SetUIPosition(int _handle, float _x1, float _y1, float _x2, float _y2);
 
+     //æŒ‡å®šç”»åƒã®åº§æ¨™å–å¾—
+     //int GetUIPosition()
+     //æŒ‡å®šç”»åƒã®åº§æ¨™å¤‰æ›´
+    
 private:
-    //•¡”‚ÌUIƒf[ƒ^‚ğ‚Ü‚Æ‚ß‚Ä•ÛŠÇ‚µ‚Ä‚¨‚­ƒŠƒXƒg
+    //è¤‡æ•°ã®UIãƒ‡ãƒ¼ã‚¿ã‚’ã¾ã¨ã‚ã¦ä¿ç®¡ã—ã¦ãŠããƒªã‚¹ãƒˆ
     std::vector<UIData> mUIList;
 };

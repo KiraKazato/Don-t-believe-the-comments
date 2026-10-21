@@ -9,6 +9,7 @@ public:    // enum, struct などの定義
 	enum SOUND_BGM
 	{
 		BGM_TITLE = 0, //タイトル画面
+		BGM_SETTING
 
 	};
 	//SEの種類
@@ -50,7 +51,7 @@ public:    //サウンド生成系
 
 	
 
-private://自分で追加
+public://自分で追加
 
 	//0~100で入力
 	void ChangeSEVolume(int volume);

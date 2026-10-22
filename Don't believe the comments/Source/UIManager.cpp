@@ -2,6 +2,13 @@
 
 void UIManager::AddUI(int _handle, float _x1, float _y1, float _x2, float _y2)
 {
+	for (const auto& ui : mUIList)
+	{
+		if (_handle == ui.handle)
+		{
+			return;
+		}
+	}
 	mUIList.push_back({ _handle,_x1,_y1,_x2,_y2,_x1,_y1,_x2,_y2 });
 }
 

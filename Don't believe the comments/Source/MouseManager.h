@@ -18,7 +18,7 @@ public:
 	void Draw();
 
 	//マウスの場所
-	int GetMousePosition(int* X, int* Y);
+	void GetMousePosition(int* X, int* Y);
 
 	//左クリックしたか
 	bool IsLeftClick();

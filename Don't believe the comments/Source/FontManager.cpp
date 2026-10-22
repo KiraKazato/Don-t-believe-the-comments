@@ -18,7 +18,7 @@ void FontManager::Initialize()
 	LoadInputFont(FONT_TETUBINN, "07“S•rƒSƒVƒbƒN", "Resource/Font/TetubinGosikku.ttf");
 }
 
-void FontManager::LoadInputFont(Font tag, const char* _fontName, LPCSTR _fileName)
+void FontManager::LoadInputFont(Font tag, const char* _fontName,const LPCSTR&_fileName)
 {
 	AddFontResourceExA(_fileName, FR_PRIVATE, NULL);
 

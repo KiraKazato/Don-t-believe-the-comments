@@ -10,7 +10,7 @@
 #include "QuestionManager.h"
 #include "UIManager.h"
 #include "MouseManager.h"
-
+#include "CommenterManager.h"
 /**
 * @note リファレンス https://dxlib.xsrv.jp/dxfunc.html
 */
@@ -24,6 +24,7 @@ FontManager* Master::mpFontManager = new FontManager();
 QuestionManager* Master::mpQuestionManager = new QuestionManager();
 UIManager* Master::mpUIManager = new UIManager();
 MouseManager* Master::mpMouseManager = new MouseManager();
+CommenterManager* Master::mpCommenterManager = new CommenterManager();
 
 /**
 * @fn WinMain
@@ -61,6 +62,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	Master::mpSceneManager->Initialize(); 
 	//エフェクトマネージャーの初期化
 	Master::mpEffectManager->Initalize();
+	//コメンターマネージャーの初期化
+	Master::mpCommenterManager->Initialize();
 	
 
 
@@ -113,6 +116,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	delete Master::mpQuestionManager;
 	delete Master::mpUIManager;
 	delete Master::mpMouseManager;
+	Master::mpCommenterManager->Finalize();
+	delete Master::mpCommenterManager;
 
 
 	Effkseer_End();

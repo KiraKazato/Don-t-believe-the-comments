@@ -144,6 +144,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\LevelSelectScene.cpp" />
+    <ClCompile Include="Source\Commenter.cpp" />
+    <ClCompile Include="Source\CommenterManager.cpp" />
     <ClCompile Include="Source\MouseManager.cpp" />
     <ClCompile Include="Source\SettingScene.cpp" />
     <ClCompile Include="Source\TextInputManager.cpp" />
@@ -162,10 +164,13 @@
     <ClCompile Include="Source\Texture.cpp" />
     <ClCompile Include="Source\TextureAnimation.cpp" />
     <ClCompile Include="Source\TitleScene.cpp" />
+    <ClCompile Include="Source\Typing.cpp" />
     <ClCompile Include="Source\UIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\LevelSelectScene.h" />
+    <ClInclude Include="Source\Commenter.h" />
+    <ClInclude Include="Source\CommenterManager.h" />
     <ClInclude Include="Source\MouseManager.h" />
     <ClInclude Include="Source\SettingScene.h" />
     <ClInclude Include="Source\TextInputManager.h" />
@@ -185,6 +190,7 @@
     <ClInclude Include="Source\Texture.h" />
     <ClInclude Include="Source\TextureAnimation.h" />
     <ClInclude Include="Source\TitleScene.h" />
+    <ClInclude Include="Source\Typing.h" />
     <ClInclude Include="Source\UIManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

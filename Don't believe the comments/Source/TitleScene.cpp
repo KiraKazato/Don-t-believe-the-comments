@@ -2,9 +2,9 @@
 #include "Master.h"
 
 TitleScene::TitleScene()
-	:titleBackGroundHandle(-1)
-	, startBottonHandle(-1)
-	, settingBottonHandle(-1)
+	:mnTitleBackGroundHandle(-1)
+	, mnStartBottonHandle(-1)
+	, mnSettingBottonHandle(-1)
 {
 }
 
@@ -15,26 +15,26 @@ TitleScene::~TitleScene()
 
 void TitleScene::Initialize()
 {
-	//ƒnƒ“ƒhƒ‹‚ÌŽæ“¾‚ÆUIManaer‚Ö‚Ì’Ç‰Á
-	titleBackGroundHandle = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/TitleBackGround.png");
-	startBottonHandle = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/StartButton.png");
-	settingBottonHandle = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/SettingButton.png");
-	Master::mpUIManager->AddUI(titleBackGroundHandle, 0, 0, Master::Width, Master::Height);
-	Master::mpUIManager->AddUI(startBottonHandle, Master::gridWidth * 30, Master::gridHeight * 90, Master::gridWidth * 57, Master::gridHeight * 107);
-	Master::mpUIManager->AddUI(settingBottonHandle, Master::gridWidth * 63, Master::gridHeight * 90, Master::gridWidth * 90, Master::gridHeight * 107);
+	//ãƒãƒ³ãƒ‰ãƒ«ã®å–å¾—ã¨UIManaerã¸ã®è¿½åŠ 
+	mnTitleBackGroundHandle = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/TitleBackGround.png");
+	mnStartBottonHandle = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/StartButton.png");
+	mnSettingBottonHandle = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/SettingButton.png");
+	Master::mpUIManager->AddUI(mnTitleBackGroundHandle, 0, 0, Master::Width, Master::Height);
+	Master::mpUIManager->AddUI(mnStartBottonHandle, Master::gridWidth * 30, Master::gridHeight * 90, Master::gridWidth * 57, Master::gridHeight * 107);
+	Master::mpUIManager->AddUI(mnSettingBottonHandle, Master::gridWidth * 63, Master::gridHeight * 90, Master::gridWidth * 90, Master::gridHeight * 107);
 }
 
 void TitleScene::Update()
 {
-	//ƒ}ƒEƒXÀ•WŽó‚¯Žæ‚è
-	Master::mpMouseManager->GetMousePosition(&MouseX, &MouseY);
+	//ãƒžã‚¦ã‚¹åº§æ¨™å—ã‘å–ã‚Š
+	Master::mpMouseManager->GetMousePosition(&mnMouseX, &mnMouseY);
 	
-	//ƒ}ƒEƒX‚ªƒ{ƒ^ƒ“‚Ì”ÍˆÍ“à‚¾‚Á‚½‚ç
-	if (Master::mpUIManager->InsideUI(startBottonHandle,MouseX,MouseY))
+	//ãƒžã‚¦ã‚¹ãŒãƒœã‚¿ãƒ³ã®ç¯„å›²å†…ã ã£ãŸã‚‰
+	if (Master::mpUIManager->InsideUI(mnStartBottonHandle,(float)mnMouseX,(float)mnMouseY))
 	{
-		//­‚µŠg‘å
-		Master::mpUIManager->ChangeUISize(startBottonHandle, 1.1f);
-		//¶ƒNƒŠƒbƒN‰Ÿ‚³‚ê‚½‚Æ‚«
+		//å°‘ã—æ‹¡å¤§
+		Master::mpUIManager->ChangeUISize(mnStartBottonHandle, 1.1f);
+		//å·¦ã‚¯ãƒªãƒƒã‚¯æŠ¼ã•ã‚ŒãŸã¨ã
 		if (Master::mpMouseManager->IsLeftClick())
 		{
 			Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_SELECT);
@@ -42,16 +42,16 @@ void TitleScene::Update()
 	}
 	else
 	{
-		//Œ³‚Ì‘å‚«‚³‚É–ß‚µ‚Ä‚¨‚­
-		Master::mpUIManager->ResetUISize(startBottonHandle);
+		//å…ƒã®å¤§ãã•ã«æˆ»ã—ã¦ãŠã
+		Master::mpUIManager->ResetUISize(mnStartBottonHandle);
 	}
 
 
-	//ƒ}ƒEƒX‚ªƒ{ƒ^ƒ“‚Ì”ÍˆÍ“à‚¾‚Á‚½‚ç
-	if (Master::mpUIManager->InsideUI(settingBottonHandle, MouseX, MouseY))
+	//ãƒžã‚¦ã‚¹ãŒãƒœã‚¿ãƒ³ã®ç¯„å›²å†…ã ã£ãŸã‚‰
+	if (Master::mpUIManager->InsideUI(mnSettingBottonHandle, (float)mnMouseX, (float)mnMouseY))
 	{
-		//­‚µŠg‘å
-		Master::mpUIManager->ChangeUISize(settingBottonHandle, 1.1f);
+		//å°‘ã—æ‹¡å¤§
+		Master::mpUIManager->ChangeUISize(mnSettingBottonHandle, 1.1f);
 		if (Master::mpMouseManager->IsLeftClick())
 		{
 			Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_SETTING);
@@ -59,8 +59,8 @@ void TitleScene::Update()
 	}
 	else
 	{
-		//Œ³‚Ì‘å‚«‚³‚É–ß‚µ‚Ä‚¨‚­
-		Master::mpUIManager->ResetUISize(settingBottonHandle);
+		//å…ƒã®å¤§ãã•ã«æˆ»ã—ã¦ãŠã
+		Master::mpUIManager->ResetUISize(mnSettingBottonHandle);
 	}
 
 	Scene::Update();

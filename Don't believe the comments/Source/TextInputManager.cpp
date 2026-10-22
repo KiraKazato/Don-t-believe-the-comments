@@ -1,4 +1,5 @@
-#include "TextInputManager.h"
+ï»¿#include "TextInputManager.h"
+#include "Typing.h"
 #include "DxLib.h"
 
 TextInputManager::TextInputManager()
@@ -14,76 +15,92 @@ void TextInputManager::Initialize(int _fontHandle)
 {
 	mnFontHandle = _fontHandle;
 
-	SetKeyInputStringFont(_fontHandle);
+	//SetKeyInputStringFont(_fontHandle);
 
-	mnInputHandle = MakeKeyInput(sizeof(mInputString) - 1, TRUE, FALSE, FALSE);
+	//mnInputHandle = MakeKeyInput(sizeof(mInputString) - 1, TRUE, TRUE, FALSE);
 
-	SetKeyInputStringColor2(DX_KEYINPSTRCOLOR_IME_STR_BACK, KEYINPUUT_BACK_COLOR);			// •sŠm’è•¶š—ñ‚Ì”wŒiF•ÏX
-	SetKeyInputStringColor2(DX_KEYINPSTRCOLOR_IME_CONV_WIN_STR, KEYINPUUT_BACK_COLOR);		// •ÏŠ·’†•¶š—ñ‚Ì”wŒiF•ÏX
-	
-	SetKeyInputStringColor2(DX_KEYINPSTRCOLOR_NORMAL_STR, KEYINPUUT_STRING_COLOR);	// “ü—Í•¶š‚ÌF•ÏX
-	SetKeyInputStringColor2(DX_KEYINPSTRCOLOR_IME_STR, KEYINPUUT_STRING_COLOR);		// “ü—Í’†•¶š—ñ‚ÌF•ÏX
+	//SetKeyInputStringColor2(DX_KEYINPSTRCOLOR_IME_STR_BACK, KEYINPUT_BACK_COLOR);			// ä¸ç¢ºå®šæ–‡å­—åˆ—ã®èƒŒæ™¯è‰²å¤‰æ›´
+	//SetKeyInputStringColor2(DX_KEYINPSTRCOLOR_IME_CONV_WIN_STR, KEYINPUT_BACK_COLOR);		// å¤‰æ›ä¸­æ–‡å­—åˆ—ã®èƒŒæ™¯è‰²å¤‰æ›´
 
-	SetInputStringMaxLengthIMESync(TRUE);
+	//SetKeyInputStringColor2(DX_KEYINPSTRCOLOR_NORMAL_STR, KEYINPUT_STRING_COLOR);	// å…¥åŠ›æ–‡å­—ã®è‰²å¤‰æ›´
+	//SetKeyInputStringColor2(DX_KEYINPSTRCOLOR_IME_STR, KEYINPUT_STRING_COLOR);		// å…¥åŠ›ä¸­æ–‡å­—åˆ—ã®è‰²å¤‰æ›´
 
-	SetActiveKeyInput(mnInputHandle);
+	//// å¤‰æ›ä¸­æ–‡å­—åˆ—ã‚‚æ–‡å­—æ•°åˆ¶é™ã®ä¸­ã«å…¥ã‚Œã‚‹
+	//SetInputStringMaxLengthIMESync(TRUE);
+
+	//// å…¥åŠ›ãƒ¢ãƒ¼ãƒ‰ã«ã™ã‚‹
+	//SetActiveKeyInput(mnInputHandle);
 }
 
 void TextInputManager::Draw()
 {
+	if (mbIsFinal)
+	{
+		return;
+	}
+
 	if (mnKeyInputState == 0)
 	{
-		char tmpStr[sizeof(mInputString)]{};
-		const IMEINPUTDATA* IMEData = GetIMEInputData();	// “ü—Í’†i•ÏŠ·’†jƒf[ƒ^æ“¾
-
-		GetKeyInputString(tmpStr, mnInputHandle);	// “ü—Íi•ÏŠ·Œˆ’èÏ‚İjƒf[ƒ^æ“¾
-
-		// 1. Šm’è•¶š—ñ‚Æ•ÏŠ·’†•¶š—ñ‚ğŒ‹‡‚µ‚Äu‘S‘Ì‚Ì•¶š—ñv‚ğì‚é
-		char displayText[sizeof(mInputString)] = "";
-		strcpy_s(displayText, sizeof(displayText), tmpStr);
-		if (IMEData != nullptr)
-		{
-			strcat_s(displayText, sizeof(displayText), IMEData->InputString);
-		}
-
-		// ‰¡•
-		int width = GetDrawFormatStringWidthToHandle(mnFontHandle, "%s", displayText);
-
-		DrawKeyInputString(mnKeyInputDrawX - (width / 2), mnKeyInputDrawY, mnInputHandle, FALSE);
+		// ã‚µã‚¤ã‚ºè¨ˆæ¸¬
+		int width = 0, height = 0;
+		int cursorLineX = 0;
+		GetDrawFormatStringSizeToHandle(&width, &height, NULL, mnFontHandle, "%s", mOutputString.c_str());
+		int centerX = (mnKeyInputDrawX - (width / 2));
+		cursorLineX = centerX + GetDrawFormatStringWidthToHandle(mnFontHandle, "ã‚") * mnDrawCursorPosition; // ã‚«ãƒ¼ã‚½ãƒ«ä½ç½®ã‚’è¨ˆç®—
+		
+		// ã‚µã‚¤ã‚ºã«åˆã‚ã›ã¦ä¸­å¤®è¡¨ç¤º
+		DrawFormatStringToHandle(centerX, mnKeyInputDrawY, KEYINPUT_STRING_COLOR, mnFontHandle, "%s", mOutputString.c_str());
+		DrawLine(cursorLineX, mnKeyInputDrawY, cursorLineX, mnKeyInputDrawY + height, GetColor(128, 128, 128), 2);
 	}
 }
 
 void TextInputManager::Update()
 {
-	// “ü—Ío—ˆ‚½‚©Šm”F
-	mnKeyInputState = CheckKeyInput(mnInputHandle);
-
-	if (mnKeyInputState == 1)
+	if (mbIsFinal)
 	{
-		GetKeyInputString(mInputString, mnInputHandle);
 		return;
 	}
-	
-	if (!mbIsPause)
-		return;
 
-	// ƒ|[ƒY‚µ‚½‚Ìˆ—
-	if (mnKeyInputState == 2)	// ƒLƒƒƒ“ƒZƒ‹
+	// å…¥åŠ›å‡ºæ¥ãŸã‹ç¢ºèª
+	//mnKeyInputState = CheckKeyInput(mnInputHandle);
+	if (CheckHitKey(KEY_INPUT_RETURN))
 	{
-		mbIsPause = true;
-		
-		// “r’†‚Ü‚Å‚Ì“ü—Í‚ğ“ü‚ê‚é
-		GetKeyInputString(mPauseInputString, mnInputHandle);
+		mnKeyInputState = 1;
+		if (mInputString == "/p" || mInputString == "/ï½" || mInputString == "ãƒ»p" || mInputString == "ãƒ»ï½")
+		{
+			mbIsPause = true;
+			mnKeyInputState = 2;
+		}
+	}
 
-		// ƒ|[ƒY‚µ‚½•¶š‚ğ“ü‚ê‚é
-		SetKeyInputString(mPauseInputString, mnInputHandle);
+	if(mnKeyInputState == 0)
+	{
+		// æŠ¼ã—ãŸãƒœã‚¿ãƒ³ï¼ˆå…¥åŠ›ã—ãŸæ–‡å­—ï¼‰ã‚’å¾—ã‚‹
+		char inputChar = GetInputChar(TRUE);
+
+		// 
+		if (inputChar != 0)
+		{
+			ControllInput(inputChar);
+		}
+	}
+
+	if (!mbIsPause)
+	{
+		return;
+	}
+
+	// ãƒãƒ¼ã‚ºã—ãŸæ™‚ã®å‡¦ç†
+	if (mnKeyInputState == 2)	// ã‚­ãƒ£ãƒ³ã‚»ãƒ«æ™‚
+	{
+		// æ°—ãŒå‘ã„ãŸã‚‰æ›¸ã
 	}
 }
 
 void TextInputManager::Finalize()
 {
-	DeleteKeyInput(mnInputHandle);
-	mnInputHandle = -1;
+	// ã‚²ãƒ¼ãƒ ãŒçµ‚äº†ã—ãŸã“ã¨ã‚’ä¼ãˆã‚‹
+	mbIsFinal = true;
 }
 
 void TextInputManager::SetKeyInputDrawPosition(int _x, int _y)
@@ -95,10 +112,10 @@ void TextInputManager::SetKeyInputDrawPosition(int _x, int _y)
 void TextInputManager::SetIsPause(bool _flag)
 {
 	mbIsPause = _flag;
-	if (!_flag) 
-	{
-		SetActiveKeyInput(mnInputHandle); 	// Ä“x“ü—Íƒ‚[ƒh‚É‚·‚é
-	}
+	//if (!_flag)
+	//{
+	//	SetActiveKeyInput(mnInputHandle); 	// å†åº¦å…¥åŠ›ãƒ¢ãƒ¼ãƒ‰ã«ã™ã‚‹
+	//}
 }
 
 int TextInputManager::CheckInput() const
@@ -106,22 +123,66 @@ int TextInputManager::CheckInput() const
 	return mnKeyInputState;
 }
 
-const char* TextInputManager::GetInputString() const
+const std::string& TextInputManager::GetInputString() const
 {
-	return mInputString;
+	return mOutputString;
 }
 
 void TextInputManager::ResetState()
 {
-	mnKeyInputState = 0; 
+	mnKeyInputState = 0;
 }
 
 void TextInputManager::ResetInput()
 {
-	for (size_t i = 0; i < sizeof(mInputString); i++)
+	mInputString = "";
+	mOutputString = "";
+}
+
+void TextInputManager::ControllInput(char _input)
+{
+	// å…¨è§’æ–‡å­—ã®æ•°
+	bool isStringMaxLength = (mOutputString.size() <= static_cast<size_t>(KETINPUT_STRING_MAX_LENGTH_FULL_CHARACTOR * 2 + 1));
+	if (_input >= CTRL_CODE_CMP)
 	{
-		mInputString[i] = mPauseInputString[i] = '\0';
+		if (!isStringMaxLength)
+		{
+			return;
+		}
+		// å…¥åŠ›ã‚’åŠ ãˆã‚‹ãŸã ã—ã€ã‚¹ãƒšãƒ¼ã‚¹ã¯ç„¡è¦–ã™ã‚‹
+		if (_input != ' ')
+			mInputString += _input;
+		// å…¥åŠ›ã‚’å¤‰æ›
+		mOutputString = mTyping.KanaDictionary(mInputString);
+
+		mTyping.KanaNormalize(mOutputString);
+
+		mInputString = mTyping.GetRoma();
+		mOutputString = mTyping.GetKana();
+
+		if (!mTyping.GetConvertionUnits().empty())
+			mnDrawCursorPosition = mTyping.GetConvertionUnits().back().GetKanaCharEnd();
 	}
-	SetActiveKeyInput(mnInputHandle);
-	SetKeyInputString("", mnInputHandle);
+	else
+	{
+		if (_input == CTRL_CODE_LEFT)
+		{
+			mTyping.ShiftLeftCursor();
+		}
+		else if (_input == CTRL_CODE_RIGHT)
+		{
+			mTyping.ShiftRightCursor();
+		}
+		else if (_input == CTRL_CODE_BS)
+		{
+			mTyping.DeleteChar();
+
+			mInputString = mTyping.GetRoma();
+			mOutputString = mTyping.GetKana();
+		}
+		
+		mnDrawCursorPosition = mTyping.GetCurrentDraw();
+		mnRomaCursorPosition = mTyping.GetCurrentRomaByte();
+		mnKanaCursorPosition = mTyping.GetCurrentKanaByte();
+	}
 }

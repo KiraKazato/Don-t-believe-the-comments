@@ -14,10 +14,10 @@ void UIManager::AddUI(int _handle, float _x1, float _y1, float _x2, float _y2)
 
 void UIManager::DrawUI()
 {
-	//’†g‚ğQÆ‚µ‚Â‚ÂAŸè‚È•ÏXƒoƒO‚ğ‚È‚­‚·
+	//ä¸­èº«ã‚’å‚ç…§ã—ã¤ã¤ã€å‹æ‰‹ãªå¤‰æ›´ãƒã‚°ã‚’ãªãã™
 	for (const auto& ui : mUIList)
 	{
-		//‰æ‘œ‚Ì•\¦
+		//ç”»åƒã®è¡¨ç¤º
 		DrawExtendGraphF(ui.drawX1, ui.drawY1, ui.drawX2, ui.drawY2, ui.handle, TRUE);
 	}
 }
@@ -29,23 +29,23 @@ void UIManager::ClearUI()
 
 void UIManager::ChangeUISize(int _handle, float _ratio)
 {
-	float half = 0.5f;//”¼•ª
-	float centerX, centerY;//ƒIƒŠƒWƒiƒ‹À•W‚Å‚Ì^‚ñ’†
-	float halfWidth, halfHeight;//”ä—¦‚ğ“K—p‚µ‚½À•W‚Ì^‚ñ’†
+	float half = 0.5f;//åŠåˆ†
+	float centerX, centerY;//ã‚ªãƒªã‚¸ãƒŠãƒ«åº§æ¨™ã§ã®çœŸã‚“ä¸­
+	float halfWidth, halfHeight;//æ¯”ç‡ã‚’é©ç”¨ã—ãŸåº§æ¨™ã®çœŸã‚“ä¸­
 	for (auto& ui : mUIList)
 	{
 		if (ui.handle == _handle)
 		{
-			//XAY‚Ì^‚ñ’†‚ğ‹‚ß‚é
+			//Xã€Yã®çœŸã‚“ä¸­ã‚’æ±‚ã‚ã‚‹
 			centerX = (ui.originalX1 + ui.originalX2) * half;
 			centerY = (ui.originalY1 + ui.originalY2) * half;
-			//Œ³‚Ì•‚ğ‹‚ß‚ÄA”¼•ª‚É‚µA”ä—¦‚ğ‚©‚¯‚éB
+			//å…ƒã®å¹…ã‚’æ±‚ã‚ã¦ã€åŠåˆ†ã«ã—ã€æ¯”ç‡ã‚’ã‹ã‘ã‚‹ã€‚
 			halfWidth = (ui.originalX2 - ui.originalX1) * half * _ratio;
 			halfHeight = (ui.originalY2 - ui.originalY1) * half * _ratio;
-			//Œ³‚Ì^‚ñ’†‚©‚ç”ä—¦“K—p‚µ‚½^‚ñ’†‚©‚ç‚Ì’·‚³‚ğˆø‚­
+			//å…ƒã®çœŸã‚“ä¸­ã‹ã‚‰æ¯”ç‡é©ç”¨ã—ãŸçœŸã‚“ä¸­ã‹ã‚‰ã®é•·ã•ã‚’å¼•ã
 			ui.drawX1 = centerX - halfWidth;
 			ui.drawY1 = centerY - halfHeight;
-			//Œ³‚Ì^‚ñ’†‚É”ä—¦“K—p‚µ‚½^‚ñ’†‚©‚ç‚Ì’·‚³‚ğ‘«‚·
+			//å…ƒã®çœŸã‚“ä¸­ã«æ¯”ç‡é©ç”¨ã—ãŸçœŸã‚“ä¸­ã‹ã‚‰ã®é•·ã•ã‚’è¶³ã™
 			ui.drawX2 = centerX + halfWidth;
 			ui.drawY2 = centerY + halfHeight;
 			break;
@@ -69,7 +69,7 @@ void UIManager::ResetUISize(int _handle)
 	}
 }
 
-bool UIManager::InsideUI(int _handle, int _objectX, int _objectY)
+bool UIManager::InsideUI(int _handle, float _objectX, float _objectY)
 {
 	bool isInsideX{}, isInsideY{};
 	for (const auto& ui : mUIList)
@@ -101,6 +101,32 @@ void UIManager::EraseUI(int _handle)
 		else
 		{
 			++ui;
+void UIManager::GetUIPosition(int _handle, float* _x1, float* _y1, float* _x2, float* _y2)
+{
+	for (const auto& ui : mUIList)
+	{
+		if (ui.handle == _handle)
+		{
+			*_x1 = ui.drawX1;
+			*_y1 = ui.drawY1;
+			*_x2 = ui.drawX2;
+			*_y2 = ui.drawY2;
+			break;
+		}
+	}
+}
+
+void UIManager::SetUIPosition(int _handle, float _x1, float _y1, float _x2, float _y2)
+{
+	for (auto& ui : mUIList)
+	{
+		if (ui.handle == _handle)
+		{
+			ui.drawX1 = _x1;
+			ui.drawY1 = _y1;
+			ui.drawX2 = _x2;
+			ui.drawY2 = _y2;
+			break;
 		}
 	}
 }

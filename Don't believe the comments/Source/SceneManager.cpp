@@ -4,6 +4,7 @@
 #include "GameScene.h"
 #include "DxLib.h"
 #include "SettingScene.h"
+#include"LevelSelectScene.h"
 
 SceneManager::SceneManager()
 	:mnSceneType(SCENE_TYPE::SCENE_NONE)
@@ -76,6 +77,9 @@ void SceneManager::ChageSceneIfNeeded()
 		break;
 	case SCENE_TYPE::SCENE_SETTING:
 		mpCurrentScene = new SettingScene();
+		break;
+	case SCENE_TYPE::SCENE_SELECT:
+		mpCurrentScene = new LevelSelectScene();
 		break;
 	default:
 		break;

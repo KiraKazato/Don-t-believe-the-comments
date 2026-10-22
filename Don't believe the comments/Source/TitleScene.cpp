@@ -33,17 +33,17 @@ void TitleScene::Update()
 	if (Master::mpUIManager->InsideUI(startBottonHandle,MouseX,MouseY))
 	{
 		//­‚µŠg‘å
-		Master::mpUIManager->ChangeSize(startBottonHandle, 1.1f);
+		Master::mpUIManager->ChangeUISize(startBottonHandle, 1.1f);
 		//¶ƒNƒŠƒbƒN‰Ÿ‚³‚ê‚½‚Æ‚«
 		if (Master::mpMouseManager->IsLeftClick())
 		{
-			Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_GAME);
+			Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_SELECT);
 		}
 	}
 	else
 	{
 		//Œ³‚Ì‘å‚«‚³‚É–ß‚µ‚Ä‚¨‚­
-		Master::mpUIManager->ResetSize(startBottonHandle);
+		Master::mpUIManager->ResetUISize(startBottonHandle);
 	}
 
 
@@ -51,7 +51,7 @@ void TitleScene::Update()
 	if (Master::mpUIManager->InsideUI(settingBottonHandle, MouseX, MouseY))
 	{
 		//­‚µŠg‘å
-		Master::mpUIManager->ChangeSize(settingBottonHandle, 1.1f);
+		Master::mpUIManager->ChangeUISize(settingBottonHandle, 1.1f);
 		if (Master::mpMouseManager->IsLeftClick())
 		{
 			Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_SETTING);
@@ -60,7 +60,7 @@ void TitleScene::Update()
 	else
 	{
 		//Œ³‚Ì‘å‚«‚³‚É–ß‚µ‚Ä‚¨‚­
-		Master::mpUIManager->ResetSize(settingBottonHandle);
+		Master::mpUIManager->ResetUISize(settingBottonHandle);
 	}
 
 	Scene::Update();

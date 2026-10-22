@@ -1,6 +1,7 @@
 #pragma once
 #include"DxLib.h"
 #include"Scene.h"
+#include "Master.h"
 
 class LevelSelectScene :public Scene
 {
@@ -41,4 +42,8 @@ private:
 	int mouseX{};
 	int mouseY{};
 
+	float stageButtonPositionX1 = Master::gridWidth * 48;
+	float stageButtonPositionX2 = Master::gridWidth * 73;
+	float stageButtonPositionY1 = Master::gridHeight * 56;
+	float stageButtonPositionY2 = Master::gridHeight * 95;
 };

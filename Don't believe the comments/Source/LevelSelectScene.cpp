@@ -35,7 +35,7 @@ void LevelSelectScene::Initialize()
 	//”wŒi‚ÌÝ’u
 	Master::mpUIManager->AddUI(selectBackGroundGraph, 0, 0, Master::Width, Master::Height);
 
-	Master::mpUIManager->AddUI(day1ButtonGraph, Master::gridWidth * 48, Master::gridHeight * 56, Master::gridWidth * 73, Master::gridHeight * 95);
+	Master::mpUIManager->AddUI(day1ButtonGraph, stageButtonPositionX1, stageButtonPositionY1, stageButtonPositionX2, stageButtonPositionY2);
 
 	Master::mpUIManager->AddUI(rightArrowGraph, Master::gridWidth * 78, Master::gridHeight * 69, Master::gridWidth * 84, Master::gridHeight * 80);
 
@@ -85,7 +85,7 @@ void LevelSelectScene::Update()
 
 
 				//comingsoon‰æ‘œ‚Æ¶–îˆó‰æ‘œ‚ðAdd
-				Master::mpUIManager->AddUI(comingSoonGraph, Master::gridWidth * 48, Master::gridHeight * 56, Master::gridWidth * 73, Master::gridHeight * 95);
+				Master::mpUIManager->AddUI(comingSoonGraph, stageButtonPositionX1, stageButtonPositionY1, stageButtonPositionX2, stageButtonPositionY2);
 				Master::mpUIManager->AddUI(leftArrowGraph, Master::gridWidth * 37, Master::gridHeight * 69, Master::gridWidth * 43, Master::gridHeight * 80);
 			}
 		}

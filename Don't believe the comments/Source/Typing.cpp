@@ -671,51 +671,51 @@ void Typing::DeleteChar()
 	mnCurrentDraw--;
 }
 
-void Typing::ShiftLeftCursor()
-{
-	// 変換などが何もない時
-	if (mConvertionUnits.empty())
-	{
-		return;
-	}
-
-	if (mnCurrentDraw <= 0)
-	{
-		return;
-	}
-
-	// 前位置を求める
-	int position = --mnCurrentDraw;
-
-	// そのカーソル位置の情報を得る
-	const auto& unit = mConvertionUnits.at(static_cast<size_t>(position));
-
-	mnCurrentRomaByte -= unit.romaLength;
-	mnCurrentKanaByte -= unit.kanaLength;
-}
-
-void Typing::ShiftRightCursor()
-{
-	// 変換などが何もない時
-	if (mConvertionUnits.empty())
-	{
-		return;
-	}
-
-	if (mConvertionUnits.size() <= (static_cast<size_t>(mnCurrentDraw)))
-	{
-		return;
-	}
-
-	// 次位置を求める
-	int position = mnCurrentDraw++;
-
-	// そのカーソル位置の情報を得る
-	const auto& unit = mConvertionUnits.at(static_cast<size_t>(position));
-	
-	mnCurrentRomaByte += unit.romaLength;
-	mnCurrentKanaByte += unit.kanaLength;
-}
+//void Typing::ShiftLeftCursor()
+//{
+//	// 変換などが何もない時
+//	if (mConvertionUnits.empty())
+//	{
+//		return;
+//	}
+//
+//	if (mnCurrentDraw <= 0)
+//	{
+//		return;
+//	}
+//
+//	// 前位置を求める
+//	int position = --mnCurrentDraw;
+//
+//	// そのカーソル位置の情報を得る
+//	const auto& unit = mConvertionUnits.at(static_cast<size_t>(position));
+//
+//	mnCurrentRomaByte -= unit.romaLength;
+//	mnCurrentKanaByte -= unit.kanaLength;
+//}
+//
+//void Typing::ShiftRightCursor()
+//{
+//	// 変換などが何もない時
+//	if (mConvertionUnits.empty())
+//	{
+//		return;
+//	}
+//
+//	if (mConvertionUnits.size() <= (static_cast<size_t>(mnCurrentDraw)))
+//	{
+//		return;
+//	}
+//
+//	// 次位置を求める
+//	int position = mnCurrentDraw++;
+//
+//	// そのカーソル位置の情報を得る
+//	const auto& unit = mConvertionUnits.at(static_cast<size_t>(position));
+//	
+//	mnCurrentRomaByte += unit.romaLength;
+//	mnCurrentKanaByte += unit.kanaLength;
+//}
 
 void Typing::AddConvertion(int _romaLength, int _kanaLength, int _addRomaBegin, int _addKanaBegin, int _addKanaCharLength)
 {

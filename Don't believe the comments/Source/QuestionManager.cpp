@@ -183,7 +183,9 @@ const std::vector<std::string> QuestionManager::LoadComment(std::stringstream& _
 		size_t pos = 0;
 
 		// 処理をする上で {～ というようになっているため削除
-		while ((pos = _cell.find("{")) != std::string::npos)
+		// whileにした場合、文字コード関係で別の文字の削除が起きるため
+		// ifにして一つの削除のみにする
+		if ((pos = _cell.find("{")) != std::string::npos)
 		{
 			_cell.replace(pos, 1, "");
 		}

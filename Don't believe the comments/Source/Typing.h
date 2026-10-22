@@ -130,10 +130,10 @@ public:
 	void DeleteChar();
 
 	// カーソル位置左移動
-	void ShiftLeftCursor();
+	//void ShiftLeftCursor();
 
 	// カーソル位置右移動
-	void ShiftRightCursor();
+	//void ShiftRightCursor();
 
 	// 変換確認とその情報の追加
 	void AddConvertion(int _romaLength, int _kanaLength, int _addRomaBegin, int _addKanaBegin, int _addKanaCharLength);
@@ -151,12 +151,12 @@ public:
 	const std::string& GetRoma() const;	// ローマ字取得
 	const std::string& GetKana() const;	// かな文字取得
 
-	void ClearString();
+	void ClearString();	// 文字列削除
 
 	// 変換した文字列の確認
 private:
-	std::vector<ConversionUnit> mConvertionUnits{};
-	ConversionUnit mInConvertion{};
+	std::vector<ConversionUnit> mConvertionUnits{};		// 変換単位リスト
+	ConversionUnit mInConvertion{};		// 変換単位
 
 	// 文字列の情報カウント
 private:

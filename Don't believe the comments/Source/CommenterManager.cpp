@@ -58,7 +58,22 @@ void CommenterManager::LoadTemplateComment(const std::string& _filepath)
 			line.pop_back();
 		}
 
-		mTemplateComments.push_back(line);
+		std::stringstream ss(line);
+		std::string cell;
+
+		std::string comment = "";
+		int commentNumber = 0;
+
+		if (std::getline(ss,cell,','))
+		{
+			comment = cell;
+		}
+		if (std::getline(ss,cell,','))
+		{
+			commentNumber = std::stoi(cell);
+		}
+
+		mTemplateComments.emplace_back(comment, commentNumber);
 	}
 }
 
@@ -169,7 +184,7 @@ std::string CommenterManager::GetDisplayComment(int _state)
 		if (!mbQuestionStarted || (rate < 0.6f && !mTemplateComments.empty()))
 		{
 			index = GetRand(static_cast<int>(mTemplateComments.size() - 1));
-			return mTemplateComments[index];
+			return mTemplateComments[index].first;
 		}
 
 		const auto comments = (_state == 0) ? Master::mpQuestionManager->GetQuestionData().trueComment : Master::mpQuestionManager->GetQuestionData().falseComment;

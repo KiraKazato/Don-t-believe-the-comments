@@ -46,7 +46,7 @@ void TextInputManager::Draw()
 		int cursorLineX = 0;
 		GetDrawFormatStringSizeToHandle(&width, &height, NULL, mnFontHandle, "%s", mOutputString.c_str());
 		int centerX = (mnKeyInputDrawX - (width / 2));
-		cursorLineX = centerX + GetDrawFormatStringWidthToHandle(mnFontHandle, "あ") * mnDrawCursorPosition; // カーソル位置を計算
+		cursorLineX = centerX + GetDrawFormatStringWidthToHandle(mnFontHandle, "%s",mOutputString.c_str()); // カーソル位置を計算
 		
 		// サイズに合わせて中央表示
 		DrawFormatStringToHandle(centerX, mnKeyInputDrawY, KEYINPUT_STRING_COLOR, mnFontHandle, "%s", mOutputString.c_str());

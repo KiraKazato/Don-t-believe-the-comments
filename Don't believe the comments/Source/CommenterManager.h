@@ -60,7 +60,7 @@ private:
 	std::vector<Commenter*>mDisplayCommenters;
 
 	//テンプレコメント
-	std::vector<std::string>mTemplateComments;
+	std::vector<std::pair<std::string,int>>mTemplateComments;
 	
 	//名前の配列(使い捨て
 	std::vector<std::string>mCommenterNames;

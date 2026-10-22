@@ -238,15 +238,24 @@ const std::string Typing::KanaDictionary(const std::string& _roma, bool _isNorma
 			}
 			else if(IsNumber(modify))
 			{
-				ret += NumberHalfToFull(modify);
+				ret += modify;
 			}
 	
 			// アルファベット（全角の変換）
-			if (_isNormalize)
+			if (_isNormalize && !IsNumber(modify))
 			{
 				AddConvertion(1, 2, 1, 2, 1);
 				mnCurrentKanaByte += 2;
-				mnCurrentRomaByte += 2;
+				mnCurrentRomaByte += 1;
+				mnCurrentDraw++;
+			}
+			
+			// 数字（半角の変換）
+			if (_isNormalize && IsNumber(modify))
+			{
+				AddConvertion(1, 1, 1, 1, 1);
+				mnCurrentKanaByte += 1;
+				mnCurrentRomaByte += 1;
 				mnCurrentDraw++;
 			}
 		}

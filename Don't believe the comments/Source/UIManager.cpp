@@ -27,7 +27,7 @@ void UIManager::ClearUI()
 	mUIList.clear();
 }
 
-void UIManager::ChangeSize(int _handle, float _ratio)
+void UIManager::ChangeUISize(int _handle, float _ratio)
 {
 	float half = 0.5f;//半分
 	float centerX, centerY;//オリジナル座標での真ん中
@@ -54,7 +54,7 @@ void UIManager::ChangeSize(int _handle, float _ratio)
 }
 
 
-void UIManager::ResetSize(int _handle)
+void UIManager::ResetUISize(int _handle)
 {
 	for (auto&ui : mUIList)
 	{
@@ -72,7 +72,7 @@ void UIManager::ResetSize(int _handle)
 bool UIManager::InsideUI(int _handle, int _objectX, int _objectY)
 {
 	bool isInsideX{}, isInsideY{};
-	for (auto& ui : mUIList)
+	for (const auto& ui : mUIList)
 	{
 		if (ui.handle == _handle)
 		{
@@ -87,5 +87,21 @@ bool UIManager::InsideUI(int _handle, int _objectX, int _objectY)
 		return true;
 	}
 	return false;
+}
+
+void UIManager::EraseUI(int _handle)
+{
+	for (auto ui = mUIList.begin(); ui != mUIList.end();)
+	{
+		if (ui->handle == _handle)
+		{
+			mUIList.erase(ui);
+			break;
+		}
+		else
+		{
+			++ui;
+		}
+	}
 }
 

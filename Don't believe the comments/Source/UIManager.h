@@ -27,18 +27,18 @@ public:
      void ClearUI();
 
      //その画像の大きさ変更
-     void ChangeSize(int _handle, float _ratio);
+     void ChangeUISize(int _handle, float _ratio);
 
      //大きさを変更した画像を元に戻す
-     void ResetSize(int _handle);
+     void ResetUISize(int _handle);
 
      //指定UIの中に物体が入っているかの判定
      bool InsideUI(int _handle, int _objectX, int objexctY_);
 
-     //指定画像の座標取得
-     //int GetUIPosition()
-     //指定画像の座標変更
-    
+     //指定画像をリストから削除
+     void EraseUI(int _handle);
+
+
 private:
      //複数のUIデータをまとめて保管しておくリスト
      std::vector<UIData> mUIList;

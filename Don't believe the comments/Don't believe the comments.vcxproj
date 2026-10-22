@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\LevelSelectScene.cpp" />
     <ClCompile Include="Source\Commenter.cpp" />
     <ClCompile Include="Source\CommenterManager.cpp" />
     <ClCompile Include="Source\MouseManager.cpp" />
@@ -167,6 +168,7 @@
     <ClCompile Include="Source\UIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\LevelSelectScene.h" />
     <ClInclude Include="Source\Commenter.h" />
     <ClInclude Include="Source\CommenterManager.h" />
     <ClInclude Include="Source\MouseManager.h" />

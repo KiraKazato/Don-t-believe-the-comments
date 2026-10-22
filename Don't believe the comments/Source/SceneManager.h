@@ -16,6 +16,7 @@ public:	// enum, struct の定義
 		SCENE_TITLE,	// タイトル
 		SCENE_GAME,	// ゲーム
 		SCENE_SETTING, //設定画面
+		SCENE_SELECT, //難易度設定画面
 	};
 
 public:

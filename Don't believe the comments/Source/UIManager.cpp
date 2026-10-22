@@ -69,7 +69,7 @@ void UIManager::ResetUISize(int _handle)
 	}
 }
 
-bool UIManager::InsideUI(int _handle, float _objectX, float _objectY)
+bool UIManager::InsideUI(int _handle, int _objectX, int _objectY)
 {
 	bool isInsideX{}, isInsideY{};
 	for (const auto& ui : mUIList)
@@ -101,6 +101,11 @@ void UIManager::EraseUI(int _handle)
 		else
 		{
 			++ui;
+
+		}
+	}
+}
+
 void UIManager::GetUIPosition(int _handle, float* _x1, float* _y1, float* _x2, float* _y2)
 {
 	for (const auto& ui : mUIList)

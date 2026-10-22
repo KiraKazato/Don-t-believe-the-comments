@@ -150,16 +150,13 @@ void TextInputManager::ControllInput(char _input)
 		{
 			return;
 		}
-		// 入力を加えるただし、スペースは無視する
-		if (_input != ' ')
+		// 入力を加えるただし、スペース、数字、記号は無視する
+ 		if ((_input != ' ' && (mTyping.IsAlphabet(_input) || mTyping.IsNumber(_input))) || _input == '-')
 			mInputString += _input;
 		// 入力を変換
 		mOutputString = mTyping.KanaDictionary(mInputString);
 
 		mTyping.KanaNormalize(mOutputString);
-
-		mInputString = mTyping.GetRoma();
-		mOutputString = mTyping.GetKana();
 
 		if (!mTyping.GetConvertionUnits().empty())
 			mnDrawCursorPosition = mTyping.GetConvertionUnits().back().GetKanaCharEnd();
@@ -177,13 +174,12 @@ void TextInputManager::ControllInput(char _input)
 		if (_input == CTRL_CODE_BS)
 		{
 			mTyping.DeleteChar();
-
-			mInputString = mTyping.GetRoma();
-			mOutputString = mTyping.GetKana();
 		}
-		
-		mnDrawCursorPosition = mTyping.GetCurrentDraw();
-		mnRomaCursorPosition = mTyping.GetCurrentRomaByte();
-		mnKanaCursorPosition = mTyping.GetCurrentKanaByte();
 	}
+	mnDrawCursorPosition = mTyping.GetCurrentDraw();
+	mnRomaCursorPosition = mTyping.GetCurrentRomaByte();
+	mnKanaCursorPosition = mTyping.GetCurrentKanaByte();
+
+	mInputString = mTyping.GetRoma();
+	mOutputString = mTyping.GetKana();
 }

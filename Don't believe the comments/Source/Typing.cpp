@@ -105,8 +105,6 @@ const std::unordered_map<std::string_view, std::string_view> Typing::KANA_DICTIO
 		{"xtu", "っ"}, {"ltu","っ"},
 
 		{"ca","か"},{"ci","し"},{"cu","く"},{"ce","せ"},{"co","こ"},
-
-		{",","、"}, {".","。"}, {"?","？"}, {"!","！"},{"-","ー"},
 	};
 
 // 逆引き変換辞書。
@@ -149,7 +147,7 @@ const std::unordered_map<std::string_view, std::string_view> Typing::ROMA_DICTIO
 
 	{"ぁ", "xa"},{"ぃ", "xi"},{"ぅ", "xu"},{"ぇ", "xe"},{"ぉ", "xo"},
 
-	{"ー", "-"},{"　"," "},{"、",","},{"。","."},{"？","?"},{"！","!"}
+	{"ー", "-"}
 };
 
 const std::string Typing::KanaDictionary(const std::string& _roma, bool _isNormalize)
@@ -181,11 +179,24 @@ const std::string Typing::KanaDictionary(const std::string& _roma, bool _isNorma
 	{
 		// 小文字に変換
 		int romaLower = tolower(_roma[i]);
-
-		if (!IsAlphabet(romaLower))
+		if (_roma[i] == '-')
 		{
+			ret += "ー";
+			// アルファベット（全角の変換）
+			if (_isNormalize)
+			{
+				AddConvertion(1, 2, 1, 2, 1);
+				mnCurrentKanaByte += 2;
+				mnCurrentRomaByte += 2;
+				mnCurrentDraw++;
+			}
 			continue;
 		}
+
+		/*if (!IsAlphabet(romaLower))
+		{
+			continue;
+		}*/
 
 		// 子音 + 母音の変換
 		if (CharactorConvertion(romaLower, ret, dictionaryTmp, _isNormalize))
@@ -219,7 +230,7 @@ const std::string Typing::KanaDictionary(const std::string& _roma, bool _isNorma
 		for (int i = 0; i < pending.size(); i++)
 		{
 			char modify = pending[i];
-
+	
 			// 変換できない文字は半角を全角に変換して返す
 			if(IsAlphabet(modify))	
 			{
@@ -229,7 +240,7 @@ const std::string Typing::KanaDictionary(const std::string& _roma, bool _isNorma
 			{
 				ret += NumberHalfToFull(modify);
 			}
-
+	
 			// アルファベット（全角の変換）
 			if (_isNormalize)
 			{

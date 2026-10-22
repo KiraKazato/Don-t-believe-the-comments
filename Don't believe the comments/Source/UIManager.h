@@ -35,6 +35,10 @@ public:
     //指定UIの中に物体が入っているかの判定
     bool InsideUI(int _handle, float _objectX, float objexctY_);
 
+     //�w��摜�����X�g����폜
+     void EraseUI(int _handle);
+
+
     //指定UIの座標取得
     void GetUIPosition(int _handle, float* _x1, float* _y1, float* _x2, float* _y2);
     //指定uiの座標変更

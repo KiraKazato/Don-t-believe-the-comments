@@ -12,9 +12,6 @@ public:
 	virtual void Draw()override;
 	virtual void Finalize()override;
 
-
-
-
 private:
 
 	int settingGraph;//İ’è‰æ–Ê‚Ì”wŒiƒnƒ“ƒhƒ‹

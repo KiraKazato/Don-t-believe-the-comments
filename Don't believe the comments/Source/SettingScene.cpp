@@ -239,7 +239,7 @@ void SettingScene::Draw()
 
 	SetFontSize(45);
 
-	DrawString(Master::gridHeight *84, Master::gridWidth * 49, "  âπ  ó   ê›  íË  ", color);
+	DrawString(Master::gridHeight *83, Master::gridWidth * 49, "  âπ  ó   ê›  íË  ", color);
 
 	SetFontSize(size);
 

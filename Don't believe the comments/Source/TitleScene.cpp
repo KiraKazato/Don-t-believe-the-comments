@@ -30,7 +30,7 @@ void TitleScene::Update()
 	Master::mpMouseManager->GetMousePosition(&mnMouseX, &mnMouseY);
 	
 	//マウスがボタンの範囲内だったら
-	if (Master::mpUIManager->InsideUI(mnStartBottonHandle,(float)mnMouseX,(float)mnMouseY))
+	if (Master::mpUIManager->InsideUI(mnStartBottonHandle,mnMouseX,mnMouseY))
 	{
 		//少し拡大
 		Master::mpUIManager->ChangeUISize(mnStartBottonHandle, 1.1f);
@@ -48,7 +48,7 @@ void TitleScene::Update()
 
 
 	//マウスがボタンの範囲内だったら
-	if (Master::mpUIManager->InsideUI(mnSettingBottonHandle, (float)mnMouseX, (float)mnMouseY))
+	if (Master::mpUIManager->InsideUI(mnSettingBottonHandle, mnMouseX, mnMouseY))
 	{
 		//少し拡大
 		Master::mpUIManager->ChangeUISize(mnSettingBottonHandle, 1.1f);

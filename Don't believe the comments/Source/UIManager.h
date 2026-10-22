@@ -33,9 +33,9 @@ public:
     void ResetUISize(int _handle);
 
     //指定UIの中に物体が入っているかの判定
-    bool InsideUI(int _handle, float _objectX, float objexctY_);
+    bool InsideUI(int _handle, int _objectX,int objexctY_);
 
-     //�w��摜�����X�g����폜
+    //指定UIの削除
      void EraseUI(int _handle);
 
 
@@ -44,10 +44,6 @@ public:
     //指定uiの座標変更
     void SetUIPosition(int _handle, float _x1, float _y1, float _x2, float _y2);
 
-     //指定画像の座標取得
-     //int GetUIPosition()
-     //指定画像の座標変更
-    
 private:
     //複数のUIデータをまとめて保管しておくリスト
     std::vector<UIData> mUIList;

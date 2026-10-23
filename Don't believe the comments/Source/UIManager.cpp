@@ -14,10 +14,10 @@ void UIManager::AddUI(int _handle, float _x1, float _y1, float _x2, float _y2)
 
 void UIManager::DrawUI()
 {
-	//ä¸­èº«ã‚’å‚ç…§ã—ã¤ã¤ã€å‹æ‰‹ãªå¤‰æ›´ãƒã‚°ã‚’ãªãã™
+	//’†g‚ğQÆ‚µ‚Â‚ÂAŸè‚È•ÏXƒoƒO‚ğ‚È‚­‚·
 	for (const auto& ui : mUIList)
 	{
-		//ç”»åƒã®è¡¨ç¤º
+		//‰æ‘œ‚Ì•\¦
 		DrawExtendGraphF(ui.drawX1, ui.drawY1, ui.drawX2, ui.drawY2, ui.handle, TRUE);
 	}
 }
@@ -29,23 +29,23 @@ void UIManager::ClearUI()
 
 void UIManager::ChangeUISize(int _handle, float _ratio)
 {
-	float half = 0.5f;//åŠåˆ†
-	float centerX, centerY;//ã‚ªãƒªã‚¸ãƒŠãƒ«åº§æ¨™ã§ã®çœŸã‚“ä¸­
-	float halfWidth, halfHeight;//æ¯”ç‡ã‚’é©ç”¨ã—ãŸåº§æ¨™ã®çœŸã‚“ä¸­
+	float half = 0.5f;//”¼•ª
+	float centerX, centerY;//ƒIƒŠƒWƒiƒ‹À•W‚Å‚Ì^‚ñ’†
+	float halfWidth, halfHeight;//”ä—¦‚ğ“K—p‚µ‚½À•W‚Ì^‚ñ’†
 	for (auto& ui : mUIList)
 	{
 		if (ui.handle == _handle)
 		{
-			//Xã€Yã®çœŸã‚“ä¸­ã‚’æ±‚ã‚ã‚‹
+			//XAY‚Ì^‚ñ’†‚ğ‹‚ß‚é
 			centerX = (ui.originalX1 + ui.originalX2) * half;
 			centerY = (ui.originalY1 + ui.originalY2) * half;
-			//å…ƒã®å¹…ã‚’æ±‚ã‚ã¦ã€åŠåˆ†ã«ã—ã€æ¯”ç‡ã‚’ã‹ã‘ã‚‹ã€‚
+			//Œ³‚Ì•‚ğ‹‚ß‚ÄA”¼•ª‚É‚µA”ä—¦‚ğ‚©‚¯‚éB
 			halfWidth = (ui.originalX2 - ui.originalX1) * half * _ratio;
 			halfHeight = (ui.originalY2 - ui.originalY1) * half * _ratio;
-			//å…ƒã®çœŸã‚“ä¸­ã‹ã‚‰æ¯”ç‡é©ç”¨ã—ãŸçœŸã‚“ä¸­ã‹ã‚‰ã®é•·ã•ã‚’å¼•ã
+			//Œ³‚Ì^‚ñ’†‚©‚ç”ä—¦“K—p‚µ‚½^‚ñ’†‚©‚ç‚Ì’·‚³‚ğˆø‚­
 			ui.drawX1 = centerX - halfWidth;
 			ui.drawY1 = centerY - halfHeight;
-			//å…ƒã®çœŸã‚“ä¸­ã«æ¯”ç‡é©ç”¨ã—ãŸçœŸã‚“ä¸­ã‹ã‚‰ã®é•·ã•ã‚’è¶³ã™
+			//Œ³‚Ì^‚ñ’†‚É”ä—¦“K—p‚µ‚½^‚ñ’†‚©‚ç‚Ì’·‚³‚ğ‘«‚·
 			ui.drawX2 = centerX + halfWidth;
 			ui.drawY2 = centerY + halfHeight;
 			break;

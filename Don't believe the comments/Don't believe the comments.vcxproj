@@ -18,6 +18,58 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Commenter.cpp" />
+    <ClCompile Include="Source\CommenterManager.cpp" />
+    <ClCompile Include="Source\EffectManager.cpp" />
+    <ClCompile Include="Source\EffekseerEffect.cpp" />
+    <ClCompile Include="Source\FontManager.cpp" />
+    <ClCompile Include="Source\GameCycle.cpp" />
+    <ClCompile Include="Source\GameScene.cpp" />
+    <ClCompile Include="Source\LevelSelectScene.cpp" />
+    <ClCompile Include="Source\Main.cpp" />
+    <ClCompile Include="Source\MouseManager.cpp" />
+    <ClCompile Include="Source\Object2D.cpp" />
+    <ClCompile Include="Source\ObjectManager.cpp" />
+    <ClCompile Include="Source\QuestionManager.cpp" />
+    <ClCompile Include="Source\ResourceManager.cpp" />
+    <ClCompile Include="Source\Scene.cpp" />
+    <ClCompile Include="Source\SceneManager.cpp" />
+    <ClCompile Include="Source\SettingScene.cpp" />
+    <ClCompile Include="Source\SoundManager.cpp" />
+    <ClCompile Include="Source\TextInputManager.cpp" />
+    <ClCompile Include="Source\Texture.cpp" />
+    <ClCompile Include="Source\TextureAnimation.cpp" />
+    <ClCompile Include="Source\TitleScene.cpp" />
+    <ClCompile Include="Source\Typing.cpp" />
+    <ClCompile Include="Source\UIManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Commenter.h" />
+    <ClInclude Include="Source\CommenterManager.h" />
+    <ClInclude Include="Source\EffectManager.h" />
+    <ClInclude Include="Source\EffekseerEffect.h" />
+    <ClInclude Include="Source\FontManager.h" />
+    <ClInclude Include="Source\GameCycle.h" />
+    <ClInclude Include="Source\GameScene.h" />
+    <ClInclude Include="Source\LevelSelectScene.h" />
+    <ClInclude Include="Source\Master.h" />
+    <ClInclude Include="Source\MouseManager.h" />
+    <ClInclude Include="Source\Object2D.h" />
+    <ClInclude Include="Source\ObjectManager.h" />
+    <ClInclude Include="Source\QuestionManager.h" />
+    <ClInclude Include="Source\ResourceManager.h" />
+    <ClInclude Include="Source\Scene.h" />
+    <ClInclude Include="Source\SceneManager.h" />
+    <ClInclude Include="Source\SettingScene.h" />
+    <ClInclude Include="Source\SoundManager.h" />
+    <ClInclude Include="Source\TextInputManager.h" />
+    <ClInclude Include="Source\Texture.h" />
+    <ClInclude Include="Source\TextureAnimation.h" />
+    <ClInclude Include="Source\TitleScene.h" />
+    <ClInclude Include="Source\Typing.h" />
+    <ClInclude Include="Source\UIManager.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -142,57 +194,6 @@
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="Source\LevelSelectScene.cpp" />
-    <ClCompile Include="Source\Commenter.cpp" />
-    <ClCompile Include="Source\CommenterManager.cpp" />
-    <ClCompile Include="Source\MouseManager.cpp" />
-    <ClCompile Include="Source\SettingScene.cpp" />
-    <ClCompile Include="Source\TextInputManager.cpp" />
-    <ClCompile Include="Source\QuestionManager.cpp" />
-    <ClCompile Include="Source\EffectManager.cpp" />
-    <ClCompile Include="Source\FontManager.cpp" />
-    <ClCompile Include="Source\GameCycle.cpp" />
-    <ClCompile Include="Source\GameScene.cpp" />
-    <ClCompile Include="Source\Main.cpp" />
-    <ClCompile Include="Source\Object2D.cpp" />
-    <ClCompile Include="Source\ObjectManager.cpp" />
-    <ClCompile Include="Source\ResourceManager.cpp" />
-    <ClCompile Include="Source\Scene.cpp" />
-    <ClCompile Include="Source\SceneManager.cpp" />
-    <ClCompile Include="Source\SoundManager.cpp" />
-    <ClCompile Include="Source\Texture.cpp" />
-    <ClCompile Include="Source\TextureAnimation.cpp" />
-    <ClCompile Include="Source\TitleScene.cpp" />
-    <ClCompile Include="Source\Typing.cpp" />
-    <ClCompile Include="Source\UIManager.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Source\LevelSelectScene.h" />
-    <ClInclude Include="Source\Commenter.h" />
-    <ClInclude Include="Source\CommenterManager.h" />
-    <ClInclude Include="Source\MouseManager.h" />
-    <ClInclude Include="Source\SettingScene.h" />
-    <ClInclude Include="Source\TextInputManager.h" />
-    <ClInclude Include="Source\QuestionManager.h" />
-    <ClInclude Include="Source\EffekseerEffect.h" />
-    <ClInclude Include="Source\EffectManager.h" />
-    <ClInclude Include="Source\FontManager.h" />
-    <ClInclude Include="Source\GameCycle.h" />
-    <ClInclude Include="Source\GameScene.h" />
-    <ClInclude Include="Source\Master.h" />
-    <ClInclude Include="Source\Object2D.h" />
-    <ClInclude Include="Source\ObjectManager.h" />
-    <ClInclude Include="Source\ResourceManager.h" />
-    <ClInclude Include="Source\Scene.h" />
-    <ClInclude Include="Source\SceneManager.h" />
-    <ClInclude Include="Source\SoundManager.h" />
-    <ClInclude Include="Source\Texture.h" />
-    <ClInclude Include="Source\TextureAnimation.h" />
-    <ClInclude Include="Source\TitleScene.h" />
-    <ClInclude Include="Source\Typing.h" />
-    <ClInclude Include="Source\UIManager.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

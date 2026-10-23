@@ -41,7 +41,7 @@ std::string Commenter::CheckLineBreak(std::string _text, int _fontHandle)
 	{
 		int charBytes = 1;
 		unsigned char charText = (unsigned char)_text[number];
-		if (_ismbblead(charText) != 0)
+		if ((charText >= 0x81 && charText <= 0x9F) || (charText >= 0xE0 && charText <= 0xFC))
 		{
 			charBytes = 2;
 		}

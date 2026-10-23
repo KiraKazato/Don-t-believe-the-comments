@@ -7,7 +7,7 @@
 #include "Master.h"
 
 // {1,2,3} {4,5,6} {7.8}  {9,10}
-// æ¸›å°‘å¤§ã€€æ¸›å°‘ä¸­  å¢—åŠ å¤§ å¢—åŠ ä¸­
+// Œ¸­‘å@Œ¸­’†  ‘‰Á‘å ‘‰Á’†
 
 void QuestionManager::Intialize()
 {
@@ -49,10 +49,10 @@ void QuestionManager::SpawnQuestion(StageNumber _number, int _questionNumber)
 {
 	int setQuestionIndex = 0;
 	int setDifficultIndex = 0;
-	// stageDataæ¢ç´¢
+	// stageData’Tõ
 	for (auto& data : mStageData)
 	{
-		// ã‚¹ãƒ†ãƒ¼ã‚¸ç•ªå·ã‚’ç¢ºèª
+		// ƒXƒe[ƒW”Ô†‚ğŠm”F
 		if (RateDecision(data, _number))
 		{
 			continue;
@@ -61,7 +61,7 @@ void QuestionManager::SpawnQuestion(StageNumber _number, int _questionNumber)
 		Spawn(data, &setQuestionIndex, &setDifficultIndex);
 	}
 
-	// å•é¡Œã‚’è¨­å®š
+	// –â‘è‚ğİ’è
 	SetQuestion(setQuestionIndex, setDifficultIndex);
 }
 
@@ -74,27 +74,27 @@ void QuestionManager::Load(const std::string& _filePath)
 {
 	mQuestions.resize(DIFFICULT_MAX);
 
-	// å…¥ã‚Œã‚‹ãŸã‚ã®ãƒ‡ãƒ¼ã‚¿ã‚’ç”¨æ„ã™ã‚‹
+	// “ü‚ê‚é‚½‚ß‚Ìƒf[ƒ^‚ğ—pˆÓ‚·‚é
 	QuestionData inData = QuestionData();
 
 	std::ifstream ifs(_filePath, std::ios::in);
 
 	if (!ifs)
 	{
-		//printfDx("ã‚¯ã‚¤ã‚ºãŒèª­ã¿è¾¼ã‚ã¾ã›ã‚“ã§ã—ãŸ");
+		//printfDx("ƒNƒCƒY‚ª“Ç‚İ‚ß‚Ü‚¹‚ñ‚Å‚µ‚½");
 		return;
 	}
 
 	std::string line;
 
-	// æœ€åˆã®è¡Œã¯é …ç›®åã®ãŸã‚é£›ã°ã™
+	// Å‰‚Ìs‚Í€–Ú–¼‚Ì‚½‚ß”ò‚Î‚·
 	getline(ifs, line);
 
 	while (getline(ifs, line))
 	{
 		size_t pos = 0;
 
-		// è¡Œã®æœ€å¾Œã¯\n\rã¨ãªã‚‹ãŸã‚ã€\rã‚’æ¶ˆã™
+		// s‚ÌÅŒã‚Í\n\r‚Æ‚È‚é‚½‚ßA\r‚ğÁ‚·
 		while ((pos = line.find("\r")) != std::string::npos)
 		{
 			line.replace(pos, 2, "");
@@ -102,13 +102,13 @@ void QuestionManager::Load(const std::string& _filePath)
 
 		std::stringstream ss(line);
 		std::string cell;
-		// å•é¡Œ
+		// –â‘è
 		if (getline(ss, cell, ','))
 		{
 			inData.questionID = -1;
 			try
 			{
-				// å•é¡ŒIDã‚’å¾—ã‚‹
+				// –â‘èID‚ğ“¾‚é
 				inData.questionID = stoi(cell);
 			}
 			catch (...)
@@ -122,13 +122,13 @@ void QuestionManager::Load(const std::string& _filePath)
 				inData.questionGraphHandle = Master::mpResourceManager->LoadGraphics("Resource/QuizImage/Quiz" + std::to_string(inData.questionID) + ".png");
 		}
 
-		// ç­”ãˆ
+		// “š‚¦
 		if (getline(ss, cell, ',')) inData.answer = cell;
 		
-		// é›£æ˜“åº¦
+		// “ïˆÕ“x
 		if (getline(ss, cell, ',')) 
 		{
-			// ã‚¨ãƒ©ãƒ¼ç™ºç”Ÿæ™‚ã®å‡¦ç†
+			// ƒGƒ‰[”­¶‚Ìˆ—
 			try
 			{
 				inData.difficulty = stoi(cell); 
@@ -139,7 +139,7 @@ void QuestionManager::Load(const std::string& _filePath)
 			}
 		}
 
-		// çœŸã‚³ãƒ¡ãƒ³ãƒˆ
+		// ^ƒRƒƒ“ƒg
 		if (getline(ss, cell, ','))
 		{
 			std::stringstream ssComent(cell);
@@ -149,7 +149,7 @@ void QuestionManager::Load(const std::string& _filePath)
 
 		}
 
-		// å½ã‚³ãƒ¡ãƒ³ãƒˆ
+		// ‹UƒRƒƒ“ƒg
 		if (getline(ss, cell, ','))
 		{
 			std::stringstream ssComent(cell);
@@ -158,7 +158,7 @@ void QuestionManager::Load(const std::string& _filePath)
 			inData.falseComment = LoadComment(ssComent, cellComment);
 		}
 
-		// å…¥ã‚Œã‚‹
+		// “ü‚ê‚é
 		mQuestions[static_cast<size_t>(inData.difficulty - 1)].first.emplace_back(inData);
 	}
 
@@ -167,7 +167,7 @@ void QuestionManager::Load(const std::string& _filePath)
 		question.second = !question.first.empty();
 		if (question.second)
 		{
-			// é›£æ˜“åº¦ã”ã¨ã«å•é¡ŒIDã§ã‚½ãƒ¼ãƒˆã™ã‚‹
+			// “ïˆÕ“x‚²‚Æ‚É–â‘èID‚Åƒ\[ƒg‚·‚é
 			std::sort(question.first.begin(), question.first.end(), [](const QuestionData& a, const QuestionData& b) {return a.questionID < b.questionID;});
 		}
 	}
@@ -177,20 +177,20 @@ const std::vector<std::string> QuestionManager::LoadComment(std::stringstream& _
 {
 	std::vector<std::string> ret;
 
-	// } ã§åŒºåˆ‡ã‚‹
+	// } ‚Å‹æØ‚é
 	while (getline(_ss, _cell, '}'))
 	{
 		size_t pos = 0;
 
-		// å‡¦ç†ã‚’ã™ã‚‹ä¸Šã§ {ï½ ã¨ã„ã†ã‚ˆã†ã«ãªã£ã¦ã„ã‚‹ãŸã‚å‰Šé™¤
-		// whileã«ã—ãŸå ´åˆã€æ–‡å­—ã‚³ãƒ¼ãƒ‰é–¢ä¿‚ã§åˆ¥ã®æ–‡å­—ã®å‰Šé™¤ãŒèµ·ãã‚‹ãŸã‚
-		// ifã«ã—ã¦ä¸€ã¤ã®å‰Šé™¤ã®ã¿ã«ã™ã‚‹
+		// ˆ—‚ğ‚·‚éã‚Å {` ‚Æ‚¢‚¤‚æ‚¤‚É‚È‚Á‚Ä‚¢‚é‚½‚ßíœ
+		// while‚É‚µ‚½ê‡A•¶šƒR[ƒhŠÖŒW‚Å•Ê‚Ì•¶š‚Ìíœ‚ª‹N‚«‚é‚½‚ß
+		// if‚É‚µ‚Äˆê‚Â‚Ìíœ‚Ì‚İ‚É‚·‚é
 		if ((pos = _cell.find("{")) != std::string::npos)
 		{
 			_cell.replace(pos, 1, "");
 		}
 
-		// å…¥ã‚Œã‚‹
+		// “ü‚ê‚é
 		ret.emplace_back(_cell);
 	}
 	return ret;
@@ -203,10 +203,10 @@ bool QuestionManager::RateDecision(std::pair<StageNumber, std::vector<GroupRate>
 		return true;
 	}
 
-	//ç¢ºç‡ã®åˆè¨ˆ
+	//Šm—¦‚Ì‡Œv
 	int totalRate = 0;
-	//ã‚°ãƒ«ãƒ¼ãƒ—ã®ç¢ºç‡ã®ç¢ºå®š
-	//å•é¡Œæ•°ãŒé€²ã‚“ã§ã„ãŸãªã‚‰ã“ã“ã§ç¢ºç‡ã®å¢—æ¸›ã‚’é©ç”¨ã™ã‚‹ã€‚
+	//ƒOƒ‹[ƒv‚ÌŠm—¦‚ÌŠm’è
+	//–â‘è”‚ªi‚ñ‚Å‚¢‚½‚È‚ç‚±‚±‚ÅŠm—¦‚Ì‘Œ¸‚ğ“K—p‚·‚éB
 	for (auto& rate : _data.second)
 	{
 		rate.rate += (_stageNumber - 1) * rate.changeRate;
@@ -229,54 +229,54 @@ void QuestionManager::Spawn(std::pair<StageNumber, std::vector<GroupRate>> _data
 	int& questionIndex = *_questionIndex;
 	int& difficultIndex = *_difficultIndex;
 
-	// ç´¯ç©ç¢ºç‡
+	// —İÏŠm—¦
 	int rateCumulative = 0;
-	// æ—¢ã«é¸ã‚“ã é›£æ˜“åº¦ã‚°ãƒ«ãƒ¼ãƒ—
+	// Šù‚É‘I‚ñ‚¾“ïˆÕ“xƒOƒ‹[ƒv
 	int rateSelected = 0;
 	for (size_t i = 0; i < _data.second.size(); i++)
 	{
-		// å¼·åˆ¶å¤‰æ›´ã‚’èµ·ã“ã™ã‹åˆ¤å®š
-		// ãƒ©ãƒ ãƒ€å¼
+		// ‹­§•ÏX‚ğ‹N‚±‚·‚©”»’è
+		// ƒ‰ƒ€ƒ_®
 		auto forceSelect = [&](const std::vector<int>& list) -> bool
 			{
 				if (list.empty() && rateSelected == 0)
 				{
-					// å¼·åˆ¶æ¢ç´¢é–‹å§‹
-					// ã‚‚ã†èª¿ã¹ãŸå•é¡Œç•ªå·ã‚’è¶³ã™
+					// ‹­§’TõŠJn
+					// ‚à‚¤’²‚×‚½–â‘è”Ô†‚ğ‘«‚·
 					rateSelected += 1 << _data.second[i].group;
 					i = 0;
 					return true;
 				}
 				else if (list.empty())
 				{
-					// å¼·åˆ¶æ¢ç´¢
-					// ã‚‚ã†èª¿ã¹ãŸå•é¡Œç•ªå·ã‚’è¶³ã™
+					// ‹­§’Tõ
+					// ‚à‚¤’²‚×‚½–â‘è”Ô†‚ğ‘«‚·
 					rateSelected += 1 << _data.second[i].group;
 					return true;
 				}
 				return false;
 			};
 
-		// æ—¢ã«ãã®é›£æ˜“åº¦ã®ã‚°ãƒ«ãƒ¼ãƒ—ã‚’é¸ã‚“ã§ã„ãŸå ´åˆ
+		// Šù‚É‚»‚Ì“ïˆÕ“x‚ÌƒOƒ‹[ƒv‚ğ‘I‚ñ‚Å‚¢‚½ê‡
 		if (rateSelected & (1 << _data.second[i].group))
 		{
 			continue;
 		}
 
 		auto& rate = _data.second[i];
-		// ç´¯ç©ã™ã‚‹
+		// —İÏ‚·‚é
 		rateCumulative += rate.rate;
 
-		// ç´¯ç©ç¢ºç‡è¨ˆç®—
+		// —İÏŠm—¦ŒvZ
 		if (!(rateCumulative > GetRand(99)) || rateCumulative == 0)
 		{
 			continue;
 		}
 
-		// å‡ºã™å•é¡Œã®å€™è£œ
+		// o‚·–â‘è‚ÌŒó•â
 		std::vector<int>candidate{};
 
-		// é›£æ˜“åº¦ã®å€™è£œ
+		// “ïˆÕ“x‚ÌŒó•â
 		std::vector<int>&& difficultCandidate = DifficultCandidate(rate.difficultgroup);
 		
 		if (forceSelect(difficultCandidate))
@@ -284,35 +284,35 @@ void QuestionManager::Spawn(std::pair<StageNumber, std::vector<GroupRate>> _data
 			continue;
 		}
 
-		// é›£æ˜“åº¦å€™è£œãªã—ï¼ˆå…¨ã¦å‡ºé¡Œã—ãŸï¼‰
+		// “ïˆÕ“xŒó•â‚È‚µi‘S‚Äo‘è‚µ‚½j
 		if (difficultCandidate.empty() && rateSelected == 0)
 		{
-			// å¼·åˆ¶æ¢ç´¢é–‹å§‹
-			// ã‚‚ã†èª¿ã¹ãŸå•é¡Œç•ªå·ã‚’è¶³ã™
+			// ‹­§’TõŠJn
+			// ‚à‚¤’²‚×‚½–â‘è”Ô†‚ğ‘«‚·
 			rateSelected += 1 << _data.second[i].group;
 			i = 0;
 			continue;
 		}
 		else if (difficultCandidate.empty())
 		{
-			// å¼·åˆ¶æ¢ç´¢
-			// ã‚‚ã†èª¿ã¹ãŸå•é¡Œç•ªå·ã‚’è¶³ã™
+			// ‹­§’Tõ
+			// ‚à‚¤’²‚×‚½–â‘è”Ô†‚ğ‘«‚·
 			rateSelected += 1 << _data.second[i].group;
 			continue;
 		}
 
-		// é¸ã‚“ã é›£æ˜“åº¦ã®ä¸­ã§æŠ½é¸ã™ã‚‹
+		// ‘I‚ñ‚¾“ïˆÕ“x‚Ì’†‚Å’Š‘I‚·‚é
 		int dIndex = static_cast<size_t>(GetRand(static_cast<int>(difficultCandidate.size()) - 1));
 
-		// é›£æ˜“åº¦
+		// “ïˆÕ“x
 		difficultIndex = difficultCandidate[dIndex];
 
 		for (size_t j = 0; j < mQuestions[difficultIndex].first.size(); j++)
 		{
-			// è¢«ã£ã¦ã„ãªã„å•é¡Œã ã£ãŸãªã‚‰
+			// ”í‚Á‚Ä‚¢‚È‚¢–â‘è‚¾‚Á‚½‚È‚ç
 			if (!IsSpawnedQuestion(static_cast<int>(j), difficultIndex))
 			{
-				// å€™è£œã«å…¥ã‚Œã‚‹
+				// Œó•â‚É“ü‚ê‚é
 				candidate.push_back(static_cast<int>(j));
 			}
 		}
@@ -322,12 +322,12 @@ void QuestionManager::Spawn(std::pair<StageNumber, std::vector<GroupRate>> _data
 			continue;
 		}
 
-		// å€™è£œã®å•é¡Œã‹ã‚‰æŠ½é¸
+		// Œó•â‚Ì–â‘è‚©‚ç’Š‘I
 		size_t qIndex = static_cast<size_t>(GetRand(static_cast<int>(candidate.size()) - 1));
-		// æŠ½é¸
+		// ’Š‘I
 		questionIndex = candidate[qIndex];
 
-		// å‡ºã™å•é¡Œã‚’ã‚‚ã†å‡ºã—ãŸå•é¡Œã¨ã—ã¦ã‚«ã‚¦ãƒ³ãƒˆ
+		// o‚·–â‘è‚ğ‚à‚¤o‚µ‚½–â‘è‚Æ‚µ‚ÄƒJƒEƒ“ƒg
 		mSpawnedQuestion.emplace_back(questionIndex, difficultIndex);
 
 		break;
@@ -342,12 +342,12 @@ std::vector<int> QuestionManager::DifficultCandidate(const std::vector<int>& _gr
 	{
 		int index = difficulty - 1;
 
-		// ãã®é›£æ˜“åº¦ã®å•é¡Œã‚’æ¢ç´¢
+		// ‚»‚Ì“ïˆÕ“x‚Ì–â‘è‚ğ’Tõ
 		for (int i = 0; (i < mQuestions[index].first.size()); i++)
 		{
 			if (!IsSpawnedQuestion(static_cast<int>(i), index))
 			{
-				// å‡ºã¦ã„ãªã„å•é¡Œãªã‚‰å€™è£œã«ã™ã‚‹
+				// o‚Ä‚¢‚È‚¢–â‘è‚È‚çŒó•â‚É‚·‚é
 				ret.push_back(index);
 				break;
 			}
@@ -362,7 +362,7 @@ std::vector<std::vector<QuestionData>> QuestionManager::QuestionBeingDifficultCa
 	std::vector<std::vector<QuestionData>> ret{};
 	for (const auto& question : _QuestionList)
 	{
-		// å•é¡ŒãŒå­˜åœ¨ã—ã¦ã„ã‚‹ã®ãªã‚‰ã°
+		// –â‘è‚ª‘¶İ‚µ‚Ä‚¢‚é‚Ì‚È‚ç‚Î
 		if (!question.empty())
 		{
 			ret.emplace_back(question);
@@ -395,12 +395,12 @@ void QuestionManager::SetQuestion(int _index, int _difficulty)
 
 const QuestionData& QuestionManager::GetQuestionData()
 {
-	// mnCurrentIndexãŒã‚¨ãƒ©ãƒ¼éƒ¨åˆ†ã‚’å‚ç…§ã—ãŸã‚‰ã‚¨ãƒ©ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‚’è¿”ã™
+	// mnCurrentIndex‚ªƒGƒ‰[•”•ª‚ğQÆ‚µ‚½‚çƒGƒ‰[ƒf[ƒ^‚ğ•Ô‚·
 	return mQuestions.at(mnCurrentDifficulty).first.at(mnCurrentIndex);
 }
 
 void QuestionManager::SetRandomNumber()
 {
-	//ä¹±æ•°ã‚’ãƒ©ãƒ³ãƒ€ãƒ ã«
+	//—”‚ğƒ‰ƒ“ƒ_ƒ€‚É
 	SRand((int)time(NULL));
 }

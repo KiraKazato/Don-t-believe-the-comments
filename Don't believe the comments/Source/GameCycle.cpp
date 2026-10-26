@@ -76,7 +76,6 @@ void GameCycle::SetStage(StageNumber _stageNumber)
 void GameCycle::CommentDraw()
 {
 	SetDrawArea(Master::gridWidth * 89, Master::gridHeight * 12, Master::gridWidth * 117, Master::gridHeight * 113);
-	//DrawBox(Master::gridWidth * 80, Master::gridHeight * 5, Master::gridWidth * 120, Master::gridHeight * 115, GetColor(0, 0, 0), TRUE);
 	Master::mpCommenterManager->Draw();
 	SetDrawAreaFull();
 }

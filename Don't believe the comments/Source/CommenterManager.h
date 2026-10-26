@@ -73,7 +73,7 @@ private:
 	int mnBaseCommentGridPositionY = 12;
 
 	//コメント表示の最大場所
-	int mnMaxCommentGridPositionX = 117;
+	int mnMaxCommentGridPositionX = 112;
 	int mnMaxCommentGridPositionY = 113;
 
 	//ゲームがスタートしたかのフラグ

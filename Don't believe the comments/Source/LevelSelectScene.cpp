@@ -55,7 +55,7 @@ void LevelSelectScene::Update()
 			Master::mpUIManager->ChangeUISize(day1ButtonGraph, 1.1f);
 
 			//左クリックされたら
-			if (Master::mpMouseManager->IsLeftClick())
+			if (Master::mpMouseManager->IsClickCancel())
 			{
 				//ゲームシーンへ
 				Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_GAME);
@@ -74,7 +74,7 @@ void LevelSelectScene::Update()
 			Master::mpUIManager->ChangeUISize(rightArrowGraph, 1.07f);
 
 			//左クリックされたら
-			if (Master::mpMouseManager->IsLeftClick())
+			if (Master::mpMouseManager->IsClickCancel())
 			{
 				//現在のlevelをComingSoonに
 				currentLevel = LevelType::LEVEL_COMINGSOON;
@@ -121,7 +121,7 @@ void LevelSelectScene::Update()
 			Master::mpUIManager->ChangeUISize(leftArrowGraph, 1.07f);
 
 			//左クリックされたら
-			if (Master::mpMouseManager->IsLeftClick())
+			if (Master::mpMouseManager->IsClickCancel())
 			{
 				//現在のlevelをDay1に
 				currentLevel = LevelType::LEVEL_DAY1;

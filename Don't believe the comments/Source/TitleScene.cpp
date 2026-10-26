@@ -35,7 +35,7 @@ void TitleScene::Update()
 		//­‚µŠg‘å
 		Master::mpUIManager->ChangeUISize(mnStartBottonHandle, 1.1f);
 		//¶ƒNƒŠƒbƒN‰Ÿ‚³‚ê‚½‚Æ‚«
-		if (Master::mpMouseManager->IsLeftClick())
+		if (Master::mpMouseManager->IsClickCancel())
 		{
 			Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_SELECT);
 		}
@@ -52,7 +52,7 @@ void TitleScene::Update()
 	{
 		//­‚µŠg‘å
 		Master::mpUIManager->ChangeUISize(mnSettingBottonHandle, 1.1f);
-		if (Master::mpMouseManager->IsLeftClick())
+		if (Master::mpMouseManager->IsClickCancel())
 		{
 			Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_SETTING);
 		}

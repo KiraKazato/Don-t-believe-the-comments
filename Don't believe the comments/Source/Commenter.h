@@ -41,6 +41,9 @@ public:
 	//コメントの横幅によって改行する
 	//表示する前に呼ぶ
 	std::string CheckLineBreak(std::string _text, int _fontHandle);
+
+	//評価ボタンのdraw
+	void DrawReputatoionGraph(int _currentHeight);
 private:
 	//コメンターの名前
 	std::string msCommenterName{};

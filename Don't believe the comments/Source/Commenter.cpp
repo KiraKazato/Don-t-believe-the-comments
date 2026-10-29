@@ -15,12 +15,12 @@ Commenter::Commenter(std::string _name, int _state, std::string _comment, int _n
 	mGoodButton.handle = Master::mpResourceManager->LoadGraphics("Resource/NeedCommenter/GoodButton.png");
 	mGoodButton ={
 		Master::mpResourceManager->LoadGraphics("Resource/NeedCommenter/GoodButton.png"),
-		{112.0f,12.0f + mnNameHeight,114.0f,18.0f},
+		{112.0f,11.8f + mnNameHeight,113.5f,17.8f},
 		false
 	};
 	mBadButton = {
 		Master::mpResourceManager->LoadGraphics("Resource/NeedCommenter/BadButton.png"),
-		{115.0f,12.0f + mnNameHeight,117.0f,18.0f },
+		{115.0f,12.2f + mnNameHeight,116.5f,18.2f },
 		false
 	};
 }
@@ -37,9 +37,7 @@ void Commenter::Draw(int _currentHeight)
 	Master::mpCommenterManager->GetBasePosition(&baseGridPositionX, &baseGridPositionY);
 	DrawFormatStringToHandle(Master::gridWidth * baseGridPositionX, Master::gridHeight * (baseGridPositionY + (_currentHeight)), GetColor(0, 0, 0), mnNameFontHandle, "%s", msCommenterName.c_str());
 	DrawFormatStringToHandle(Master::gridWidth * baseGridPositionX, Master::gridHeight * (baseGridPositionY + mnNameHeight + (_currentHeight)), GetColor(0, 0, 0), mnCommentFontHandle, "%s", msComment.c_str());
-	Master::mpUIManager->SetUIPosition(mGoodButton.handle, Master::gridWidth * mGoodButton.position.baseX1, Master::gridHeight * (mGoodButton.position.baseY1+_currentHeight), Master::gridWidth * mGoodButton.position.baseX2, Master::gridHeight * (mGoodButton.position.baseY2+_currentHeight));
-	Master::mpUIManager->SetUIPosition(mBadButton.handle, Master::gridWidth * mBadButton.position.baseX1, Master::gridHeight * (mBadButton.position.baseY1+_currentHeight), Master::gridWidth * mBadButton.position.baseX2, Master::gridHeight * (mBadButton.position.baseY2+_currentHeight));
-
+	DrawReputatoionGraph(_currentHeight);
 }
 
 std::string Commenter::CheckLineBreak(std::string _text, int _fontHandle)
@@ -76,4 +74,10 @@ std::string Commenter::CheckLineBreak(std::string _text, int _fontHandle)
 	}
 	resultText += currentText;
 	return resultText;
+}
+
+void Commenter::DrawReputatoionGraph(int _currentHeight)
+{
+	DrawExtendGraphF(Master::gridWidth * mGoodButton.position.baseX1, Master::gridHeight * (mGoodButton.position.baseY1+_currentHeight), Master::gridWidth * mGoodButton.position.baseX2, Master::gridHeight * (mGoodButton.position.baseY2+_currentHeight), mGoodButton.handle, TRUE);
+	DrawExtendGraphF(Master::gridWidth * mBadButton.position.baseX1, Master::gridHeight * (mBadButton.position.baseY1 + _currentHeight),Master::gridWidth * mBadButton.position.baseX2, Master::gridHeight * (mBadButton.position.baseY2 + _currentHeight), mBadButton.handle,TRUE);
 }

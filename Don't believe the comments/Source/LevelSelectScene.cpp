@@ -9,6 +9,9 @@ LevelSelectScene::LevelSelectScene()
 	,rightArrowGraph(0)
 	,leftArrowGraph(0)
 	,currentLevel(LevelType::LEVEL_DAY1)
+	, isWaitingSceneChange(false)
+	, waitFrameCounter(0)
+	,startEffect(0)
 {
 
 }
@@ -39,11 +42,39 @@ void LevelSelectScene::Initialize()
 
 	Master::mpUIManager->AddUI(rightArrowGraph, Master::gridWidth * 78, Master::gridHeight * 69, Master::gridWidth * 84, Master::gridHeight * 80);
 
+	startEffect = new EffekseerEffect("Resource/Effect/GameStart.efk", centerPosition, 10.0f);
+
+	startEffect->SetSpeed(2.0f);
+
 }
 
 void LevelSelectScene::Update()
 {
 	Master::mpMouseManager->GetMousePosition(&mouseX, &mouseY);
+
+	if (startEffect != nullptr)
+	{
+		startEffect->Update();
+	}
+
+	startEffect->SetPosition(centerPosition);
+
+
+	if (isWaitingSceneChange)
+	{
+		waitFrameCounter++; // 毎フレーム1ずつ増やす
+
+		// 指定したフレーム数に達したら
+		if (waitFrameCounter >= WAIT_TIME)
+		{
+			// ゲームシーンへ遷移
+			Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_GAME);
+		}
+
+		// 待機中はこれより下のボタン操作をさせないためにここでUpdateを終える
+		Scene::Update();
+		return;
+	}
 
 	
 	if (currentLevel == LevelType::LEVEL_DAY1)
@@ -54,11 +85,11 @@ void LevelSelectScene::Update()
 			//少し大きく
 			Master::mpUIManager->ChangeUISize(day1ButtonGraph, 1.1f);
 
-			//左クリックされたら
 			if (Master::mpMouseManager->IsLeftClick())
 			{
-				//ゲームシーンへ
-				Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_GAME);
+				isWaitingSceneChange = true;
+				waitFrameCounter = 0;
+				startEffect->Play();
 			}
 		}
 		else
@@ -142,6 +173,15 @@ void LevelSelectScene::Update()
 		}
 	}
 
+
+	//バックスペースキーでタイトルに戻る
+	if (CheckHitKey(KEY_INPUT_BACK))
+	{
+		//BGMを止めてシーン遷移
+		Master::mpSoundManager->StopBGM();
+		Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_TITLE);
+	}
+
 	Scene::Update();
 }
 
@@ -156,5 +196,11 @@ void LevelSelectScene::Draw()
 void LevelSelectScene::Finalize()
 {
 	Master::mpUIManager->ClearUI();
+
+	if (startEffect != nullptr)
+	{
+		delete startEffect;
+		startEffect = nullptr;
+	}
 
 }

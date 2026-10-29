@@ -26,6 +26,8 @@ public:
 	// ループをするかしないかの処理
 	void SetLoop(bool mfLoop) { LoopFlag = mfLoop; }
 
+	void SetSpeed(float speed) { effectSpeed = speed; }
+
 private:
 	VECTOR PlayPos;		// 再生したい座標
 	VECTOR mvRotation;  // 回転させたい角度
@@ -42,4 +44,6 @@ private:
 	int PlayCount;//エフェクトのカウント
 
 	bool LoopFlag;//ループするかのフラグ
+
+	float effectSpeed = 1.0f;
 };

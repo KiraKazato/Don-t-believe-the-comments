@@ -2,6 +2,7 @@
 #include"DxLib.h"
 #include"Scene.h"
 #include "Master.h"
+#include"EffekseerEffect.h"
 
 class LevelSelectScene :public Scene
 {
@@ -27,6 +28,8 @@ public:
 private:
 	LevelType currentLevel;
 
+	EffekseerEffect* startEffect;
+
 	int selectBackGroundGraph;//難易度設定画面の背景グラフ
 
 	int day1ButtonGraph;//Day1用のボタンUIグラフ
@@ -46,4 +49,10 @@ private:
 	float stageButtonPositionX2 = Master::gridWidth * 73;
 	float stageButtonPositionY1 = Master::gridHeight * 56;
 	float stageButtonPositionY2 = Master::gridHeight * 95;
+
+	bool isWaitingSceneChange = false; // シーン遷移の待機中かどうか
+	int waitFrameCounter = 0;          // 経過したフレーム数を数える変数
+	const int WAIT_TIME = 197;          // 待ちたいフレーム数
+
+	VECTOR centerPosition = VGet(Master::Width / 2.0f, Master::Height / 2.0f, 0.0f);//Effectを再生する場所（StartEffect）
 };

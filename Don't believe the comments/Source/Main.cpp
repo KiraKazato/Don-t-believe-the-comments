@@ -52,17 +52,17 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		return -1;
 	}
 	
-	//サウンドマネージャーの初期化
-	Master::mpSoundManager->Initialize();  
-	//フォントマネージャーの初期化
+	// サウンドマネージャーの初期化
+	Master::mpSoundManager->Initialize();
+	// フォントマネージャーの初期化
 	Master::mpFontManager->Initialize();
-	//クエスチョンマネージャーの初期化
+	// クエスチョンマネージャーの初期化
 	Master::mpQuestionManager->Intialize();
-	// シーンマネージャーの初期化
-	Master::mpSceneManager->Initialize(); 
-	//エフェクトマネージャーの初期化
+	// エフェクトマネージャーの初期化
 	Master::mpEffectManager->Initalize();
-	//コメンターマネージャーの初期化
+	// シーンマネージャーの初期化
+	Master::mpSceneManager->Initialize();
+	// コメンターマネージャーの初期化
 	Master::mpCommenterManager->Initialize();
 	
 
@@ -71,8 +71,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	SetDrawScreen(DX_SCREEN_BACK);
 	
 	//Zバッファに書き込む準備
-	SetUseZBufferFlag(true);
-	SetWriteZBufferFlag(true);
+	/*SetUseZBufferFlag(true);
+	*								//２DEffectを表示させるにはこれらがいると邪魔になる
+	SetWriteZBufferFlag(true);*/
 
 
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
@@ -81,12 +82,15 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		Master::mpMouseManager->Update();
 		Master::mpSceneManager->Update();
-	
+		Master::mpEffectManager->Update();
+
 		//画面を初期化する
 		ClearDrawScreen();
 
 		Master::mpSceneManager->Draw();
+		Master::mpEffectManager->Draw();
 		Master::mpMouseManager->Draw();
+
 		//裏画面の内容を表画面に映す
 		ScreenFlip();
 		//17ミリ秒　（秒間約６０フレームだった場合の１フレーム当たりの経過時間）

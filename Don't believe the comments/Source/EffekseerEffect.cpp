@@ -2,7 +2,7 @@
 #include <EffekseerForDXLib.h>
 #include"Master.h"
 
-EffekseerEffect::EffekseerEffect(const char* filename, VECTOR initPos, float EffectSize): PlayPos(initPos), mvRotation(VGet(0.0f, 0.0f, 0.0f)), effectResourcehandle(-1), filePath(filename), effectSize(EffectSize), PlayCount(0), playingEffectHandle(-1), LoopFlag(true)
+EffekseerEffect::EffekseerEffect(const char* filename, VECTOR initPos, float EffectSize): PlayPos(initPos), mvRotation(VGet(0.0f, 0.0f, 0.0f)), effectResourcehandle(-1), filePath(filename), effectSize(EffectSize), PlayCount(0), playingEffectHandle(-1), LoopFlag(true), effectSpeed(1.0f)
 {
 	Load();
 }
@@ -30,6 +30,8 @@ void EffekseerEffect::Update()
 		//画面の奥を軸(Z軸)にして回転させるため Z だけ設定
 		SetRotationPlayingEffekseer2DEffect(playingEffectHandle, 0.0f, 0.0f, mvRotation.z);
 
+		SetSpeedPlayingEffekseer2DEffect(playingEffectHandle, effectSpeed);
+
 		//エフェクトが終わっていたらハンドルを -1 に戻す
 		if (IsEffekseer2DEffectPlaying(playingEffectHandle) == -1)
 		{
@@ -54,6 +56,8 @@ void EffekseerEffect::Play()
 	if (playingEffectHandle != -1)
 	{
 		SetPosPlayingEffekseer2DEffect(playingEffectHandle, PlayPos.x, PlayPos.y, 0.0f);
+
+		SetSpeedPlayingEffekseer2DEffect(playingEffectHandle, effectSpeed);
 	}
 }
 

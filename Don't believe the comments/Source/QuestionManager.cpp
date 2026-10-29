@@ -19,7 +19,7 @@ void QuestionManager::Intialize()
 		GroupRate({3,{7,8},15,2}),
 		GroupRate({4,{9,10},5,5})
 	};
-	SetQuestionRate(STAGE_1, initializeGroup);
+	SetQuestionRate(STAGE_DAY1, initializeGroup);
 }
 
 void QuestionManager::Finalize()
@@ -45,7 +45,7 @@ void QuestionManager::SetQuestionRate(StageNumber _stage, std::vector<GroupRate>
 	mStageData.push_back({ _stage,_group });
 }
 
-void QuestionManager::SpawnQuestion(StageNumber _number, int _questionNumber)
+void QuestionManager::SpawnQuestion( int _questionNumber)
 {
 	int setQuestionIndex = 0;
 	int setDifficultIndex = 0;
@@ -53,7 +53,7 @@ void QuestionManager::SpawnQuestion(StageNumber _number, int _questionNumber)
 	for (auto& data : mStageData)
 	{
 		// ステージ番号を確認
-		if (RateDecision(data, _number))
+		if (RateDecision(data,currentStage))
 		{
 			continue;
 		}
@@ -403,4 +403,9 @@ void QuestionManager::SetRandomNumber()
 {
 	//乱数をランダムに
 	SRand((int)time(NULL));
+}
+
+void QuestionManager::SetStage(StageNumber _stage)
+{
+	currentStage = _stage;
 }

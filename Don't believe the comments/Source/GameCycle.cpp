@@ -20,7 +20,7 @@ void GameCycle::Update()
 	if (!mbQuestionSpawned)
 	{
 		Master::mpCommenterManager->ChangeQuestion();
-		Master::mpQuestionManager->SpawnQuestion(stageNumber, mnQuestionNumber);
+		Master::mpQuestionManager->SpawnQuestion(mnQuestionNumber);
 		mnNowQuestionImageHandle = Master::mpQuestionManager->GetQuestionData().questionGraphHandle;
 		mbQuestionSpawned = true;
 	}
@@ -69,10 +69,7 @@ void GameCycle::Finalize()
 {
 	mTextInputManager.Finalize();
 }
-void GameCycle::SetStage(StageNumber _stageNumber)
-{
-	stageNumber = _stageNumber;
-}
+
 void GameCycle::CommentDraw()
 {
 	SetDrawArea(Master::gridWidth * 89, Master::gridHeight * 12, Master::gridWidth * 117, Master::gridHeight * 113);

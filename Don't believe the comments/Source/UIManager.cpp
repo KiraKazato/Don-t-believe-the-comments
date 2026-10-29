@@ -1,6 +1,7 @@
 #include "UIManager.h"
+#include "Master.h"
 
-void UIManager::AddUI(int _handle, float _x1, float _y1, float _x2, float _y2)
+void UIManager::AddUI(int _handle, float _x1, float _y1, float _x2, float _y2, bool _display)
 {
 	for (const auto& ui : mUIList)
 	{
@@ -9,7 +10,7 @@ void UIManager::AddUI(int _handle, float _x1, float _y1, float _x2, float _y2)
 			return;
 		}
 	}
-	mUIList.push_back({ _handle,_x1,_y1,_x2,_y2,_x1,_y1,_x2,_y2 });
+	mUIList.push_back({ _handle,_x1,_y1,_x2,_y2,_x1,_y1,_x2,_y2 ,false,false,_display });
 }
 
 void UIManager::DrawUI()
@@ -17,8 +18,11 @@ void UIManager::DrawUI()
 	//中身を参照しつつ、勝手な変更バグをなくす
 	for (const auto& ui : mUIList)
 	{
-		//画像の表示
-		DrawExtendGraphF(ui.drawX1, ui.drawY1, ui.drawX2, ui.drawY2, ui.handle, TRUE);
+		if (ui.displayed)
+		{
+			//画像の表示
+			DrawExtendGraphF(ui.drawX1, ui.drawY1, ui.drawX2, ui.drawY2, ui.handle, TRUE);
+		}
 	}
 }
 
@@ -134,5 +138,49 @@ void UIManager::SetUIPosition(int _handle, float _x1, float _y1, float _x2, floa
 			break;
 		}
 	}
+}
+
+bool UIManager::ClickedUI(int _handle, bool _onUI)
+{
+	for (auto& ui : mUIList)
+	{
+		if (ui.handle == _handle)
+		{
+			if (Master::mpMouseManager->PressLeftClick() && !ui.pressed && _onUI)
+			{
+				ui.pressed = true;
+			}
+
+
+			if (ui.pressed && Master::mpMouseManager->ReleaseLeftClick())
+			{
+				ui.pressed = false;
+
+				if (_onUI)
+				{
+					return true;
+				}
+
+				return false;
+			}
+			break;
+		}
+	}
+
+
+	return false;
+}
+
+
+UIData* UIManager::GetUIData(int _handle)
+{
+	for (auto& ui : mUIList)
+	{
+		if (ui.handle == _handle)
+		{
+			return &ui;
+		}
+	}
+	return nullptr;
 }
 

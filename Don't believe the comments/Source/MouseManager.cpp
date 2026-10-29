@@ -13,6 +13,8 @@ MouseManager::~MouseManager()
 void MouseManager::Update()
 {
 	GetMousePoint(&mMousePoint.mouseX, &mMousePoint.mouseY);
+	oldLeftClick = leftClick;
+	leftClick = (GetMouseInput() & MOUSE_INPUT_LEFT);
 }
 
 void MouseManager::Draw()
@@ -27,9 +29,19 @@ void MouseManager::GetMousePosition(int* _x, int* _y)
 	*_y = mMousePoint.mouseY;
 }
 
-bool MouseManager::IsLeftClick()
+bool MouseManager::PressLeftClick()
 {
-	if ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)
+
+	if (leftClick != 0 && oldLeftClick == 0)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool MouseManager::ReleaseLeftClick()
+{
+	if (leftClick == 0 && oldLeftClick != 0)
 	{
 		return true;
 	}

@@ -53,5 +53,4 @@ private:
 	std::string answer{};
 private:
 	TextInputManager mTextInputManager;
-	StageNumber stageNumber = STAGE_1;
 };

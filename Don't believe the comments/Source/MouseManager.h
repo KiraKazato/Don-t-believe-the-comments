@@ -21,9 +21,14 @@ public:
 	void GetMousePosition(int* X, int* Y);
 
 	//左クリックしたか
-	bool IsLeftClick();
+	bool PressLeftClick();
+	//左クリックを離したか
+	bool ReleaseLeftClick();
+
 private:
 
 	MousePoint mMousePoint;
 
+	int leftClick;
+	int oldLeftClick;
 };

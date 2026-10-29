@@ -12,6 +12,17 @@ Commenter::Commenter(std::string _name, int _state, std::string _comment, int _n
 	mnCommentFontHandle = Master::mpFontManager->GetFontHandle(FontManager::FONT_TETUBINN, 24);
 	msCommenterName=CheckLineBreak(msCommenterName, mnNameFontHandle);
 	msComment = CheckLineBreak(msComment, mnCommentFontHandle);
+	mGoodButton.handle = Master::mpResourceManager->LoadGraphics("Resource/NeedCommenter/GoodButton.png");
+	mGoodButton ={
+		Master::mpResourceManager->LoadGraphics("Resource/NeedCommenter/GoodButton.png"),
+		{112.0f,12.0f + mnNameHeight,114.0f,18.0f},
+		false
+	};
+	mBadButton = {
+		Master::mpResourceManager->LoadGraphics("Resource/NeedCommenter/BadButton.png"),
+		{115.0f,12.0f + mnNameHeight,117.0f,18.0f },
+		false
+	};
 }
 
 Commenter::~Commenter()
@@ -26,6 +37,9 @@ void Commenter::Draw(int _currentHeight)
 	Master::mpCommenterManager->GetBasePosition(&baseGridPositionX, &baseGridPositionY);
 	DrawFormatStringToHandle(Master::gridWidth * baseGridPositionX, Master::gridHeight * (baseGridPositionY + (_currentHeight)), GetColor(0, 0, 0), mnNameFontHandle, "%s", msCommenterName.c_str());
 	DrawFormatStringToHandle(Master::gridWidth * baseGridPositionX, Master::gridHeight * (baseGridPositionY + mnNameHeight + (_currentHeight)), GetColor(0, 0, 0), mnCommentFontHandle, "%s", msComment.c_str());
+	Master::mpUIManager->SetUIPosition(mGoodButton.handle, Master::gridWidth * mGoodButton.position.baseX1, Master::gridHeight * (mGoodButton.position.baseY1+_currentHeight), Master::gridWidth * mGoodButton.position.baseX2, Master::gridHeight * (mGoodButton.position.baseY2+_currentHeight));
+	Master::mpUIManager->SetUIPosition(mBadButton.handle, Master::gridWidth * mBadButton.position.baseX1, Master::gridHeight * (mBadButton.position.baseY1+_currentHeight), Master::gridWidth * mBadButton.position.baseX2, Master::gridHeight * (mBadButton.position.baseY2+_currentHeight));
+
 }
 
 std::string Commenter::CheckLineBreak(std::string _text, int _fontHandle)

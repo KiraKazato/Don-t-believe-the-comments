@@ -2,6 +2,23 @@
 #include <string>
 #include "Master.h"
 
+
+struct BasePosition
+{
+	float baseX1;
+	float baseY1;
+	float baseX2;
+	float baseY2;
+};
+
+struct ButtonData
+{
+	int handle;
+	BasePosition position;
+	//押されたか
+	bool pressed;
+};
+
 class Commenter
 {
 public:
@@ -38,6 +55,8 @@ private:
 	//コメンターの評価(出やすさ)
 	//%だと考えて、初期値は1
 	float mfCommenterReputation = 1.00f;
+	ButtonData mGoodButton{};
+	ButtonData mBadButton{};
 
 	//何個目のコメントか
 	int mnCommentNumber{};

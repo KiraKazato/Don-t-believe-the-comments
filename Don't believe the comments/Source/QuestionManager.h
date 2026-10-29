@@ -6,7 +6,9 @@
 //ステージ番号
 enum StageNumber
 {
-	STAGE_1 = 0,
+	STAGE_DAY1 = 0,
+	STAGE_COMMINGSOON,
+	MAX_STAGE,
 };
 
 struct GroupRate
@@ -57,7 +59,7 @@ public:
 	void SetQuestionRate(StageNumber _stage, std::vector<GroupRate> _group);
 
 	// クイズの出現
-	void SpawnQuestion(StageNumber _number, int _questionNumber);
+	void SpawnQuestion(int _questionNumber);
 
 	// 既に出た問題のリストをクリアする
 	void ClearSpawnedQuestion();
@@ -70,6 +72,9 @@ public:
 
 	// 乱数設定（乱数完全ランダム化）
 	void SetRandomNumber();
+
+	//現在のステージのセット
+	void SetStage(StageNumber _stage);
 
 private:
 	// 読み込み
@@ -101,7 +106,8 @@ private:
 
 	int mnCurrentIndex = 0;			// 今の問題の番号
 	int mnCurrentDifficulty = 0;	// 今の問題の難易度の数値
-	
+	StageNumber currentStage = STAGE_DAY1;//今のステージ
+
 	std::vector<std::pair<int, int>>mSpawnedQuestion{};		// 既に出した問題
 
 private:

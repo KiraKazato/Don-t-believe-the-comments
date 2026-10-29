@@ -229,7 +229,7 @@ void CommenterManager::Draw()
 		commenter->Draw(totalHeight);
 		totalHeight += commenter->GetTotalHeight();
 	}
-	DrawBox(Master::gridWidth*mnBaseCommentGridPositionX, Master::gridHeight*mnBaseCommentGridPositionY, Master::gridWidth*mnMaxCommentGridPositionX,Master::gridHeight* mnMaxCommentGridPositionY, GetColor(0, 0, 0), TRUE);
+	//DrawBox(Master::gridWidth*mnBaseCommentGridPositionX, Master::gridHeight*mnBaseCommentGridPositionY, Master::gridWidth*mnMaxCommentGridPositionX,Master::gridHeight* mnMaxCommentGridPositionY, GetColor(0, 0, 0), TRUE);
 }
 
 void CommenterManager::SetCommenter(Commenter* _commenter)

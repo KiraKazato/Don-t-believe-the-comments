@@ -5,10 +5,13 @@
 
 class LevelSelectScene :public Scene
 {
-	enum LevelType
+
+	enum ButtonType
 	{
-		LEVEL_DAY1,
-		LEVEL_COMINGSOON,
+		BUTTON_LEVEL,
+		BUTTON_ARROW_LEFT,
+		BUTTON_ARROW_RIGHT,
+		MAX_BUTTON,
 	};
 
 public:
@@ -24,24 +27,28 @@ public:
 
 	virtual void Finalize()override;
 
+	void ChangeStage();
+
 private:
-	LevelType currentLevel;
-
-	int selectBackGroundGraph;//難易度設定画面の背景グラフ
-
-	int day1ButtonGraph;//Day1用のボタンUIグラフ
+	StageNumber currentStage;
 
 	//左右の矢印グラフ
-	int leftArrowGraph;
-	int rightArrowGraph;
+	int mnLeftArrowGraph;
+	int mnRightArrowGraph;
 
-	//Coming soonグラフ
-	int comingSoonGraph;
+
+	int mnSelectBackGroundGraphHandle;//難易度設定画面の背景グラフ
+	int mnDay1ButtonGraphHandle;//Day1用のボタンUIグラフ
+	int mnComingSoonGraphHandle;//Coming soonグラフ
 
 	//マウスの座標を受け取る
 	int mouseX{};
 	int mouseY{};
 
+	//ボタンのハンドル
+	std::vector<int>mStageButtonHandle;
+
+	//レベルボタンの基準
 	float stageButtonPositionX1 = Master::gridWidth * 48;
 	float stageButtonPositionX2 = Master::gridWidth * 73;
 	float stageButtonPositionY1 = Master::gridHeight * 56;

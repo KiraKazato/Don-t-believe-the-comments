@@ -42,10 +42,13 @@ public:
 
 	void Draw();
 
-
+	//ステートをとる
 	int GetState() const { return mnCommenterState; }
+	//評価ポイントを受け取る
 	float GetReputation()const { return mfCommenterReputation; }
+	//評価ポイントのセット
 	void SetReputation(float _reputation);
+	//名前を受け取る
 	std::string GetName() const { return msCommenterName; }
 
 
@@ -78,7 +81,7 @@ private:
 	//%だと考えて、初期値は1
 	float mfCommenterReputation = 1.00f;
 	float mfMaxReputation = 1.2f;
-	float mfMinReputation = 0.0f;
+	float mfMinReputation = 0.2f;
 	ButtonData mGoodButton{};
 	ButtonData mBadButton{};
 

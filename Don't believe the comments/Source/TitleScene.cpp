@@ -66,6 +66,14 @@ void TitleScene::Update()
 		Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_SETTING);
 	}
 
+	//バックスペースキーでタイトルに戻る
+	if (CheckHitKey(KEY_INPUT_SPACE))
+	{
+		//BGMを止めてシーン遷移
+		Master::mpSoundManager->StopBGM();
+		Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_RESULT);
+	}
+
 	Scene::Update();
 }
 

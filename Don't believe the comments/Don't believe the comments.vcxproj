@@ -33,6 +33,7 @@
     <ClCompile Include="Source\ObjectManager.cpp" />
     <ClCompile Include="Source\QuestionManager.cpp" />
     <ClCompile Include="Source\ResourceManager.cpp" />
+    <ClCompile Include="Source\ResultScene.cpp" />
     <ClCompile Include="Source\Scene.cpp" />
     <ClCompile Include="Source\SceneManager.cpp" />
     <ClCompile Include="Source\SettingScene.cpp" />
@@ -59,6 +60,7 @@
     <ClInclude Include="Source\ObjectManager.h" />
     <ClInclude Include="Source\QuestionManager.h" />
     <ClInclude Include="Source\ResourceManager.h" />
+    <ClInclude Include="Source\ResultScene.h" />
     <ClInclude Include="Source\Scene.h" />
     <ClInclude Include="Source\SceneManager.h" />
     <ClInclude Include="Source\SettingScene.h" />

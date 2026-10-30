@@ -5,6 +5,7 @@
 #include "DxLib.h"
 #include "SettingScene.h"
 #include"LevelSelectScene.h"
+#include"ResultScene.h"
 
 SceneManager::SceneManager()
 	:mnSceneType(SCENE_TYPE::SCENE_NONE)
@@ -80,6 +81,9 @@ void SceneManager::ChageSceneIfNeeded()
 		break;
 	case SCENE_TYPE::SCENE_SELECT:
 		mpCurrentScene = new LevelSelectScene();
+		break;
+	case SCENE_TYPE::SCENE_RESULT:
+		mpCurrentScene = new ResultScene();
 		break;
 	default:
 		break;

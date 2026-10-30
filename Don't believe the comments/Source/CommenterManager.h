@@ -26,6 +26,9 @@ public:
 	//表示するコメントを受け取る
 	std::string GetDisplayComment(int _state);
 
+	//コメントの種類から選ぶ
+	std::vector<std::string> ChooseTemplateCommentKind(int _kind);
+
 	void Update();
 	void Draw();
 
@@ -52,6 +55,10 @@ public:
 
 	//一秒を測る関数
 	bool IsOneSecond();
+
+	//出すコメントの種類を指定
+	void SetCommentSpawnKind(int _kind);
+
 private:
 	//コメンターの情報
 	std::vector<Commenter*>mCommenters;
@@ -60,7 +67,7 @@ private:
 	std::vector<Commenter*>mDisplayCommenters;
 
 	//テンプレコメント
-	std::vector<std::pair<std::string,int>>mTemplateComments;
+	std::vector<std::vector<std::string>>mTemplateComments;
 	
 	//名前の配列(使い捨て
 	std::vector<std::string>mCommenterNames;
@@ -79,4 +86,7 @@ private:
 	//ゲームがスタートしたかのフラグ
 	bool mbQuestionStarted = false;
 
+	int mnCommentKind = 0;
+
+	const int mnMaxCommentKind = 5;
 };

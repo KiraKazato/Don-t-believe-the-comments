@@ -4,6 +4,15 @@
 #include "QuestionManager.h"
 #include "TextInputManager.h"
 
+enum GameState
+{
+	STATE_BEFORE = 0,	// 開始前
+	STATE_BEGINNING,	// 序盤
+	STATE_MID,			// 中盤
+	STATE_FINAL,		// 終盤
+	STATE_AFTER			// 終了
+};
+
 class GameCycle
 {
 public:

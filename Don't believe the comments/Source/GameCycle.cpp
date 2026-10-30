@@ -10,6 +10,7 @@ GameCycle::~GameCycle()
 void GameCycle::Initialize()
 {
 	mnInputStringHandle = Master::mpFontManager->GetFontHandle(Master::mpFontManager->FONT_NONE, 48);
+	mnQuestionNumberHandle = Master::mpFontManager->GetFontHandle(Master::mpFontManager->FONT_TETUBINN, 26);
 	mTextInputManager.Initialize(mnInputStringHandle);
 	mTextInputManager.SetKeyInputDrawPosition(Master::gridWidth * 45, Master::gridHeight * 82);
 	Master::mpCommenterManager->SetCommentSpawnKind(STATE_BEFORE);
@@ -17,6 +18,12 @@ void GameCycle::Initialize()
 void GameCycle::Update()
 {
 	Master::mpCommenterManager->Update();
+
+	if (mbGameEnd)
+	{
+		return;
+	}
+
 	if (!mbQuestionSpawned)
 	{
 		Master::mpCommenterManager->ChangeQuestion();
@@ -54,11 +61,15 @@ void GameCycle::Update()
 		mbQuestionSpawned = false;
 		mbQuestionNumberDrawn = false;
 		mbQuestionDrawn = false;
-		mnQuestionNumber++;
+		mfQuestionDrawEasing = 0.0f;
 		Master::mpCommenterManager->QuestionStarted(false);
-		if (mnQuestionNumber > mnMaxQuestionNumber)
+		if (mnQuestionNumber >= mnMaxQuestionNumber)
 		{
 			GameEnd();
+		}
+		else
+		{
+			mnQuestionNumber++;
 		}
 	}
 }
@@ -70,12 +81,18 @@ void GameCycle::Draw()
 
 	QuestionNumberDraw();
 
+	if (mbGameEnd)
+	{
+		return;
+	}
+
 	QuestionDraw();
 
-	if (mbQuestionNumberDrawn &&mbQuestionDrawn)
+	if (mbQuestionNumberDrawn && mbQuestionDrawn)
 	{
 		mTextInputManager.Draw();
 	}
+
 }
 
 
@@ -93,12 +110,28 @@ void GameCycle::CommentDraw()
 
 void GameCycle::QuestionNumberDraw()
 {
+	// ç≈èâÇÕfalseÇ…Ç∑ÇÈ
+	int numberWidth,numberHeight;
+	GetDrawFormatStringSizeToHandle(&numberWidth, &numberHeight, NULL, mnQuestionNumberHandle, "Q: %d / %d", mnQuestionNumber, mnMaxQuestionNumber);
+
+	DrawFormatStringToHandle(Master::gridWidth * 45 - numberWidth / 2,Master::gridHeight * 15 - numberHeight / 2, GetColor(0, 0, 0), mnQuestionNumberHandle, "Q: %d / %d", mnQuestionNumber, mnMaxQuestionNumber);
+
 	mbQuestionNumberDrawn = true;
 }
 
 void GameCycle::QuestionDraw()
 {
+	auto easing = [](float t) {return t < 0.5f ? 4.0f * t * t * t : 1.0f - powf(-2.0f * t + 2.0f, 3.0f) * 0.5f; };
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255 * easing(mfQuestionDrawEasing)));
 	DrawExtendGraph(mnQuestionImageX1, mnQuestionImageY1, mnQuestionImageX2, mnQuestionImageY2, mnNowQuestionImageHandle, TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	// 2ïbÇ©ÇØÇƒï\é¶
+	constexpr float easingCount = 1.0f / (60.0f * 2.0f);
+	mfQuestionDrawEasing += easingCount;	
+
+	// èIÇÌÇ¡ÇΩ
 	mbQuestionDrawn = true;
 }
 
@@ -152,6 +185,7 @@ bool GameCycle::AnswerJudge()
 
 void GameCycle::GameEnd()
 {
+	mbGameEnd = true;
 	mTextInputManager.Finalize();
 	Master::mpCommenterManager->QuestionStarted(false);
 	Master::mpCommenterManager->SetCommentSpawnKind(STATE_AFTER);

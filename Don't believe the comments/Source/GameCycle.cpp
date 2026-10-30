@@ -9,10 +9,10 @@ GameCycle::~GameCycle()
 }
 void GameCycle::Initialize()
 {
-
 	mnInputStringHandle = Master::mpFontManager->GetFontHandle(Master::mpFontManager->FONT_NONE, 48);
 	mTextInputManager.Initialize(mnInputStringHandle);
 	mTextInputManager.SetKeyInputDrawPosition(Master::gridWidth * 45, Master::gridHeight * 82);
+	Master::mpCommenterManager->SetCommentSpawnKind(STATE_BEFORE);
 }
 void GameCycle::Update()
 {
@@ -23,6 +23,20 @@ void GameCycle::Update()
 		Master::mpQuestionManager->SpawnQuestion(mnQuestionNumber);
 		mnNowQuestionImageHandle = Master::mpQuestionManager->GetQuestionData().questionGraphHandle;
 		mbQuestionSpawned = true;
+		switch (mnQuestionNumber)
+		{
+		case 1:
+			Master::mpCommenterManager->SetCommentSpawnKind(STATE_BEGINNING);
+			break;
+		case 2:
+			Master::mpCommenterManager->SetCommentSpawnKind(STATE_MID);
+			break;
+		case 7:
+			Master::mpCommenterManager->SetCommentSpawnKind(STATE_FINAL);
+			break;
+		default:
+			break;
+		}
 	}
 	if (!mbQuestionNumberDrawn || !mbQuestionDrawn)
 	{
@@ -123,17 +137,14 @@ bool GameCycle::AnswerJudge()
 	}
 
 	auto& data = Master::mpQuestionManager->GetQuestionData();
-	clsDx();
 	if (data.answer == answer)
 	{
-		printfDx("\n　デバッグ：%d/%d 問目正解 GameCycle.cpp 122行辺り", mnQuestionNumber, mnMaxQuestionNumber);
 		mTextInputManager.ResetInput();
 		answer = "";
 		return true;
 	}
 	else
 	{
-		printfDx("\n　デバッグ：正解は %s　%s\n", data.answer.c_str(), "GameCycle.cpp 129行辺り");
 		mTextInputManager.ResetInput();
 		answer = "";
 		return false;
@@ -144,4 +155,5 @@ void GameCycle::GameEnd()
 {
 	mTextInputManager.Finalize();
 	Master::mpCommenterManager->QuestionStarted(false);
+	Master::mpCommenterManager->SetCommentSpawnKind(STATE_AFTER);
 }

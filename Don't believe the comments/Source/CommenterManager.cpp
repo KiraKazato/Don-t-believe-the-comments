@@ -64,6 +64,8 @@ void CommenterManager::LoadTemplateComment(const std::string& _filepath)
 		return;
 	}
 
+	mTemplateComments.resize(mnMaxCommentKind);
+
 	while (getline(ifs, line))
 	{
 		if (!line.empty() && line.back() == '\r')
@@ -75,7 +77,7 @@ void CommenterManager::LoadTemplateComment(const std::string& _filepath)
 		std::string cell;
 
 		std::string comment = "";
-		int commentNumber = 0;
+		int commentStateNumber = 0;
 
 		if (std::getline(ss,cell,','))
 		{
@@ -83,10 +85,10 @@ void CommenterManager::LoadTemplateComment(const std::string& _filepath)
 		}
 		if (std::getline(ss,cell,','))
 		{
-			commentNumber = std::stoi(cell);
+			commentStateNumber = std::stoi(cell);
 		}
 
-		mTemplateComments.emplace_back(comment, commentNumber);
+		mTemplateComments.at(commentStateNumber).emplace_back(comment);
 	}
 }
 
@@ -190,14 +192,11 @@ std::string CommenterManager::GetDisplayComment(int _state)
 	float rate = GetRand(10000) / 10000.0f;
 	do
 	{
-		if (continued > 5)
+		if (!mbQuestionStarted || (rate < 0.6f && !mTemplateComments.empty())|| continued > 5)
 		{
-			return "����ف[";
-		}
-		if (!mbQuestionStarted || (rate < 0.6f && !mTemplateComments.empty()))
-		{
-			index = GetRand(static_cast<int>(mTemplateComments.size() - 1));
-			return mTemplateComments[index].first;
+			std::vector<std::string>&& chooseTemplateComment = ChooseTemplateCommentKind(mnCommentKind);
+			index = GetRand(static_cast<int>(chooseTemplateComment.size() - 1));
+			return chooseTemplateComment.at(index);
 		}
 
 		const auto comments = (_state == 0) ? Master::mpQuestionManager->GetQuestionData().trueComment : Master::mpQuestionManager->GetQuestionData().falseComment;
@@ -223,6 +222,44 @@ std::string CommenterManager::GetDisplayComment(int _state)
 		return comments[index];
 
 	} while (true);
+}
+
+std::vector<std::string> CommenterManager::ChooseTemplateCommentKind(int _kind)
+{
+	std::vector<std::string>ret{};
+
+	int inIndexMax = _kind;
+
+	if (_kind == 0)
+	{
+		// 開始時は 0 番目だけ
+		ret = mTemplateComments.at(0);
+		return ret;
+	}
+	else if (_kind == 4)
+	{
+		// 終了時は 4 番目
+		ret = mTemplateComments.at(_kind);
+		return ret;
+	}
+
+
+	// 再確保処理をなくすため
+	size_t capacity = 0;
+	for (size_t i = inIndexMax; i >= 1; i--)
+	{
+		capacity += mTemplateComments.at(i).size();
+	}
+
+	// 自分以下の番号を集める
+	ret.reserve(capacity);
+	for (size_t i = inIndexMax; i >= 1; i--)
+	{
+		// 末尾に一括追加
+		ret.insert(ret.end(), mTemplateComments.at(i).begin(), mTemplateComments.at(i).end());
+	}
+
+	return ret;
 }
 
 
@@ -251,12 +288,12 @@ void CommenterManager::Draw()
 
 void CommenterManager::SetCommenter(Commenter* _commenter)
 {
-	mCommenters.push_back(_commenter);
+	mCommenters.emplace_back(_commenter);
 }
 
 void CommenterManager::SetDisplayCommenter(Commenter* _commenter)
 {
-	mDisplayCommenters.push_back(_commenter);
+	mDisplayCommenters.emplace_back(_commenter);
 }
 
 void CommenterManager::GetBasePosition(int* _x, int* _y)
@@ -308,7 +345,7 @@ void CommenterManager::ChangeQuestion()
 
 bool CommenterManager::IsOneSecond()
 {
-	//��̎���
+	//基準の時間
 	static int lastTime = GetNowCount();
 	int currentTime = GetNowCount();
 
@@ -344,4 +381,8 @@ void CommenterManager::GameEnd()
 	mnID = 0;
 	mnCurrentCommentGridPositionX = mnBaseCommentGridPositionX;
 	mnCurrentCommentGridPositionY = mnBaseCommentGridPositionY;
+}
+void CommenterManager::SetCommentSpawnKind(int _kind)
+{
+	mnCommentKind = _kind;
 }

@@ -54,6 +54,8 @@ public:
 
 	//一秒を測る関数
 	bool IsOneSecond();
+
+	void GameEnd();
 private:
 	//コメンターの情報
 	std::vector<Commenter*>mCommenters;
@@ -82,5 +84,6 @@ private:
 
 	//ゲームがスタートしたかのフラグ
 	bool mbQuestionStarted = false;
-
+	//コメントのID
+	int mnID = 0;
 };

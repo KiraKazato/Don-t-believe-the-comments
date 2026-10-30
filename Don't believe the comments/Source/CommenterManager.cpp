@@ -23,9 +23,22 @@ void CommenterManager::Initialize()
 		GenerateCommenter();
 	}
 	mCommenterNames.clear();
+	mnCurrentCommentGridPositionX = mnBaseCommentGridPositionX;
+	mnCurrentCommentGridPositionY = mnBaseCommentGridPositionY;
+	
 }
 void CommenterManager::Finalize()
 {
+	if (!mDisplayCommenters.empty())
+	{
+		for (auto& commenter : mDisplayCommenters)
+		{
+			if (commenter != nullptr)
+			{
+				delete commenter;
+			}
+		}
+	}
 	if (!mCommenters.empty())
 	{
 		for (auto& commenter : mCommenters)
@@ -36,7 +49,7 @@ void CommenterManager::Finalize()
 			}
 		}
 	}
-	//DisplayCommenter‚Í‘½•ªACommenter‚ğ‚¢‚ê‚Ä‚é‚©‚çdelete‚µ‚È‚­‚Ä‚¢‚¢B
+	
 	mCommenters.clear();
 	mDisplayCommenters.clear();
 	mTemplateComments.clear();
@@ -140,7 +153,7 @@ void CommenterManager::ChooseDisplayCommenter()
 	{
 		return;
 	}
-	static int  ID = 0;
+	
 	float totalReputation{};
 	float reputationPool{};
 	std::string comment;
@@ -157,15 +170,15 @@ void CommenterManager::ChooseDisplayCommenter()
 			continue;
 		}
 		comment = GetDisplayComment(commenter->GetState());
-		new Commenter(commenter->GetName(), commenter->GetState(), comment, ID);
-		
-		int commentY = mnBaseCommentGridPositionY + (commenter->GetTotalHeight() * (ID+1));
+		new Commenter(commenter,commenter->GetName(), commenter->GetState(), comment, mnID);
+
+		int commentY = mnCurrentCommentGridPositionY + (commenter->GetTotalHeight() * (mnID+1));
 		if (mnMaxCommentGridPositionY <= commentY)
 		{
 			int diff = commentY - mnMaxCommentGridPositionY;
-			mnBaseCommentGridPositionY -= diff;
+			mnCurrentCommentGridPositionY -= diff;
 		}
-		ID++;
+		mnID++;
 
 		break;
 	}
@@ -219,30 +232,30 @@ std::vector<std::string> CommenterManager::ChooseTemplateCommentKind(int _kind)
 
 	if (_kind == 0)
 	{
-		// ŠJn‚Í 0 ”Ô–Ú‚¾‚¯
+		// é–‹å§‹æ™‚ã¯ 0 ç•ªç›®ã ã‘
 		ret = mTemplateComments.at(0);
 		return ret;
 	}
 	else if (_kind == 4)
 	{
-		// I—¹‚Í 4 ”Ô–Ú
+		// çµ‚äº†æ™‚ã¯ 4 ç•ªç›®
 		ret = mTemplateComments.at(_kind);
 		return ret;
 	}
 
 
-	// ÄŠm•Ûˆ—‚ğ‚È‚­‚·‚½‚ß
+	// å†ç¢ºä¿å‡¦ç†ã‚’ãªãã™ãŸã‚
 	size_t capacity = 0;
 	for (size_t i = inIndexMax; i >= 1; i--)
 	{
 		capacity += mTemplateComments.at(i).size();
 	}
 
-	// ©•ªˆÈ‰º‚Ì”Ô†‚ğW‚ß‚é
+	// è‡ªåˆ†ä»¥ä¸‹ã®ç•ªå·ã‚’é›†ã‚ã‚‹
 	ret.reserve(capacity);
 	for (size_t i = inIndexMax; i >= 1; i--)
 	{
-		// ––”ö‚ÉˆêŠ‡’Ç‰Á
+		// æœ«å°¾ã«ä¸€æ‹¬è¿½åŠ 
 		ret.insert(ret.end(), mTemplateComments.at(i).begin(), mTemplateComments.at(i).end());
 	}
 
@@ -252,21 +265,25 @@ std::vector<std::string> CommenterManager::ChooseTemplateCommentKind(int _kind)
 
 void CommenterManager::Update()
 {
-	//‚±‚±‚Í“r’†
-	//ˆê•b‚½‚Á‚½‚ç‚Ìˆ—‘½•ªŒã‚Åcppì‚é‚©‚à
 	ChooseDisplayCommenter();
+	if (mDisplayCommenters.empty())return;
+	int totalHeight{};
+	for (const auto commenter : mDisplayCommenters)
+	{
+		commenter->updateReputation(totalHeight);
+		totalHeight += commenter->GetTotalHeight();
+	}
+	
 }
 
 void CommenterManager::Draw()
 {
 	if (mDisplayCommenters.empty())return;
-	int totalHeight{};
+
 	for (const auto& commenter : mDisplayCommenters)
 	{
-		commenter->Draw(totalHeight);
-		totalHeight += commenter->GetTotalHeight();
+		commenter->Draw();
 	}
-	//DrawBox(Master::gridWidth*mnBaseCommentGridPositionX, Master::gridHeight*mnBaseCommentGridPositionY, Master::gridWidth*mnMaxCommentGridPositionX,Master::gridHeight* mnMaxCommentGridPositionY, GetColor(0, 0, 0), TRUE);
 }
 
 void CommenterManager::SetCommenter(Commenter* _commenter)
@@ -291,15 +308,29 @@ void CommenterManager::GetBasePosition(int* _x, int* _y)
 	}
 }
 
-void CommenterManager::SetBaseWidthPosition(int _x)
+void CommenterManager::GetCurrentPosition(int* _x, int* _y)
 {
-	mnBaseCommentGridPositionX = _x;
+	if (_x)
+	{
+		*_x = mnCurrentCommentGridPositionX;
+	}
+	if (_y)
+	{
+		*_y = mnCurrentCommentGridPositionY;
+	}
 }
 
-void CommenterManager::SetBaseHeightPosition(int _y)
+
+
+void CommenterManager::SetCurrentWidthPosition(int _x)
 {
-	mnBaseCommentGridPositionY = _y;
+	mnCurrentCommentGridPositionX = _x;
 }
+void CommenterManager::SetCurrentHightPosition(int _y)
+{
+	mnCurrentCommentGridPositionY = _y;
+}
+
 
 
 void CommenterManager::QuestionStarted(bool _start)
@@ -314,7 +345,7 @@ void CommenterManager::ChangeQuestion()
 
 bool CommenterManager::IsOneSecond()
 {
-	//Šî€‚ÌŠÔ
+	//åŸºæº–ã®æ™‚é–“
 	static int lastTime = GetNowCount();
 	int currentTime = GetNowCount();
 
@@ -329,6 +360,28 @@ bool CommenterManager::IsOneSecond()
 	return false;
 }
 
+void CommenterManager::GameEnd()
+{
+	if (!mDisplayCommenters.empty())
+	{
+		for (auto commenter : mDisplayCommenters)
+		{
+			delete commenter;
+		}
+		mDisplayCommenters.clear();
+	}
+	if (!mUsedComments.empty())
+	{
+		mUsedComments.clear();
+	}
+	if (!mCommenterNames.empty())
+	{
+		mCommenterNames.clear();
+	}
+	mnID = 0;
+	mnCurrentCommentGridPositionX = mnBaseCommentGridPositionX;
+	mnCurrentCommentGridPositionY = mnBaseCommentGridPositionY;
+}
 void CommenterManager::SetCommentSpawnKind(int _kind)
 {
 	mnCommentKind = _kind;

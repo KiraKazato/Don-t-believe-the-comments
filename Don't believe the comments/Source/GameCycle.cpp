@@ -82,6 +82,7 @@ void GameCycle::Draw()
 void GameCycle::Finalize()
 {
 	mTextInputManager.Finalize();
+	Master::mpCommenterManager->GameEnd();
 }
 
 void GameCycle::CommentDraw()

@@ -52,7 +52,7 @@ private:
 	int mnQuestionNumber = 1;
 	//Å‘å–â‘è”
 	int mnMaxQuestionNumber = 10;
-	
+
 private:
 	bool mbQuestionNumberDrawn = false;
 	bool mbQuestionDrawn = false;

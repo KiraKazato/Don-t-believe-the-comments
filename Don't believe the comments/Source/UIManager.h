@@ -13,7 +13,7 @@ struct UIData
     float drawX1, drawY1;
     float drawX2, drawY2;
     //押されているか
-    bool pressed;
+    bool pressing;
     //物体が中にあるか
     bool insideObject;
     //表示するか
@@ -24,7 +24,7 @@ class UIManager {
 public:
 
     // UIデータを新しく登録する関数
-    void AddUI(int _handle, float _x1, float _y1, float _x2, float _y2,bool _display = true);
+    void AddUI(int _handle, float _x1, float _y1, float _x2, float _y2, bool _display = true);
 
     // 登録されているすべてのUIを一括で計算・描画する関数
     void DrawUI();
@@ -39,17 +39,22 @@ public:
     void ResetUISize(int _handle);
 
     //指定UIの中に物体が入っているかの判定
-    bool InsideUI(int _handle, int _objectX,int objexctY_);
+    bool InsideUI(int _handle, int _objectX, int _objectY);
+    //UIManagerに属さないUI用の入っているかの判定
+    bool InsideUI(int _UIX1, int _UIY1, int _UIX2, int _UIY2, int _objectX, int _objectY);
 
     //指定UIの削除
-     void EraseUI(int _handle);
+    void EraseUI(int _handle);
 
     //指定UIの座標取得
     void GetUIPosition(int _handle, float* _x1, float* _y1, float* _x2, float* _y2);
     //指定uiの座標変更
     void SetUIPosition(int _handle, float _x1, float _y1, float _x2, float _y2);
     //指定UIがクリックされたか
-    bool ClickedUI(int _hanlde,bool _onUI);
+    bool ClickedUI(int _hanlde, bool _onUI);
+    //UIManagerに属さないUI用のクリック判定(押されたかの判定を持たせる)
+    bool ClickedUI(bool*_pressed, bool _onUI);
+
 
     //変更できる指定UIの取得関数
     UIData* GetUIData(int _handle);

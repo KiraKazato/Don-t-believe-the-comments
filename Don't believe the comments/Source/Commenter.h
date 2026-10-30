@@ -10,13 +10,25 @@ struct BasePosition
 	float baseX2;
 	float baseY2;
 };
+struct CurrentPosition
+{
+	float currentX1;
+	float currentY1;
+	float currentX2;
+	float currentY2;
+};
 
 struct ButtonData
 {
 	int handle;
-	BasePosition position;
-	//押されたか
+	int pressedHandle;
+	BasePosition basePosition;
+	CurrentPosition currentPosition;
+	//押された
 	bool pressed;
+
+	//押されているか
+	bool pressing;
 };
 
 class Commenter
@@ -25,15 +37,17 @@ public:
 	//名前と評価とステータスだけ
 	Commenter(std::string _name, int _state);
 	//コメントが決まったら
-	Commenter(std::string _name, int _state, std::string _comment, int _number);
+	Commenter(Commenter* _parent, std::string _name, int _state, std::string _comment, int _number);
 	~Commenter();
 
-	void Draw(int _currentHeight);
+	void Draw();
 
 
 	int GetState() const { return mnCommenterState; }
 	float GetReputation()const { return mfCommenterReputation; }
+	void SetReputation(float _reputation);
 	std::string GetName() const { return msCommenterName; }
+
 
 	//名前とコメントと空白の合計を返す
 	int GetTotalHeight() { return totalHeightSpace; }
@@ -43,7 +57,12 @@ public:
 	std::string CheckLineBreak(std::string _text, int _fontHandle);
 
 	//評価ボタンのdraw
-	void DrawReputatoionGraph(int _currentHeight);
+	void DrawReputatoionGraph();
+
+	//評価ボタンの処理
+	void updateReputation(int _currentHeight);
+	//ボタンのベース変更
+	void ChangeReputationButtonPosition();
 private:
 	//コメンターの名前
 	std::string msCommenterName{};
@@ -58,6 +77,8 @@ private:
 	//コメンターの評価(出やすさ)
 	//%だと考えて、初期値は1
 	float mfCommenterReputation = 1.00f;
+	float mfMaxReputation = 1.2f;
+	float mfMinReputation = 0.0f;
 	ButtonData mGoodButton{};
 	ButtonData mBadButton{};
 
@@ -73,4 +94,9 @@ private:
 	int mnNameHeight = 3;
 	//名前とコメントと空白を合わせた高さ
 	int totalHeightSpace = 9;
+
+	//親のコメンター
+	Commenter* mParentCommenter = nullptr;
+
+	int mnCurrentCommentHeight{};
 };

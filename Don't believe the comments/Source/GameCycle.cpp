@@ -13,6 +13,7 @@ void GameCycle::Initialize()
 	mTextInputManager.Initialize(mnInputStringHandle);
 	mTextInputManager.SetKeyInputDrawPosition(Master::gridWidth * 45, Master::gridHeight * 82);
 	Master::mpCommenterManager->SetCommentSpawnKind(STATE_BEFORE);
+	mViewers.Initialize();
 }
 void GameCycle::Update()
 {
@@ -48,7 +49,7 @@ void GameCycle::Update()
 	}
 
 	InputAnswer();
-
+	mViewers.Update();
 	if (mbInputAnswered && AnswerJudge())
 	{
 		mbQuestionSpawned = false;
@@ -72,6 +73,7 @@ void GameCycle::Draw()
 
 	QuestionDraw();
 
+	mViewers.Draw();
 	if (mbQuestionNumberDrawn &&mbQuestionDrawn)
 	{
 		mTextInputManager.Draw();
@@ -83,6 +85,8 @@ void GameCycle::Finalize()
 {
 	mTextInputManager.Finalize();
 	Master::mpCommenterManager->GameEnd();
+	mViewers.Finalize();
+
 }
 
 void GameCycle::CommentDraw()
@@ -133,6 +137,7 @@ bool GameCycle::AnswerJudge()
 	{
 		mTextInputManager.ResetInput();
 		answer = "";
+		mViewers.LeaveViewers();
 		return false;
 	}
 
@@ -141,12 +146,14 @@ bool GameCycle::AnswerJudge()
 	{
 		mTextInputManager.ResetInput();
 		answer = "";
+		mViewers.ComeViewers();
 		return true;
 	}
 	else
 	{
 		mTextInputManager.ResetInput();
 		answer = "";
+		mViewers.LeaveViewers();
 		return false;
 	}
 }

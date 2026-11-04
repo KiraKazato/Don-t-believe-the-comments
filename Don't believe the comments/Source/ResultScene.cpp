@@ -21,7 +21,7 @@ void ResultScene::Initialize()
 	mnSceneBackGround = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/ResultBackGround.png");
 
 	Master::mpUIManager->AddUI(mnSceneBackGround, 0, 0, Master::Width, Master::Height);
-	Master::mpUIManager->AddUI(mnNextButton, Master::gridWidth * 47, Master::gridHeight * 90, Master::gridWidth * 74, Master::gridHeight * 107);
+	Master::mpUIManager->AddUI(mnNextButton, Master::gridWidth * 47, Master::gridHeight * 95, Master::gridWidth * 74, Master::gridHeight * 112);
 	
 
 }

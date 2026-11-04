@@ -17,6 +17,7 @@ public:	// enum, struct ‚Ì’è‹`
 		SCENE_GAME,	// ƒQ[ƒ€
 		SCENE_SETTING, //İ’è‰æ–Ê
 		SCENE_SELECT, //“ïˆÕ“xİ’è‰æ–Ê
+		SCENE_RESULT,
 	};
 
 public:

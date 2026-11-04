@@ -30,11 +30,14 @@ void LevelSelectScene::Initialize()
 	mStageButtonHandle[STAGE_COMMINGSOON] = Master::mpResourceManager->LoadGraphics("Resource/LevelSelectScene/ComingSoon.png");
 	mnRightArrowGraph = Master::mpResourceManager->LoadGraphics("Resource/LevelSelectScene/RightArrow.png");
 	mnLeftArrowGraph = Master::mpResourceManager->LoadGraphics("Resource/LevelSelectScene/LeftArrow.png");
+	mnBackToTitleScene = Master::mpResourceManager->LoadGraphics("Resource/LevelSelectScene/BackToTitle.png");
 
 	//必要なUI
 	Master::mpUIManager->AddUI(mnSelectBackGroundGraphHandle, 0, 0, Master::Width, Master::Height);
-	Master::mpUIManager->AddUI(mnRightArrowGraph, Master::gridWidth * 78, Master::gridHeight * 69, Master::gridWidth * 84, Master::gridHeight * 80);;
-	Master::mpUIManager->AddUI(mnLeftArrowGraph, Master::gridWidth * 37, Master::gridHeight * 69, Master::gridWidth * 43, Master::gridHeight * 80, false);
+	Master::mpUIManager->AddUI(mnRightArrowGraph, Master::gridWidth * 78, Master::gridHeight * 57, Master::gridWidth * 84, Master::gridHeight * 68);;
+	Master::mpUIManager->AddUI(mnLeftArrowGraph, Master::gridWidth * 37, Master::gridHeight * 57, Master::gridWidth * 43, Master::gridHeight * 68, false);
+	Master::mpUIManager->AddUI(mnBackToTitleScene, Master::gridWidth * 47, Master::gridHeight * 90, Master::gridWidth * 74, Master::gridHeight * 107);
+
 
 	for (int number = 0; number < MAX_STAGE; number++)
 	{
@@ -142,6 +145,25 @@ void LevelSelectScene::Update()
 			}
 		}
 
+	}
+
+	bool insideStartButton = Master::mpUIManager->InsideUI(mnBackToTitleScene, mouseX, mouseY);
+	//マウスがボタンの範囲内だったら
+	if (insideStartButton)
+	{
+		//少し拡大
+		Master::mpUIManager->ChangeUISize(mnBackToTitleScene, 1.1f);
+
+	}
+	else
+	{
+		//元の大きさに戻しておく
+		Master::mpUIManager->ResetUISize(mnBackToTitleScene);
+	}
+	//左クリック押されたとき
+	if (Master::mpUIManager->ClickedUI(mnBackToTitleScene, insideStartButton))
+	{
+		Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_TITLE);
 	}
 
 	Scene::Update();

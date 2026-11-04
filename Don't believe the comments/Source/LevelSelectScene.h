@@ -40,6 +40,7 @@ private:
 	int mnSelectBackGroundGraphHandle;//難易度設定画面の背景グラフ
 	int mnDay1ButtonGraphHandle;//Day1用のボタンUIグラフ
 	int mnComingSoonGraphHandle;//Coming soonグラフ
+	int mnBackToTitleScene;//タイトルに戻るボタンUI
 
 	//マウスの座標を受け取る
 	int mouseX{};
@@ -51,6 +52,6 @@ private:
 	//レベルボタンの基準
 	float stageButtonPositionX1 = Master::gridWidth * 48;
 	float stageButtonPositionX2 = Master::gridWidth * 73;
-	float stageButtonPositionY1 = Master::gridHeight * 56;
-	float stageButtonPositionY2 = Master::gridHeight * 95;
+	float stageButtonPositionY1 = Master::gridHeight * 42;
+	float stageButtonPositionY2 = Master::gridHeight * 82;
 };

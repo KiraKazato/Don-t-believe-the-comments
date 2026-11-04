@@ -84,6 +84,7 @@
     <ClCompile Include="Source\UIManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ResultScene.cpp">
     <ClCompile Include="Source\Viewers.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -161,6 +162,7 @@
     <ClInclude Include="Source\UIManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Source\ResultScene.h">
     <ClInclude Include="Source\Viewers.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>

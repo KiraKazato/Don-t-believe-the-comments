@@ -37,6 +37,8 @@ public:
 	//newした、表示するコメンターをリストに入れる
 	void SetDisplayCommenter(Commenter* _commenter);
 
+	int GetCommentsCount() { return mnCountComments; }
+
 	//基準座標取得
 	void GetBasePosition(int* _x, int* _y);
 	void GetCurrentPosition(int* _x, int* _y);
@@ -94,6 +96,8 @@ private:
 	int mnID = 0;
 
 	int mnCommentKind = 0;
+
+	int mnCountComments = 0;
 
 	const int mnMaxCommentKind = 5;
 };

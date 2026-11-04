@@ -131,7 +131,7 @@ void GameCycle::QuestionDraw()
 	DrawExtendGraph(mnQuestionImageX1, mnQuestionImageY1, mnQuestionImageX2, mnQuestionImageY2, mnNowQuestionImageHandle, TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	// 2秒かけて表示
+	// 1,0f / (60.0f * x) -> x 秒かけての表示
 	constexpr float easingCount = 1.0f / (60.0f * 1.0f);
 	mfQuestionDrawEasing += easingCount;	
 

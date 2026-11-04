@@ -1,4 +1,6 @@
 #include "Viewers.h"
+#include "DxLib.h"
+#include "Master.h"
 
 Viewers::Viewers()
 {
@@ -12,16 +14,36 @@ void Viewers::Initialize()
 {
 	mnStringHandle = Master::mpFontManager->GetFontHandle(FontManager::FONT_TETUBINN,50);
 	DecideViewers();
+
 }
 
 void Viewers::Update()
 {
-
+	if (mnCurrentViwers < mnTargetViwers)
+	{
+		mnCurrentViwers++;
+		if (mnCurrentViwers >= mnTargetViwers)
+		{
+			mnCurrentViwers = mnTargetViwers;
+		}
+	}
+	if (mnCurrentViwers > mnTargetViwers)
+	{
+		mnCurrentViwers--;
+		if (mnCurrentViwers <= mnTargetViwers)
+		{
+			mnCurrentViwers = mnTargetViwers;
+		}
+	}
+	if (mnCurrentViwers <= 0)
+	{
+		mnCurrentViwers = 0;
+	}
 }
 
 void Viewers::Draw()
 {
-	DrawFormatStringToHandle(10, 10, GetColor(0, 0, 0), mnStringHandle, "Ž‹’®ŽÒ”:%d", mnCurrentViwer);
+	DrawFormatStringToHandle(10, 10, GetColor(0, 0, 0), mnStringHandle, "Ž‹’®ŽÒ”:%d", mnCurrentViwers);
 }
 
 void Viewers::Finalize()
@@ -31,15 +53,16 @@ void Viewers::Finalize()
 
 void Viewers::ComeViewers()
 {
-	mnCurrentViwer += rand() % (mnMaxAddValue - mnMinAddValue + 1) + mnMinAddValue;
+	mnTargetViwers += rand() % (mnMaxAddValue - mnMinAddValue + 1) + mnMinAddValue;
 }
 
 void Viewers::LeaveViewers()
 {
-	mnCurrentViwer -= rand() % (mnMaxSubtractValue - mnMinSubtractValue + 1) + mnMinSubtractValue;
+	mnTargetViwers -= rand() % (mnMaxSubtractValue - mnMinSubtractValue + 1) + mnMinSubtractValue;
 }
 
 void Viewers::DecideViewers()
 {
-	mnCurrentViwer = rand() % (mnMaxDefauktViewers - mnMinDefauktViewers + 1) + mnMinDefauktViewers;
+	mnTargetViwers = rand() % (mnMaxDefauktViewers - mnMinDefauktViewers + 1) + mnMinDefauktViewers;
+	mnCurrentViwers = mnTargetViwers;
 }

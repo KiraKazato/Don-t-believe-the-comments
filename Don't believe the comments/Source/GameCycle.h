@@ -3,7 +3,7 @@
 #include "Master.h"
 #include "QuestionManager.h"
 #include "TextInputManager.h"
-#include "Viewers.h"
+
 enum GameState
 {
 	STATE_BEFORE = 0,	// ŠJŽn‘O
@@ -62,5 +62,4 @@ private:
 	std::string answer{};
 private:
 	TextInputManager mTextInputManager;
-	Viewers mViewers;
 };

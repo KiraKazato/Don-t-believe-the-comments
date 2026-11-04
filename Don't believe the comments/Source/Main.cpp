@@ -11,6 +11,7 @@
 #include "UIManager.h"
 #include "MouseManager.h"
 #include "CommenterManager.h"
+#include "Viewers.h"
 /**
 * @note リファレンス https://dxlib.xsrv.jp/dxfunc.html
 */
@@ -25,6 +26,7 @@ QuestionManager* Master::mpQuestionManager = new QuestionManager();
 UIManager* Master::mpUIManager = new UIManager();
 MouseManager* Master::mpMouseManager = new MouseManager();
 CommenterManager* Master::mpCommenterManager = new CommenterManager();
+Viewers* Master::mpViewers = new Viewers();
 
 /**
 * @fn WinMain
@@ -64,9 +66,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	Master::mpEffectManager->Initalize();
 	//コメンターマネージャーの初期化
 	Master::mpCommenterManager->Initialize();
+	//視聴者初期化
+	Master::mpViewers->Initialize();
 	
-
-
 	// 描画先画面を裏画面に設定する
 	SetDrawScreen(DX_SCREEN_BACK);
 	
@@ -74,6 +76,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	SetUseZBufferFlag(true);
 	SetWriteZBufferFlag(true);
 
+	srand(static_cast<unsigned int>(time(nullptr)));
 
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
@@ -118,6 +121,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	delete Master::mpMouseManager;
 	Master::mpCommenterManager->Finalize();
 	delete Master::mpCommenterManager;
+	Master::mpViewers->Finalize();
+	delete Master::mpViewers;
 
 
 	Effkseer_End();

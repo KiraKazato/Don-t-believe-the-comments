@@ -1,6 +1,5 @@
 #pragma once
-#include "DxLib.h"
-#include "Master.h"
+
 class Viewers
 {
 public:
@@ -17,13 +16,14 @@ public:
 	//Å‰‚Ì‹’®Ò”Œˆ‚ß‚é
 	void DecideViewers();
 private:
-	int mnCurrentViwer{};
-	int mnMaxDefauktViewers = 150;
-	int mnMinDefauktViewers = 50;
-	int mnMaxAddValue = 400;
-	int mnMinAddValue = 100;
-	int mnMaxSubtractValue = 200;
-	int mnMinSubtractValue = 100;
+	int mnCurrentViwers{};
+	int mnTargetViwers{};
+	int mnMaxDefauktViewers = 500;
+	int mnMinDefauktViewers =300;
+	int mnMaxAddValue = 600;
+	int mnMinAddValue = 200;
+	int mnMaxSubtractValue = 150;
+	int mnMinSubtractValue = 50;
 	int mnStringHandle{};
 	int mnDrawX1{};
 	int mnDrawY1;

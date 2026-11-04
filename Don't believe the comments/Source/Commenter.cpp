@@ -70,13 +70,14 @@ std::string Commenter::CheckLineBreak(std::string _text, int _fontHandle)
 			charBytes = 2;
 		}
 		std::string nextText = _text.substr(number, charBytes);
-		int nextWidth = GetDrawStringWidthToHandle((currentText + nextText).c_str(), static_cast<int>((currentText + nextText).length()), _fontHandle);
-
+		int nextWidth; //GetDrawStringWidthToHandle((currentText + nextText).c_str(), static_cast<int>((currentText + nextText).length()), _fontHandle);
+		int nextHeight;
+		GetDrawStringSize(&nextWidth, &nextHeight, 0, (currentText + nextText).c_str(), static_cast<int>((currentText + nextText).length()));
 		if (startCommentPotision + nextWidth > endCommentPosition)
 		{
 			resultText += currentText + "\n";
 			currentText = nextText;
-			totalHeightSpace += 3;
+			totalHeightSpace += nextHeight + 3;
 		}
 		else
 		{

@@ -232,30 +232,30 @@ std::vector<std::string> CommenterManager::ChooseTemplateCommentKind(int _kind)
 
 	if (_kind == 0)
 	{
-		// é–‹å§‹æ™‚ã¯ 0 ç•ªç›®ã ã‘
+		// ŠJn‚Í 0 ”Ô–Ú‚¾‚¯
 		ret = mTemplateComments.at(0);
 		return ret;
 	}
 	else if (_kind == 4)
 	{
-		// çµ‚äº†æ™‚ã¯ 4 ç•ªç›®
+		// I—¹‚Í 4 ”Ô–Ú
 		ret = mTemplateComments.at(_kind);
 		return ret;
 	}
 
 
-	// å†ç¢ºä¿å‡¦ç†ã‚’ãªãã™ãŸã‚
+	// ÄŠm•Ûˆ—‚ğ‚È‚­‚·‚½‚ß
 	size_t capacity = 0;
 	for (size_t i = inIndexMax; i >= 1; i--)
 	{
 		capacity += mTemplateComments.at(i).size();
 	}
 
-	// è‡ªåˆ†ä»¥ä¸‹ã®ç•ªå·ã‚’é›†ã‚ã‚‹
+	// ©•ªˆÈ‰º‚Ì”Ô†‚ğW‚ß‚é
 	ret.reserve(capacity);
 	for (size_t i = inIndexMax; i >= 1; i--)
 	{
-		// æœ«å°¾ã«ä¸€æ‹¬è¿½åŠ 
+		// ––”ö‚ÉˆêŠ‡’Ç‰Á
 		ret.insert(ret.end(), mTemplateComments.at(i).begin(), mTemplateComments.at(i).end());
 	}
 
@@ -345,7 +345,7 @@ void CommenterManager::ChangeQuestion()
 
 bool CommenterManager::IsOneSecond()
 {
-	//åŸºæº–ã®æ™‚é–“
+	//Šî€‚ÌŠÔ
 	static int lastTime = GetNowCount();
 	int currentTime = GetNowCount();
 

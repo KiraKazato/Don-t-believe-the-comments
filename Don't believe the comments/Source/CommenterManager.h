@@ -14,83 +14,83 @@ public:
 	void Initialize();
 	void Finalize();
 
-	//ãƒ†ãƒ³ãƒ—ãƒ¬ã‚³ãƒ¡ãƒ³ãƒˆã®èª­ã¿è¾¼ã¿
+	//ƒeƒ“ƒvƒŒƒRƒƒ“ƒg‚Ì“Ç‚İ‚İ
 	void LoadTemplateComment(const std::string& _filepath);
-	//ã‚³ãƒ¡ãƒ³ãƒˆã™ã‚‹äººã®åå‰ã®èª­ã¿è¾¼ã¿
+	//ƒRƒƒ“ƒg‚·‚él‚Ì–¼‘O‚Ì“Ç‚İ‚İ
 	void LoadCommenterName(const std::string& _filepath);
-	//ã‚³ãƒ¡ãƒ³ãƒˆã‚’ã™ã‚‹äººã®ç”Ÿæˆ
+	//ƒRƒƒ“ƒg‚ğ‚·‚él‚Ì¶¬
 	void GenerateCommenter();
 
-	//è¡¨ç¤ºã™ã‚‹ã‚³ãƒ¡ãƒ³ã‚¿ãƒ¼ã‚’é¸ã¶
+	//•\¦‚·‚éƒRƒƒ“ƒ^[‚ğ‘I‚Ô
 	void ChooseDisplayCommenter();
-	//è¡¨ç¤ºã™ã‚‹ã‚³ãƒ¡ãƒ³ãƒˆã‚’å—ã‘å–ã‚‹
+	//•\¦‚·‚éƒRƒƒ“ƒg‚ğó‚¯æ‚é
 	std::string GetDisplayComment(int _state);
 
-	//ã‚³ãƒ¡ãƒ³ãƒˆã®ç¨®é¡ã‹ã‚‰é¸ã¶
+	//ƒRƒƒ“ƒg‚Ìí—Ş‚©‚ç‘I‚Ô
 	std::vector<std::string> ChooseTemplateCommentKind(int _kind);
 
 	void Update();
 	void Draw();
 
-	//newã—ãŸã‚³ãƒ¡ãƒ³ã‚¿ãƒ¼ã‚’ãƒªã‚¹ãƒˆã«ã„ã‚Œã‚‹
+	//new‚µ‚½ƒRƒƒ“ƒ^[‚ğƒŠƒXƒg‚É‚¢‚ê‚é
 	void SetCommenter(Commenter* _commenter);
-	//newã—ãŸã€è¡¨ç¤ºã™ã‚‹ã‚³ãƒ¡ãƒ³ã‚¿ãƒ¼ã‚’ãƒªã‚¹ãƒˆã«å…¥ã‚Œã‚‹
+	//new‚µ‚½A•\¦‚·‚éƒRƒƒ“ƒ^[‚ğƒŠƒXƒg‚É“ü‚ê‚é
 	void SetDisplayCommenter(Commenter* _commenter);
 
-	//åŸºæº–åº§æ¨™å–å¾—
+	//Šî€À•Wæ“¾
 	void GetBasePosition(int* _x, int* _y);
 	void GetCurrentPosition(int* _x, int* _y);
 
 
-	//åŸºæº–åº§æ¨™å¤‰æ›´
+	//Šî€À•W•ÏX
 	void SetCurrentWidthPosition(int _x);
 	void SetCurrentHightPosition(int _y);
 
 	int GetMaxWidthPosition() { return mnMaxCommentGridPositionX; }
 	int GetMaxHeightPosition() { return mnMaxCommentGridPositionY; }
 
-	//å•é¡ŒãŒå‡ºã¦ã„ã‚‹ã‹ã‚’çŸ¥ã‚‹
+	//–â‘è‚ªo‚Ä‚¢‚é‚©‚ğ’m‚é
 	void QuestionStarted(bool _start);
 
-	//å•é¡ŒãŒå¤‰ã‚ã£ãŸæ™‚ã®å‡¦ç†
+	//–â‘è‚ª•Ï‚í‚Á‚½‚Ìˆ—
 	void ChangeQuestion();
 
-	//ä¸€ç§’ã‚’æ¸¬ã‚‹é–¢æ•°
+	//ˆê•b‚ğ‘ª‚éŠÖ”
 	bool IsOneSecond();
 
 	void GameEnd();
-	//å‡ºã™ã‚³ãƒ¡ãƒ³ãƒˆã®ç¨®é¡ã‚’æŒ‡å®š
+	//o‚·ƒRƒƒ“ƒg‚Ìí—Ş‚ğw’è
 	void SetCommentSpawnKind(int _kind);
 
 private:
-	//ã‚³ãƒ¡ãƒ³ã‚¿ãƒ¼ã®æƒ…å ±
+	//ƒRƒƒ“ƒ^[‚Ìî•ñ
 	std::vector<Commenter*>mCommenters;
 
-	//è¡¨ç¤ºã™ã‚‹ã‚³ãƒ¡ãƒ³ã‚¿ãƒ¼ã®æƒ…å ±
+	//•\¦‚·‚éƒRƒƒ“ƒ^[‚Ìî•ñ
 	std::vector<Commenter*>mDisplayCommenters;
 
-	//ãƒ†ãƒ³ãƒ—ãƒ¬ã‚³ãƒ¡ãƒ³ãƒˆ
+	//ƒeƒ“ƒvƒŒƒRƒƒ“ƒg
 	std::vector<std::vector<std::string>>mTemplateComments;
 	
-	//åå‰ã®é…åˆ—(ä½¿ã„æ¨ã¦
+	//–¼‘O‚Ì”z—ñ(g‚¢Ì‚Ä
 	std::vector<std::string>mCommenterNames;
 
-	//ã™ã§ã«å‡ºã—ãŸå•é¡Œã‚³ãƒ¡ãƒ³ãƒˆ
+	//‚·‚Å‚Éo‚µ‚½–â‘èƒRƒƒ“ƒg
 	std::vector<std::string>mUsedComments;
 
-	//ã‚³ãƒ¡ãƒ³ãƒˆã®è¡¨ç¤ºåŸºæº–å ´æ‰€
+	//ƒRƒƒ“ƒg‚Ì•\¦Šî€êŠ
 	int mnBaseCommentGridPositionX = 89;
 	int mnBaseCommentGridPositionY = 12;
 	int mnCurrentCommentGridPositionX = 89;
 	int mnCurrentCommentGridPositionY = 12;
 
-	//ã‚³ãƒ¡ãƒ³ãƒˆè¡¨ç¤ºã®æœ€å¤§å ´æ‰€
+	//ƒRƒƒ“ƒg•\¦‚ÌÅ‘åêŠ
 	int mnMaxCommentGridPositionX = 110;
 	int mnMaxCommentGridPositionY = 113;
 
-	//ã‚²ãƒ¼ãƒ ãŒã‚¹ã‚¿ãƒ¼ãƒˆã—ãŸã‹ã®ãƒ•ãƒ©ã‚°
+	//ƒQ[ƒ€‚ªƒXƒ^[ƒg‚µ‚½‚©‚Ìƒtƒ‰ƒO
 	bool mbQuestionStarted = false;
-	//ã‚³ãƒ¡ãƒ³ãƒˆã®ID
+	//ƒRƒƒ“ƒg‚ÌID
 	int mnID = 0;
 
 	int mnCommentKind = 0;

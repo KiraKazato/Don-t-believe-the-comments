@@ -26,6 +26,9 @@ public:
 	//表示するコメントを受け取る
 	std::string GetDisplayComment(int _state);
 
+	//コメントの種類から選ぶ
+	std::vector<std::string> ChooseTemplateCommentKind(int _kind);
+
 	void Update();
 	void Draw();
 
@@ -36,10 +39,12 @@ public:
 
 	//基準座標取得
 	void GetBasePosition(int* _x, int* _y);
+	void GetCurrentPosition(int* _x, int* _y);
+
 
 	//基準座標変更
-	void SetBaseWidthPosition(int _x);
-	void SetBaseHeightPosition(int _y);
+	void SetCurrentWidthPosition(int _x);
+	void SetCurrentHightPosition(int _y);
 
 	int GetMaxWidthPosition() { return mnMaxCommentGridPositionX; }
 	int GetMaxHeightPosition() { return mnMaxCommentGridPositionY; }
@@ -52,6 +57,11 @@ public:
 
 	//一秒を測る関数
 	bool IsOneSecond();
+
+	void GameEnd();
+	//出すコメントの種類を指定
+	void SetCommentSpawnKind(int _kind);
+
 private:
 	//コメンターの情報
 	std::vector<Commenter*>mCommenters;
@@ -60,7 +70,7 @@ private:
 	std::vector<Commenter*>mDisplayCommenters;
 
 	//テンプレコメント
-	std::vector<std::pair<std::string,int>>mTemplateComments;
+	std::vector<std::vector<std::string>>mTemplateComments;
 	
 	//名前の配列(使い捨て
 	std::vector<std::string>mCommenterNames;
@@ -71,6 +81,8 @@ private:
 	//コメントの表示基準場所
 	int mnBaseCommentGridPositionX = 89;
 	int mnBaseCommentGridPositionY = 12;
+	int mnCurrentCommentGridPositionX = 89;
+	int mnCurrentCommentGridPositionY = 12;
 
 	//コメント表示の最大場所
 	int mnMaxCommentGridPositionX = 110;
@@ -78,5 +90,10 @@ private:
 
 	//ゲームがスタートしたかのフラグ
 	bool mbQuestionStarted = false;
+	//コメントのID
+	int mnID = 0;
 
+	int mnCommentKind = 0;
+
+	const int mnMaxCommentKind = 5;
 };

@@ -44,6 +44,7 @@
     <ClCompile Include="Source\TitleScene.cpp" />
     <ClCompile Include="Source\Typing.cpp" />
     <ClCompile Include="Source\UIManager.cpp" />
+    <ClCompile Include="Source\Viewers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Commenter.h" />
@@ -71,6 +72,7 @@
     <ClInclude Include="Source\TitleScene.h" />
     <ClInclude Include="Source\Typing.h" />
     <ClInclude Include="Source\UIManager.h" />
+    <ClInclude Include="Source\Viewers.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

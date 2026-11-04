@@ -93,6 +93,20 @@ bool UIManager::InsideUI(int _handle, int _objectX, int _objectY)
 	return false;
 }
 
+bool UIManager::InsideUI(int _UIX1, int _UIY1, int _UIX2, int _UIY2, int _objectX, int _objectY)
+{
+	bool isInsideX{}, isInsideY{};
+
+	isInsideX = (_UIX1 < _objectX && _objectX < _UIX2);
+	isInsideY = (_UIY1 < _objectY && _objectY < _UIY2);
+
+	if (isInsideX && isInsideY)
+	{
+		return true;
+	}
+	return false;
+}
+
 void UIManager::EraseUI(int _handle)
 {
 	for (auto ui = mUIList.begin(); ui != mUIList.end();)
@@ -146,15 +160,15 @@ bool UIManager::ClickedUI(int _handle, bool _onUI)
 	{
 		if (ui.handle == _handle)
 		{
-			if (Master::mpMouseManager->PressLeftClick() && !ui.pressed && _onUI)
+			if (Master::mpMouseManager->PressLeftClick() && !ui.pressing && _onUI)
 			{
-				ui.pressed = true;
+				ui.pressing = true;
 			}
 
 
-			if (ui.pressed && Master::mpMouseManager->ReleaseLeftClick())
+			if (ui.pressing && Master::mpMouseManager->ReleaseLeftClick())
 			{
-				ui.pressed = false;
+				ui.pressing = false;
 
 				if (_onUI)
 				{
@@ -168,6 +182,29 @@ bool UIManager::ClickedUI(int _handle, bool _onUI)
 	}
 
 
+	return false;
+}
+
+bool UIManager::ClickedUI(bool*_pressing, bool _onUI)
+{
+
+	if (Master::mpMouseManager->PressLeftClick() && !(*_pressing) && _onUI)
+	{
+		*_pressing = true;
+	}
+
+
+	if (*_pressing && Master::mpMouseManager->ReleaseLeftClick())
+	{
+		*_pressing = false;
+
+		if (_onUI)
+		{
+			return true;
+		}
+
+		return false;
+	}
 	return false;
 }
 

@@ -4,6 +4,15 @@
 #include "QuestionManager.h"
 #include "TextInputManager.h"
 
+enum GameState
+{
+	STATE_BEFORE = 0,	// 開始前
+	STATE_BEGINNING,	// 序盤
+	STATE_MID,			// 中盤
+	STATE_FINAL,		// 終盤
+	STATE_AFTER			// 終了
+};
+
 class GameCycle
 {
 public:
@@ -29,6 +38,7 @@ private:
 private:
 	//入力する文字のフォントハンドルを入れる
 	int mnInputStringHandle = -1;
+	int mnQuestionNumberHandle = -1;
 private:
 	//今の問題画像を入れる
 	int mnNowQuestionImageHandle = -1;
@@ -37,18 +47,21 @@ private:
 	int mnQuestionImageX2 = Master::gridWidth * 71;
 	int mnQuestionImageY1 = Master::gridHeight * 22;
 	int mnQuestionImageY2 = Master::gridHeight * 63;
+
+	float mfQuestionDrawEasing = 0.0f;
 private:
 	//問題番号
 	//最初は一問目なので1に設定
 	int mnQuestionNumber = 1;
 	//最大問題数
 	int mnMaxQuestionNumber = 10;
-	
+
 private:
 	bool mbQuestionNumberDrawn = false;
 	bool mbQuestionDrawn = false;
 	bool mbInputAnswered = false;
 	bool mbQuestionSpawned = false;
+	bool mbGameEnd = false;
 private:
 	std::string answer{};
 private:

@@ -8,6 +8,7 @@
 #include "UIManager.h"
 #include "MouseManager.h"
 #include "CommenterManager.h"
+#include "Viewers.h"
 
 // ゲーム内で1つだけしか存在しないものを管理するクラス
 //例えば、
@@ -24,11 +25,12 @@ public:
 	static SoundManager* mpSoundManager;  //サウンドマネージャーのポインタ
 	static ResourceManager* mpResourceManager;  //サウンドマネージャーのポインタ
 	static EffectManager* mpEffectManager;//エフェクトマネージャーのポインタ
-	static FontManager* mpFontManager;
-	static QuestionManager* mpQuestionManager;
-	static UIManager* mpUIManager;
-	static MouseManager* mpMouseManager;
-	static CommenterManager* mpCommenterManager;
+	static FontManager* mpFontManager;//フォントマネージャーのポインタ
+	static QuestionManager* mpQuestionManager;//問題生成マネージャーのポインタ
+	static UIManager* mpUIManager;//UI管理クラスのポインタ
+	static MouseManager* mpMouseManager;//マウスマネージャーのポインタ
+	static CommenterManager* mpCommenterManager;//コメント表示のポインタ
+	static Viewers* mpViewers;//視聴者クラスのポインタ
 public:
 	static const int Width = 1920;
 	static const int Height = 1080;

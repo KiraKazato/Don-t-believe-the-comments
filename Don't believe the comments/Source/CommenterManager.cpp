@@ -23,9 +23,22 @@ void CommenterManager::Initialize()
 		GenerateCommenter();
 	}
 	mCommenterNames.clear();
+	mnCurrentCommentGridPositionX = mnBaseCommentGridPositionX;
+	mnCurrentCommentGridPositionY = mnBaseCommentGridPositionY;
+	
 }
 void CommenterManager::Finalize()
 {
+	if (!mDisplayCommenters.empty())
+	{
+		for (auto& commenter : mDisplayCommenters)
+		{
+			if (commenter != nullptr)
+			{
+				delete commenter;
+			}
+		}
+	}
 	if (!mCommenters.empty())
 	{
 		for (auto& commenter : mCommenters)
@@ -36,7 +49,7 @@ void CommenterManager::Finalize()
 			}
 		}
 	}
-	//DisplayCommenter‚Í‘½•ªACommenter‚ð‚¢‚ê‚Ä‚é‚©‚çdelete‚µ‚È‚­‚Ä‚¢‚¢B
+	
 	mCommenters.clear();
 	mDisplayCommenters.clear();
 	mTemplateComments.clear();
@@ -140,7 +153,7 @@ void CommenterManager::ChooseDisplayCommenter()
 	{
 		return;
 	}
-	static int  ID = 0;
+	
 	float totalReputation{};
 	float reputationPool{};
 	std::string comment;
@@ -157,15 +170,15 @@ void CommenterManager::ChooseDisplayCommenter()
 			continue;
 		}
 		comment = GetDisplayComment(commenter->GetState());
-		new Commenter(commenter->GetName(), commenter->GetState(), comment, ID);
-		
-		int commentY = mnBaseCommentGridPositionY + (commenter->GetTotalHeight() * (ID+1));
+		new Commenter(commenter,commenter->GetName(), commenter->GetState(), comment, mnID);
+
+		int commentY = mnCurrentCommentGridPositionY + (commenter->GetTotalHeight() * (mnID+1));
 		if (mnMaxCommentGridPositionY <= commentY)
 		{
 			int diff = commentY - mnMaxCommentGridPositionY;
-			mnBaseCommentGridPositionY -= diff;
+			mnCurrentCommentGridPositionY -= diff;
 		}
-		ID++;
+		mnID++;
 
 		break;
 	}
@@ -252,21 +265,25 @@ std::vector<std::string> CommenterManager::ChooseTemplateCommentKind(int _kind)
 
 void CommenterManager::Update()
 {
-	//‚±‚±‚Í“r’†
-	//ˆê•b‚½‚Á‚½‚ç‚Ìˆ—‘½•ªŒã‚Åcppì‚é‚©‚à
 	ChooseDisplayCommenter();
+	if (mDisplayCommenters.empty())return;
+	int totalHeight{};
+	for (const auto commenter : mDisplayCommenters)
+	{
+		commenter->updateReputation(totalHeight);
+		totalHeight += commenter->GetTotalHeight();
+	}
+	
 }
 
 void CommenterManager::Draw()
 {
 	if (mDisplayCommenters.empty())return;
-	int totalHeight{};
+
 	for (const auto& commenter : mDisplayCommenters)
 	{
-		commenter->Draw(totalHeight);
-		totalHeight += commenter->GetTotalHeight();
+		commenter->Draw();
 	}
-	//DrawBox(Master::gridWidth*mnBaseCommentGridPositionX, Master::gridHeight*mnBaseCommentGridPositionY, Master::gridWidth*mnMaxCommentGridPositionX,Master::gridHeight* mnMaxCommentGridPositionY, GetColor(0, 0, 0), TRUE);
 }
 
 void CommenterManager::SetCommenter(Commenter* _commenter)
@@ -291,15 +308,29 @@ void CommenterManager::GetBasePosition(int* _x, int* _y)
 	}
 }
 
-void CommenterManager::SetBaseWidthPosition(int _x)
+void CommenterManager::GetCurrentPosition(int* _x, int* _y)
 {
-	mnBaseCommentGridPositionX = _x;
+	if (_x)
+	{
+		*_x = mnCurrentCommentGridPositionX;
+	}
+	if (_y)
+	{
+		*_y = mnCurrentCommentGridPositionY;
+	}
 }
 
-void CommenterManager::SetBaseHeightPosition(int _y)
+
+
+void CommenterManager::SetCurrentWidthPosition(int _x)
 {
-	mnBaseCommentGridPositionY = _y;
+	mnCurrentCommentGridPositionX = _x;
 }
+void CommenterManager::SetCurrentHightPosition(int _y)
+{
+	mnCurrentCommentGridPositionY = _y;
+}
+
 
 
 void CommenterManager::QuestionStarted(bool _start)
@@ -329,6 +360,28 @@ bool CommenterManager::IsOneSecond()
 	return false;
 }
 
+void CommenterManager::GameEnd()
+{
+	if (!mDisplayCommenters.empty())
+	{
+		for (auto commenter : mDisplayCommenters)
+		{
+			delete commenter;
+		}
+		mDisplayCommenters.clear();
+	}
+	if (!mUsedComments.empty())
+	{
+		mUsedComments.clear();
+	}
+	if (!mCommenterNames.empty())
+	{
+		mCommenterNames.clear();
+	}
+	mnID = 0;
+	mnCurrentCommentGridPositionX = mnBaseCommentGridPositionX;
+	mnCurrentCommentGridPositionY = mnBaseCommentGridPositionY;
+}
 void CommenterManager::SetCommentSpawnKind(int _kind)
 {
 	mnCommentKind = _kind;

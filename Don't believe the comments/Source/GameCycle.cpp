@@ -55,7 +55,7 @@ void GameCycle::Update()
 	}
 
 	InputAnswer();
-
+	Master::mpViewers->Update();
 	if (mbInputAnswered && AnswerJudge())
 	{
 		mbQuestionSpawned = false;
@@ -88,7 +88,8 @@ void GameCycle::Draw()
 
 	QuestionDraw();
 
-	if (mbQuestionNumberDrawn && mbQuestionDrawn)
+	Master::mpViewers->Draw();
+	if (mbQuestionNumberDrawn &&mbQuestionDrawn)
 	{
 		mTextInputManager.Draw();
 	}
@@ -99,6 +100,8 @@ void GameCycle::Draw()
 void GameCycle::Finalize()
 {
 	mTextInputManager.Finalize();
+	Master::mpCommenterManager->GameEnd();
+
 }
 
 void GameCycle::CommentDraw()
@@ -110,7 +113,7 @@ void GameCycle::CommentDraw()
 
 void GameCycle::QuestionNumberDraw()
 {
-	// Å‰‚Ífalse‚É‚·‚é
+	// æœ€åˆã¯falseã«ã™ã‚‹
 	int numberWidth,numberHeight;
 	GetDrawFormatStringSizeToHandle(&numberWidth, &numberHeight, NULL, mnQuestionNumberHandle, "Q: %d / %d", mnQuestionNumber, mnMaxQuestionNumber);
 
@@ -121,24 +124,24 @@ void GameCycle::QuestionNumberDraw()
 
 void GameCycle::QuestionDraw()
 {
-	// ƒC[ƒWƒ“ƒOŠÖ”
+	// ã‚¤ãƒ¼ã‚¸ãƒ³ã‚°é–¢æ•°
 	constexpr auto easing = [](float t) {return t < 0.5f ? 4.0f * t * t * t : 1.0f - powf(-2.0f * t + 2.0f, 3.0f) * 0.5f; };
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255 * easing(mfQuestionDrawEasing)));
 	DrawExtendGraph(mnQuestionImageX1, mnQuestionImageY1, mnQuestionImageX2, mnQuestionImageY2, mnNowQuestionImageHandle, TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	// 2•b‚©‚¯‚Ä•\¦
+	// 2ç§’ã‹ã‘ã¦è¡¨ç¤º
 	constexpr float easingCount = 1.0f / (60.0f * 1.0f);
 	mfQuestionDrawEasing += easingCount;	
 
-	// I‚í‚Á‚½
+	// çµ‚ã‚ã£ãŸ
 	mbQuestionDrawn = true;
 }
 
 void GameCycle::InputAnswer()
 {
-	//Œ»İ‚Ì“ü—Íó‘Ô
+	//ç¾åœ¨ã®å…¥åŠ›çŠ¶æ…‹
 	int nowState = mTextInputManager.CheckInput();
 	mTextInputManager.ResetState();
 	if (nowState == 0)
@@ -147,7 +150,7 @@ void GameCycle::InputAnswer()
 	}
 	else if (nowState == 1)
 	{
-		//•¶š“ü—Í
+		//æ–‡å­—å…¥åŠ›
 		answer = mTextInputManager.GetInputString();
 		
 		mbInputAnswered = true;
@@ -166,6 +169,7 @@ bool GameCycle::AnswerJudge()
 	{
 		mTextInputManager.ResetInput();
 		answer = "";
+		Master::mpViewers->LeaveViewers();
 		return false;
 	}
 
@@ -174,12 +178,14 @@ bool GameCycle::AnswerJudge()
 	{
 		mTextInputManager.ResetInput();
 		answer = "";
+		Master::mpViewers->ComeViewers();
 		return true;
 	}
 	else
 	{
 		mTextInputManager.ResetInput();
 		answer = "";
+		Master::mpViewers->LeaveViewers();
 		return false;
 	}
 }

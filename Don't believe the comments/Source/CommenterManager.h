@@ -39,10 +39,12 @@ public:
 
 	//基準座標取得
 	void GetBasePosition(int* _x, int* _y);
+	void GetCurrentPosition(int* _x, int* _y);
+
 
 	//基準座標変更
-	void SetBaseWidthPosition(int _x);
-	void SetBaseHeightPosition(int _y);
+	void SetCurrentWidthPosition(int _x);
+	void SetCurrentHightPosition(int _y);
 
 	int GetMaxWidthPosition() { return mnMaxCommentGridPositionX; }
 	int GetMaxHeightPosition() { return mnMaxCommentGridPositionY; }
@@ -56,6 +58,7 @@ public:
 	//一秒を測る関数
 	bool IsOneSecond();
 
+	void GameEnd();
 	//出すコメントの種類を指定
 	void SetCommentSpawnKind(int _kind);
 
@@ -78,6 +81,8 @@ private:
 	//コメントの表示基準場所
 	int mnBaseCommentGridPositionX = 89;
 	int mnBaseCommentGridPositionY = 12;
+	int mnCurrentCommentGridPositionX = 89;
+	int mnCurrentCommentGridPositionY = 12;
 
 	//コメント表示の最大場所
 	int mnMaxCommentGridPositionX = 110;
@@ -85,6 +90,8 @@ private:
 
 	//ゲームがスタートしたかのフラグ
 	bool mbQuestionStarted = false;
+	//コメントのID
+	int mnID = 0;
 
 	int mnCommentKind = 0;
 

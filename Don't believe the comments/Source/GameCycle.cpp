@@ -121,14 +121,15 @@ void GameCycle::QuestionNumberDraw()
 
 void GameCycle::QuestionDraw()
 {
-	auto easing = [](float t) {return t < 0.5f ? 4.0f * t * t * t : 1.0f - powf(-2.0f * t + 2.0f, 3.0f) * 0.5f; };
+	// イージング関数
+	constexpr auto easing = [](float t) {return t < 0.5f ? 4.0f * t * t * t : 1.0f - powf(-2.0f * t + 2.0f, 3.0f) * 0.5f; };
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255 * easing(mfQuestionDrawEasing)));
 	DrawExtendGraph(mnQuestionImageX1, mnQuestionImageY1, mnQuestionImageX2, mnQuestionImageY2, mnNowQuestionImageHandle, TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	// 2秒かけて表示
-	constexpr float easingCount = 1.0f / (60.0f * 2.0f);
+	constexpr float easingCount = 1.0f / (60.0f * 1.0f);
 	mfQuestionDrawEasing += easingCount;	
 
 	// 終わった

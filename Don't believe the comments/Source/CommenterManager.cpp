@@ -110,7 +110,7 @@ void CommenterManager::LoadCommenterName(const std::string& _filepath)
 		{
 			line.pop_back();
 		}
-		mCommenterNames.push_back(line);
+		mCommenterNames.emplace_back(line);
 	}
 }
 
@@ -293,6 +293,10 @@ void CommenterManager::SetCommenter(Commenter* _commenter)
 
 void CommenterManager::SetDisplayCommenter(Commenter* _commenter)
 {
+	if(mDisplayCommenters.size() > 100)
+	{
+		mDisplayCommenters.erase(mDisplayCommenters.begin());
+	}
 	mDisplayCommenters.emplace_back(_commenter);
 }
 
@@ -351,7 +355,7 @@ bool CommenterManager::IsOneSecond()
 
 	int diffTime = currentTime - lastTime;
 
-	if (diffTime >= 2000)
+	if (diffTime >= 100)
 	{
 		lastTime = currentTime;
 		return true;

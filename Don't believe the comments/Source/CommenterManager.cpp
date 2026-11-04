@@ -355,7 +355,7 @@ bool CommenterManager::IsOneSecond()
 
 	int diffTime = currentTime - lastTime;
 
-	if (diffTime >= 100)
+	if (diffTime >= 2000)
 	{
 		lastTime = currentTime;
 		return true;

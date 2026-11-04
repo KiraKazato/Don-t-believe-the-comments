@@ -298,6 +298,7 @@ void CommenterManager::SetDisplayCommenter(Commenter* _commenter)
 		mDisplayCommenters.erase(mDisplayCommenters.begin());
 	}
 	mDisplayCommenters.emplace_back(_commenter);
+	mnCountComments++;
 }
 
 void CommenterManager::GetBasePosition(int* _x, int* _y)

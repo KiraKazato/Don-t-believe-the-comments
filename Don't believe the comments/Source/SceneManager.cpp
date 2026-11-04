@@ -1,5 +1,6 @@
 #include "SceneManager.h"
 #include "Scene.h"
+#include "Transitor.h"
 #include "TitleScene.h"
 #include "GameScene.h"
 #include "DxLib.h"
@@ -11,13 +12,14 @@ SceneManager::SceneManager()
 	:mnSceneType(SCENE_TYPE::SCENE_NONE)
 	, mnNextSceneType(SCENE_TYPE::SCENE_NONE)
 	, mpCurrentScene(nullptr)
+	, mpTransitor(nullptr)
 {
-
+	mpTransitor = new Transitor();
 }
 
 SceneManager::~SceneManager()
 {
-
+	delete mpTransitor;
 }
 
 void SceneManager::Initialize()

@@ -1,170 +1,179 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="リソース ファイル">
-      <UniqueIdentifier>{99b2d69f-a37f-426f-ab69-da2045e67aae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル">
-      <UniqueIdentifier>{11621b53-620f-4c4b-85b4-c796bf25107a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル">
-      <UniqueIdentifier>{32cc1312-9ed4-4ea9-b38e-3997796617da}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="Source\Commenter.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\CommenterManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\EffectManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\EffekseerEffect.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\FontManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameCycle.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameScene.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\LevelSelectScene.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\Main.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\MouseManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\Object2D.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\ObjectManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\QuestionManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\ResourceManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Scene.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SceneManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SettingScene.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SoundManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\TextInputManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Texture.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\TextureAnimation.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\TitleScene.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Typing.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\UIManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\ResultScene.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneManager.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SettingScene.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SoundManager.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\TextInputManager.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Texture.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\TextureAnimation.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\TitleScene.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Typing.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UIManager.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Viewers.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Transitor.cpp">
+      <Filter>ソースファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Commenter.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\CommenterManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\EffectManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\EffekseerEffect.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\FontManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\GameCycle.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\GameScene.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\LevelSelectScene.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\Master.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\MouseManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\Object2D.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\ObjectManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\QuestionManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\ResourceManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Scene.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SceneManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SettingScene.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SoundManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\TextInputManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Texture.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\TextureAnimation.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\TitleScene.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Typing.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\UIManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\ResultScene.h">
-    <ClInclude Include="Source\Viewers.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダーファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Scene.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneManager.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SettingScene.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SoundManager.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\TextInputManager.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Texture.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\TextureAnimation.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\TitleScene.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Typing.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UIManager.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Viewers.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Transitor.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="ソースファイル">
+      <UniqueIdentifier>{360fa1bb-4e2c-4431-ab14-e2699ce945ff}</UniqueIdentifier>
+      <Extensions>.h,.hpp</Extensions>
+    </Filter>
+    <Filter Include="ヘッダーファイル">
+      <UniqueIdentifier>{7218626f-265e-4b32-93f4-bef428e9f8c5}</UniqueIdentifier>
+      <Extensions>.cpp</Extensions>
+    </Filter>
   </ItemGroup>
 </Project>

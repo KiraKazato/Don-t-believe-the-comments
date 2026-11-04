@@ -1,5 +1,6 @@
 #include "LevelSelectScene.h"
 #include"Master.h"
+#include "Transitor.h"
 
 
 LevelSelectScene::LevelSelectScene()
@@ -50,10 +51,13 @@ void LevelSelectScene::Initialize()
 			Master::mpUIManager->AddUI(mStageButtonHandle[number], stageButtonPositionX1, stageButtonPositionY1, stageButtonPositionX2, stageButtonPositionY2,false);
 		}
 	}
+
+	Master::mpSceneManager->GetTransitor()->FadaInit();
 }
 
 void LevelSelectScene::Update()
 {
+	Master::mpSceneManager->GetTransitor()->FadeIn(1.5f);
 	Master::mpMouseManager->GetMousePosition(&mouseX, &mouseY);
 	//‰æ‘œ‚Ì’†‚ÉƒJ[ƒ\ƒ‹‚ª‚ ‚Á‚½‚ç
 	Master::mpUIManager->GetUIData(mStageButtonHandle[currentStage])->insideObject = Master::mpUIManager->InsideUI(mnDay1ButtonGraphHandle, mouseX, mouseY);

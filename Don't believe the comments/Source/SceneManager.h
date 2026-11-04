@@ -2,7 +2,7 @@
 
 // クラスの前方宣言
 class Scene;
-
+class Transitor;
 
 class SceneManager
 {
@@ -45,8 +45,12 @@ public:
 	// 現在シーンの取得
 	Scene* GetCurrentScene() { return mpCurrentScene; }
 
+	// 遷移の取得
+	Transitor* GetTransitor() { return mpTransitor; };
+
 private:
 	SCENE_TYPE mnSceneType;			// 現在のシーンのタイプ
 	SCENE_TYPE mnNextSceneType;		// 次のシーンのタイプ
 	Scene* mpCurrentScene;			// 現在のシーンのポインタ
+	Transitor* mpTransitor;			// 遷移のポインタ
 };

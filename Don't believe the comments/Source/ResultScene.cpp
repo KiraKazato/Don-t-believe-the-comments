@@ -22,8 +22,6 @@ void ResultScene::Initialize()
 
 	Master::mpUIManager->AddUI(mnSceneBackGround, 0, 0, Master::Width, Master::Height);
 	Master::mpUIManager->AddUI(mnNextButton, Master::gridWidth * 47, Master::gridHeight * 95, Master::gridWidth * 74, Master::gridHeight * 112);
-	
-
 }
 
 void ResultScene::Update()
@@ -47,7 +45,7 @@ void ResultScene::Update()
 	//¶ƒNƒŠƒbƒN‰Ÿ‚³‚ê‚½‚Æ‚«
 	if (Master::mpUIManager->ClickedUI(mnNextButton, insideStartButton))
 	{
-		Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_SELECT);
+		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_SELECT);
 	}
 	Scene::Update();
 

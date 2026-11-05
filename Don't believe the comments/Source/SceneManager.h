@@ -38,19 +38,23 @@ public:
 	//シーン遷移（切り替え処理）が必要な状態なら遷移処理をする
 	void ChageSceneIfNeeded();
 
-	// 次に遷移するシーンの設定
+	// 次に遷移するシーンの設定（フェードあり）
 	// note: シーン遷移をしたい場合は、必ずこの処理を経由して遷移させる
-	void SetNextScene(SCENE_TYPE next) { mnNextSceneType = next; }
+	void SetNextSceneFade(SCENE_TYPE next, bool isFade); //{ mnNextSceneType = next; }
+	
+	// 次に遷移するシーンの設定（フェードなし）
+	// note: シーン遷移をしたい場合は、必ずこの処理を経由して遷移させる
+	void SetNextScene(SCENE_TYPE next) { mnNextSceneType = next; mbIsFadeMode = false; }
 
 	// 現在シーンの取得
 	Scene* GetCurrentScene() { return mpCurrentScene; }
 
-	// 遷移の取得
-	Transitor* GetTransitor() { return mpTransitor; };
+	SCENE_TYPE GetNowScene() { return mnSceneType; }
 
 private:
 	SCENE_TYPE mnSceneType;			// 現在のシーンのタイプ
 	SCENE_TYPE mnNextSceneType;		// 次のシーンのタイプ
 	Scene* mpCurrentScene;			// 現在のシーンのポインタ
-	Transitor* mpTransitor;			// 遷移のポインタ
+
+	bool mbIsFadeMode;
 };

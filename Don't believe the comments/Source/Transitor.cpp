@@ -2,42 +2,53 @@
 #include "Master.h"
 #include "DxLib.h"
 
-void Transitor::FadeOut(float _duration, SceneManager::SCENE_TYPE _nextScene)
+void Transitor::XFadeInit(bool _isIn, float _duration, SceneManager::SCENE_TYPE _nextScene)
 {
-	if (IsTransitionFinish())
+	// 起動したか
+	if (mbIsBoot)
 	{
+		mbIsBoot = false;
 		return;
 	}
 
 	mfTransitorMaxTime = _duration;
-	constexpr float frameTime = 1.0f / 60.0f;
+	mfTransitorTime = 0.0f;	// 時間計測の初期化
+	mbIsFadeIn = _isIn;
+	mf_t = 0.0f;			// 進行度
 
-	float t = mfTransitorTime / mfTransitorMaxTime;
-
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255.0f * t));
-	DrawBox(0, 0, Master::Width, Master::Height, GetColor(0, 0, 0), TRUE);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
-	if (IsTransitionFinish())
+	// -1でないならシーンを変える
+	if(_nextScene != -1)
 	{
-		Master::mpSceneManager->SetNextScene(_nextScene);
-		mfTransitorTime = 0.0f;
+		mNextScene = _nextScene;
+	}
+	else
+	{
+		mNextScene = Master::mpSceneManager->GetNowScene();
 	}
 }
 
-void Transitor::FadeIn(float _duration)
+void Transitor::XFadeInit(SceneManager::SCENE_TYPE _nextScene)
 {
-	if (IsTransitionFinish())
+	// シーン遷移 -> フェードアウト
+	XFadeInit(false, DEFALT_DURATION, _nextScene);
+}
+
+void Transitor::XFade()
+{
+	mf_t = mfTransitorTime / mfTransitorMaxTime;
+	mf_t = std::min(std::max(0.0f, mf_t), 1.0f);
+	if (mbIsFadeIn)
 	{
-		return;
+		mf_t = 1.0f - mf_t;
 	}
 
-	mfTransitorMaxTime = _duration;
-	constexpr float frameTime = 1.0f / 60.0f;
+	Master::mpSceneManager->SetNextSceneFade(mNextScene, true);
+}
 
-	float t = 1.0f - (mfTransitorTime / mfTransitorMaxTime);
-
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255.0f * t));
+void Transitor::FadeDraw()
+{
+	float alpha = 255.0f * mf_t;
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(alpha));
 	DrawBox(0, 0, Master::Width, Master::Height, GetColor(0, 0, 0), TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }

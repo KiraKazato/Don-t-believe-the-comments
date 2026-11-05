@@ -12,14 +12,11 @@ SceneManager::SceneManager()
 	:mnSceneType(SCENE_TYPE::SCENE_NONE)
 	, mnNextSceneType(SCENE_TYPE::SCENE_NONE)
 	, mpCurrentScene(nullptr)
-	, mpTransitor(nullptr)
 {
-	mpTransitor = new Transitor();
 }
 
 SceneManager::~SceneManager()
 {
-	delete mpTransitor;
 }
 
 void SceneManager::Initialize()
@@ -33,6 +30,13 @@ void SceneManager::Initialize()
 
 void SceneManager::Update()
 {
+	if (!Master::mpTransitor->IsTransitionFinish())
+	{
+		Master::mpTransitor->FadeStep(1.0f / 60.0f);
+		Master::mpTransitor->XFade();
+		return;
+	}
+
 	// シーンの更新
 	mpCurrentScene->Update();
 }
@@ -41,6 +45,7 @@ void SceneManager::Draw()
 {
 	// シーンの描画
 	mpCurrentScene->Draw();
+	Master::mpTransitor->FadeDraw();
 }
 
 void SceneManager::Finalize()
@@ -93,6 +98,20 @@ void SceneManager::ChageSceneIfNeeded()
 
 	// シーンの生成がされているはずなので、初期化処理を呼んでおく
 	mpCurrentScene->Initialize();
+	if (mbIsFadeMode)
+	{
+		Master::mpTransitor->XFadeInit(true);
+		mbIsFadeMode = false;
+	}
 }
 
+void SceneManager::SetNextSceneFade(SCENE_TYPE next, bool isFade)
+{
+	mbIsFadeMode = isFade;
+	if (!Master::mpTransitor->IsTransitionFinish())
+	{
+		return;
+	}
+	mnNextSceneType = Master::mpTransitor->GetNextScene();
+}
 

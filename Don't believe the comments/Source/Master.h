@@ -9,6 +9,7 @@
 #include "MouseManager.h"
 #include "CommenterManager.h"
 #include "Viewers.h"
+#include "Transitor.h"
 
 // ゲーム内で1つだけしか存在しないものを管理するクラス
 //例えば、
@@ -31,6 +32,8 @@ public:
 	static MouseManager* mpMouseManager;//マウスマネージャーのポインタ
 	static CommenterManager* mpCommenterManager;//コメント表示のポインタ
 	static Viewers* mpViewers;//視聴者クラスのポインタ
+	static Transitor* mpTransitor;
+
 public:
 	static const int Width = 1920;
 	static const int Height = 1080;

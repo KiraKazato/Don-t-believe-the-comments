@@ -170,7 +170,7 @@ void SettingScene::Update()
 	{
 		//BGM‚ðŽ~‚ß‚ÄƒV[ƒ“‘JˆÚ
 		Master::mpSoundManager->StopBGM();
-		Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_TITLE);
+		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
 	}
 
 	Scene::Update();

@@ -23,7 +23,7 @@ void TitleScene::Initialize()
 	Master::mpUIManager->AddUI(mnTitleBackGroundHandle, 0, 0, Master::Width, Master::Height);
 	Master::mpUIManager->AddUI(mnStartBottonHandle, Master::gridWidth * 30, Master::gridHeight * 90, Master::gridWidth * 57, Master::gridHeight * 107);
 	Master::mpUIManager->AddUI(mnSettingBottonHandle, Master::gridWidth * 63, Master::gridHeight * 90, Master::gridWidth * 90, Master::gridHeight * 107);
-	Master::mpSceneManager->GetTransitor()->FadaInit();
+	Master::mpTransitor->XFadeInit(true);
 }
 
 void TitleScene::Update()
@@ -47,7 +47,7 @@ void TitleScene::Update()
 	//左クリック押されたとき
 	if (Master::mpUIManager->ClickedUI(mnStartBottonHandle, insideStartButton))
 	{
-		Master::mpSceneManager->GetTransitor()->FadeOut(1.5f, SceneManager::SCENE_TYPE::SCENE_SELECT);
+		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_SELECT);
 	}
 
 
@@ -65,7 +65,7 @@ void TitleScene::Update()
 	}
 	if (Master::mpUIManager->ClickedUI(mnSettingBottonHandle, insideSettingButton))
 	{
-		Master::mpSceneManager->GetTransitor()->FadeOut(1.5f, SceneManager::SCENE_TYPE::SCENE_SELECT);
+		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_SETTING);
 	}
 
 	//バックスペースキーでタイトルに戻る
@@ -73,7 +73,7 @@ void TitleScene::Update()
 	{
 		//BGMを止めてシーン遷移
 		Master::mpSoundManager->StopBGM();
-		Master::mpSceneManager->GetTransitor()->FadeOut(1.5f, SceneManager::SCENE_TYPE::SCENE_SELECT);
+		Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_RESULT);
 	}
 
 	Scene::Update();

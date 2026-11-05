@@ -5,6 +5,9 @@ ResultScene::ResultScene()
 	:mnNextButtonHandle(0)
 	,mnSceneBackGroundHandle(0)
 	, mnShowResultHandle(0)
+	,mnNumberOfComments(0)
+	,mnNumberOfCorrectAnswers(0)
+	,mnNumberOfViewers(0)
 {
 
 }
@@ -24,9 +27,9 @@ void ResultScene::Initialize()
 	mnNumberOfViewers = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/Number Of Viewers.png");
 
 	Master::mpUIManager->AddUI(mnSceneBackGroundHandle, 0, 0, Master::Width, Master::Height);
-	Master::mpUIManager->AddUI(mnShowResultHandle, Master::gridWidth*23, Master::gridHeight*22, Master::gridWidth*98, Master::gridHeight*93);
+	Master::mpUIManager->AddUI(mnShowResultHandle, Master::gridWidth*24, Master::gridHeight*23, Master::gridWidth*97, Master::gridHeight*93);
 	Master::mpUIManager->AddUI(mnNextButtonHandle, Master::gridWidth * 47, Master::gridHeight * 95, Master::gridWidth * 74, Master::gridHeight * 112);
-	Master::mpUIManager->AddUI(mnNumberOfViewers, Master::gridWidth * 48, Master::gridHeight * 24, Master::gridWidth * 72, Master::gridHeight * 33);
+	Master::mpUIManager->AddUI(mnNumberOfViewers, Master::gridWidth * 48, Master::gridHeight * 25, Master::gridWidth * 72, Master::gridHeight * 34);
 	Master::mpUIManager->AddUI(mnNumberOfComments, Master::gridWidth * 71, Master::gridHeight * 57, Master::gridWidth * 87, Master::gridHeight * 63);
 	Master::mpUIManager->AddUI(mnNumberOfCorrectAnswers, Master::gridWidth * 36, Master::gridHeight * 57, Master::gridWidth * 47, Master::gridHeight * 63);
 

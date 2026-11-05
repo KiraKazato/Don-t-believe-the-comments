@@ -20,6 +20,7 @@ private:
 	int mnNumberOfComments;
 	int mnNumberOfCorrectAnswers;
 	int mnNumberOfViewers;
+	int mnStreamEnded;
 
 	//マウスの座標を受け取る
 	int mnMouseX{};

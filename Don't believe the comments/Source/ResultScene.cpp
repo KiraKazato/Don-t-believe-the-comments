@@ -40,23 +40,23 @@ void ResultScene::Initialize()
 
 void ResultScene::Update()
 {
-	//ãƒžã‚¦ã‚¹åº§æ¨™å—ã‘å–ã‚Š
+	//ƒ}ƒEƒXÀ•WŽó‚¯Žæ‚è
 	Master::mpMouseManager->GetMousePosition(&mnMouseX, &mnMouseY);
 
 	bool insideStartButton = Master::mpUIManager->InsideUI(mnNextButtonHandle, mnMouseX, mnMouseY);
-	//ãƒžã‚¦ã‚¹ãŒãƒœã‚¿ãƒ³ã®ç¯„å›²å†…ã ã£ãŸã‚‰
+	//ƒ}ƒEƒX‚ªƒ{ƒ^ƒ“‚Ì”ÍˆÍ“à‚¾‚Á‚½‚ç
 	if (insideStartButton)
 	{
-		//å°‘ã—æ‹¡å¤§
+		//­‚µŠg‘å
 		Master::mpUIManager->ChangeUISize(mnNextButtonHandle, 1.1f);
 
 	}
 	else
 	{
-		//å…ƒã®å¤§ãã•ã«æˆ»ã—ã¦ãŠã
+		//Œ³‚Ì‘å‚«‚³‚É–ß‚µ‚Ä‚¨‚­
 		Master::mpUIManager->ResetUISize(mnNextButtonHandle);
 	}
-	//å·¦ã‚¯ãƒªãƒƒã‚¯æŠ¼ã•ã‚ŒãŸã¨ã
+	//¶ƒNƒŠƒbƒN‰Ÿ‚³‚ê‚½‚Æ‚«
 	if (Master::mpUIManager->ClickedUI(mnNextButtonHandle, insideStartButton))
 	{
 		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_SELECT);

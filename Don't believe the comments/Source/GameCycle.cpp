@@ -113,7 +113,7 @@ void GameCycle::CommentDraw()
 
 void GameCycle::QuestionNumberDraw()
 {
-	// æœ€åˆã¯falseã«ã™ã‚‹
+	// Å‰‚Ífalse‚É‚·‚é
 	int numberWidth,numberHeight;
 	GetDrawFormatStringSizeToHandle(&numberWidth, &numberHeight, NULL, mnQuestionNumberHandle, "Q: %d / %d", mnQuestionNumber, mnMaxQuestionNumber);
 
@@ -124,24 +124,24 @@ void GameCycle::QuestionNumberDraw()
 
 void GameCycle::QuestionDraw()
 {
-	// ã‚¤ãƒ¼ã‚¸ãƒ³ã‚°é–¢æ•°
+	// ƒC[ƒWƒ“ƒOŠÖ”
 	constexpr auto easing = [](float t) {return t < 0.5f ? 4.0f * t * t * t : 1.0f - powf(-2.0f * t + 2.0f, 3.0f) * 0.5f; };
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255 * easing(mfQuestionDrawEasing)));
 	DrawExtendGraph(mnQuestionImageX1, mnQuestionImageY1, mnQuestionImageX2, mnQuestionImageY2, mnNowQuestionImageHandle, TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	// 1,0f / (60.0f * x) -> x ç§’ã‹ã‘ã¦ã®è¡¨ç¤º
+	// 1,0f / (60.0f * x) -> x •b‚©‚¯‚Ä‚Ì•\¦
 	constexpr float easingCount = 1.0f / (60.0f * 1.0f);
 	mfQuestionDrawEasing += easingCount;	
 
-	// çµ‚ã‚ã£ãŸ
+	// I‚í‚Á‚½
 	mbQuestionDrawn = true;
 }
 
 void GameCycle::InputAnswer()
 {
-	//ç¾åœ¨ã®å…¥åŠ›çŠ¶æ…‹
+	//Œ»İ‚Ì“ü—Íó‘Ô
 	int nowState = mTextInputManager.CheckInput();
 	mTextInputManager.ResetState();
 	if (nowState == 0)
@@ -150,7 +150,7 @@ void GameCycle::InputAnswer()
 	}
 	else if (nowState == 1)
 	{
-		//æ–‡å­—å…¥åŠ›
+		//•¶š“ü—Í
 		answer = mTextInputManager.GetInputString();
 		
 		mbInputAnswered = true;

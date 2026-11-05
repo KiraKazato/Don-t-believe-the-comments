@@ -14,9 +14,9 @@ public:
 private:
 
 	//画像ハンドル
-	int mnNextButton;
-	int mnEndButton;
-	int mnSceneBackGround;
+	int mnNextButtonHandle;
+	int mnSceneBackGroundHandle;
+	int mnShowResultHandle;
 
 	//マウスの座標を受け取る
 	int mnMouseX{};

@@ -17,6 +17,9 @@ private:
 	int mnNextButtonHandle;
 	int mnSceneBackGroundHandle;
 	int mnShowResultHandle;
+	int mnNumberOfComments;
+	int mnNumberOfCorrectAnswers;
+	int mnNumberOfViewers;
 
 	//マウスの座標を受け取る
 	int mnMouseX{};

@@ -2,9 +2,13 @@
 #include"Master.h"
 
 ResultScene::ResultScene()
-	:mnNextButton(0)
-	,mnEndButton(0)
-	,mnSceneBackGround(0)
+	:mnNextButtonHandle(0)
+	,mnSceneBackGroundHandle(0)
+	, mnShowResultHandle(0)
+	,mnNumberOfComments(0)
+	,mnNumberOfCorrectAnswers(0)
+	,mnNumberOfViewers(0)
+	,mnStreamEnded(0)
 {
 
 }
@@ -16,34 +20,44 @@ ResultScene::~ResultScene()
 
 void ResultScene::Initialize()
 {
-	mnEndButton = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/EndButton.png");
-	mnNextButton = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/NextButton.png");
-	mnSceneBackGround = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/ResultBackGround.png");
+	mnNextButtonHandle = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/NextButton.png");
+	mnSceneBackGroundHandle = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/ResultBackGround.png");
+	mnShowResultHandle = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/ShowResult.png");
+	mnNumberOfComments = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/Number Of Comments.png");
+	mnNumberOfCorrectAnswers = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/Number Of Correct Answers.png");
+	mnNumberOfViewers = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/Number Of Viewers.png");
+	mnStreamEnded = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/StreamEnded.png");
 
-	Master::mpUIManager->AddUI(mnSceneBackGround, 0, 0, Master::Width, Master::Height);
-	Master::mpUIManager->AddUI(mnNextButton, Master::gridWidth * 47, Master::gridHeight * 95, Master::gridWidth * 74, Master::gridHeight * 112);
+	Master::mpUIManager->AddUI(mnSceneBackGroundHandle, 0, 0, Master::Width, Master::Height);
+	Master::mpUIManager->AddUI(mnShowResultHandle, Master::gridWidth*24, Master::gridHeight*23, Master::gridWidth*97, Master::gridHeight*93);
+	Master::mpUIManager->AddUI(mnNextButtonHandle, Master::gridWidth * 47, Master::gridHeight * 95, Master::gridWidth * 74, Master::gridHeight * 112);
+	Master::mpUIManager->AddUI(mnNumberOfViewers, Master::gridWidth * 48, Master::gridHeight * 25, Master::gridWidth * 72, Master::gridHeight * 34);
+	Master::mpUIManager->AddUI(mnNumberOfComments, Master::gridWidth * 71, Master::gridHeight * 57, Master::gridWidth * 87, Master::gridHeight * 63);
+	Master::mpUIManager->AddUI(mnNumberOfCorrectAnswers, Master::gridWidth * 36, Master::gridHeight * 57, Master::gridWidth * 47, Master::gridHeight * 63);
+	Master::mpUIManager->AddUI(mnStreamEnded, Master::gridWidth * 43, Master::gridHeight * 8, Master::gridWidth * 82, Master::gridHeight * 20);
+
 }
 
 void ResultScene::Update()
 {
-	//ƒ}ƒEƒXÀ•WŽó‚¯Žæ‚è
+	//ãƒžã‚¦ã‚¹åº§æ¨™å—ã‘å–ã‚Š
 	Master::mpMouseManager->GetMousePosition(&mnMouseX, &mnMouseY);
 
-	bool insideStartButton = Master::mpUIManager->InsideUI(mnNextButton, mnMouseX, mnMouseY);
-	//ƒ}ƒEƒX‚ªƒ{ƒ^ƒ“‚Ì”ÍˆÍ“à‚¾‚Á‚½‚ç
+	bool insideStartButton = Master::mpUIManager->InsideUI(mnNextButtonHandle, mnMouseX, mnMouseY);
+	//ãƒžã‚¦ã‚¹ãŒãƒœã‚¿ãƒ³ã®ç¯„å›²å†…ã ã£ãŸã‚‰
 	if (insideStartButton)
 	{
-		//­‚µŠg‘å
-		Master::mpUIManager->ChangeUISize(mnNextButton, 1.1f);
+		//å°‘ã—æ‹¡å¤§
+		Master::mpUIManager->ChangeUISize(mnNextButtonHandle, 1.1f);
 
 	}
 	else
 	{
-		//Œ³‚Ì‘å‚«‚³‚É–ß‚µ‚Ä‚¨‚­
-		Master::mpUIManager->ResetUISize(mnNextButton);
+		//å…ƒã®å¤§ãã•ã«æˆ»ã—ã¦ãŠã
+		Master::mpUIManager->ResetUISize(mnNextButtonHandle);
 	}
-	//¶ƒNƒŠƒbƒN‰Ÿ‚³‚ê‚½‚Æ‚«
-	if (Master::mpUIManager->ClickedUI(mnNextButton, insideStartButton))
+	//å·¦ã‚¯ãƒªãƒƒã‚¯æŠ¼ã•ã‚ŒãŸã¨ã
+	if (Master::mpUIManager->ClickedUI(mnNextButtonHandle, insideStartButton))
 	{
 		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_SELECT);
 	}

@@ -12,6 +12,7 @@
 #include "MouseManager.h"
 #include "CommenterManager.h"
 #include "Viewers.h"
+#include "Transitor.h"
 /**
 * @note リファレンス https://dxlib.xsrv.jp/dxfunc.html
 */
@@ -27,6 +28,7 @@ UIManager* Master::mpUIManager = new UIManager();
 MouseManager* Master::mpMouseManager = new MouseManager();
 CommenterManager* Master::mpCommenterManager = new CommenterManager();
 Viewers* Master::mpViewers = new Viewers();
+Transitor* Master::mpTransitor = new Transitor();
 
 /**
 * @fn WinMain
@@ -60,7 +62,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	Master::mpFontManager->Initialize();
 	//クエスチョンマネージャーの初期化
 	Master::mpQuestionManager->Intialize();
-	// シーンマネージャーの初期化
+	//シーンマネージャーの初期化
 	Master::mpSceneManager->Initialize(); 
 	//エフェクトマネージャーの初期化
 	Master::mpEffectManager->Initalize();
@@ -123,6 +125,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	delete Master::mpCommenterManager;
 	Master::mpViewers->Finalize();
 	delete Master::mpViewers;
+	delete Master::mpTransitor;
 
 
 	Effkseer_End();

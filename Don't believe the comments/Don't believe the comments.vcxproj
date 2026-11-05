@@ -36,6 +36,7 @@
     <ClCompile Include="Source\ResultScene.cpp" />
     <ClCompile Include="Source\Scene.cpp" />
     <ClCompile Include="Source\SceneManager.cpp" />
+    <ClCompile Include="Source\Transitor.cpp" />
     <ClCompile Include="Source\SettingScene.cpp" />
     <ClCompile Include="Source\SoundManager.cpp" />
     <ClCompile Include="Source\TextInputManager.cpp" />
@@ -70,6 +71,7 @@
     <ClInclude Include="Source\Texture.h" />
     <ClInclude Include="Source\TextureAnimation.h" />
     <ClInclude Include="Source\TitleScene.h" />
+    <ClInclude Include="Source\Transitor.h" />
     <ClInclude Include="Source\Typing.h" />
     <ClInclude Include="Source\UIManager.h" />
     <ClInclude Include="Source\Viewers.h" />

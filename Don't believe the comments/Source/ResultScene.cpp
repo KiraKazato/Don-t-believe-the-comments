@@ -40,26 +40,26 @@ void ResultScene::Initialize()
 
 void ResultScene::Update()
 {
-	//ƒ}ƒEƒXÀ•WŽó‚¯Žæ‚è
+	//ãƒžã‚¦ã‚¹åº§æ¨™å—ã‘å–ã‚Š
 	Master::mpMouseManager->GetMousePosition(&mnMouseX, &mnMouseY);
 
 	bool insideStartButton = Master::mpUIManager->InsideUI(mnNextButtonHandle, mnMouseX, mnMouseY);
-	//ƒ}ƒEƒX‚ªƒ{ƒ^ƒ“‚Ì”ÍˆÍ“à‚¾‚Á‚½‚ç
+	//ãƒžã‚¦ã‚¹ãŒãƒœã‚¿ãƒ³ã®ç¯„å›²å†…ã ã£ãŸã‚‰
 	if (insideStartButton)
 	{
-		//­‚µŠg‘å
+		//å°‘ã—æ‹¡å¤§
 		Master::mpUIManager->ChangeUISize(mnNextButtonHandle, 1.1f);
 
 	}
 	else
 	{
-		//Œ³‚Ì‘å‚«‚³‚É–ß‚µ‚Ä‚¨‚­
+		//å…ƒã®å¤§ãã•ã«æˆ»ã—ã¦ãŠã
 		Master::mpUIManager->ResetUISize(mnNextButtonHandle);
 	}
-	//¶ƒNƒŠƒbƒN‰Ÿ‚³‚ê‚½‚Æ‚«
+	//å·¦ã‚¯ãƒªãƒƒã‚¯æŠ¼ã•ã‚ŒãŸã¨ã
 	if (Master::mpUIManager->ClickedUI(mnNextButtonHandle, insideStartButton))
 	{
-		Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_SELECT);
+		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_SELECT);
 	}
 	Scene::Update();
 

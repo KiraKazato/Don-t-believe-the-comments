@@ -1,5 +1,6 @@
 #include "LevelSelectScene.h"
 #include"Master.h"
+#include "Transitor.h"
 
 
 LevelSelectScene::LevelSelectScene()
@@ -54,6 +55,10 @@ void LevelSelectScene::Initialize()
 
 void LevelSelectScene::Update()
 {
+	if (!Master::mpTransitor->IsTransitionFinish())
+	{
+		return;
+	}
 	Master::mpMouseManager->GetMousePosition(&mouseX, &mouseY);
 	//画像の中にカーソルがあったら
 	Master::mpUIManager->GetUIData(mStageButtonHandle[currentStage])->insideObject = Master::mpUIManager->InsideUI(mnDay1ButtonGraphHandle, mouseX, mouseY);
@@ -76,7 +81,7 @@ void LevelSelectScene::Update()
 			if (currentStage != STAGE_COMMINGSOON)
 			{
 				//ゲームシーンへ
-				Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_GAME);
+				Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_GAME);
 			}
 
 		}
@@ -163,7 +168,7 @@ void LevelSelectScene::Update()
 	//左クリック押されたとき
 	if (Master::mpUIManager->ClickedUI(mnBackToTitleScene, insideStartButton))
 	{
-		Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_TITLE);
+		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
 	}
 
 	Scene::Update();

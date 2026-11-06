@@ -2,6 +2,7 @@
 #include"DxLib.h"
 #include"Scene.h"
 #include "Master.h"
+#include"EffekseerEffect.h"
 
 class LevelSelectScene :public Scene
 {
@@ -31,6 +32,7 @@ public:
 
 private:
 	StageNumber currentStage;
+	EffekseerEffect* gameStartEffect;
 
 	//左右の矢印グラフ
 	int mnLeftArrowGraph;
@@ -54,4 +56,11 @@ private:
 	float stageButtonPositionX2 = Master::gridWidth * 73;
 	float stageButtonPositionY1 = Master::gridHeight * 42;
 	float stageButtonPositionY2 = Master::gridHeight * 82;
+
+	bool isWaitingSceneChange = false; // シーン遷移の待機中かどうか
+	int waitFrameCounter = 0;          // 経過したフレーム数を数える変数
+	const int WAIT_TIME = 159;          // 待ちたいフレーム数
+
+	
+	VECTOR centerPosition = VGet(Master::Width / 2.0f, Master::Height / 2.0f, 0.0f);
 };

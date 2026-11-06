@@ -62,10 +62,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	Master::mpFontManager->Initialize();
 	//クエスチョンマネージャーの初期化
 	Master::mpQuestionManager->Intialize();
-	//シーンマネージャーの初期化
-	Master::mpSceneManager->Initialize(); 
 	//エフェクトマネージャーの初期化
 	Master::mpEffectManager->Initalize();
+	//シーンマネージャーの初期化
+	Master::mpSceneManager->Initialize();
 	//コメンターマネージャーの初期化
 	Master::mpCommenterManager->Initialize();
 	//視聴者初期化
@@ -74,9 +74,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	// 描画先画面を裏画面に設定する
 	SetDrawScreen(DX_SCREEN_BACK);
 	
-	//Zバッファに書き込む準備
-	SetUseZBufferFlag(true);
-	SetWriteZBufferFlag(true);
 
 	srand(static_cast<unsigned int>(time(nullptr)));
 
@@ -86,11 +83,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		Master::mpMouseManager->Update();
 		Master::mpSceneManager->Update();
+		Master::mpEffectManager->Update();
+
 	
 		//画面を初期化する
 		ClearDrawScreen();
 
 		Master::mpSceneManager->Draw();
+		Master::mpEffectManager->Draw();
 		Master::mpMouseManager->Draw();
 		//裏画面の内容を表画面に映す
 		ScreenFlip();

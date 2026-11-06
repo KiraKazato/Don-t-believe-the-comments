@@ -7,9 +7,12 @@ LevelSelectScene::LevelSelectScene()
 	: mnSelectBackGroundGraphHandle(0)
 	, mnDay1ButtonGraphHandle(0)
 	, mnComingSoonGraphHandle(0)
-	,mnRightArrowGraph(0)
-	,mnLeftArrowGraph(0)
-	,currentStage(StageNumber::STAGE_DAY1)
+	, mnRightArrowGraph(0)
+	, mnLeftArrowGraph(0)
+	, currentStage(StageNumber::STAGE_DAY1)
+	, mnBackToTitleScene(0)
+	, isWaitingSceneChange(false)
+	, waitFrameCounter(0)
 {
 
 }
@@ -32,6 +35,9 @@ void LevelSelectScene::Initialize()
 	mnRightArrowGraph = Master::mpResourceManager->LoadGraphics("Resource/LevelSelectScene/RightArrow.png");
 	mnLeftArrowGraph = Master::mpResourceManager->LoadGraphics("Resource/LevelSelectScene/LeftArrow.png");
 	mnBackToTitleScene = Master::mpResourceManager->LoadGraphics("Resource/LevelSelectScene/BackToTitle.png");
+
+	gameStartEffect = new EffekseerEffect("Resource/Effect/GameStartEffect.efk", centerPosition, 10.0f);
+	gameStartEffect->SetSpeed(2.0f);
 
 	//必要なUI
 	Master::mpUIManager->AddUI(mnSelectBackGroundGraphHandle, 0, 0, Master::Width, Master::Height);
@@ -59,9 +65,32 @@ void LevelSelectScene::Update()
 	{
 		return;
 	}
+
+	if (gameStartEffect != nullptr)
+	{
+		gameStartEffect->Update();
+	}
+
 	Master::mpMouseManager->GetMousePosition(&mouseX, &mouseY);
 	//画像の中にカーソルがあったら
 	Master::mpUIManager->GetUIData(mStageButtonHandle[currentStage])->insideObject = Master::mpUIManager->InsideUI(mnDay1ButtonGraphHandle, mouseX, mouseY);
+
+	if (isWaitingSceneChange)
+	{
+		waitFrameCounter++; // 毎フレーム1ずつ増やす
+
+		// 指定したフレームに達したら
+		if (waitFrameCounter >= WAIT_TIME)
+		{
+			// ゲームシーンへ遷移
+			Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_GAME);
+		}
+
+		// 待機中はこれより下のボタン操作をさせないためにここでUpdateを終える
+		Scene::Update();
+		return;
+	}
+
 	if (Master::mpUIManager->GetUIData(mStageButtonHandle[currentStage]) != nullptr)
 	{
 		Master::mpUIManager->GetUIData(mStageButtonHandle[currentStage])->insideObject = Master::mpUIManager->InsideUI(mStageButtonHandle[currentStage], mouseX, mouseY);
@@ -80,8 +109,9 @@ void LevelSelectScene::Update()
 		{
 			if (currentStage != STAGE_COMMINGSOON)
 			{
-				//ゲームシーンへ
-				Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_GAME);
+				isWaitingSceneChange = true;
+				waitFrameCounter = 0; // カウンターを0にリセット
+				gameStartEffect->Play();
 			}
 
 		}
@@ -172,6 +202,8 @@ void LevelSelectScene::Update()
 	}
 
 	Scene::Update();
+
+
 }
 
 void LevelSelectScene::Draw()
@@ -180,6 +212,7 @@ void LevelSelectScene::Draw()
 
 	Scene::Draw();
 
+	DrawEffekseer2D();
 }
 
 void LevelSelectScene::Finalize()

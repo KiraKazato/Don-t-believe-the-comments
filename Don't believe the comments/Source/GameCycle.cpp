@@ -179,6 +179,7 @@ bool GameCycle::AnswerJudge()
 		mTextInputManager.ResetInput();
 		answer = "";
 		Master::mpViewers->ComeViewers();
+		Master::mpQuestionManager->CorrectAnswerAdd();
 		return true;
 	}
 	else

@@ -28,6 +28,11 @@ void ResultScene::Initialize()
 	mnNumberOfViewers = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/Number Of Viewers.png");
 	mnStreamEnded = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/StreamEnded.png");
 
+	mnViewersCountFont = Master::mpFontManager->GetFontHandle(FontManager::FONT_TETUBINN, 115);
+	mnViewersStartCountFont = Master::mpFontManager->GetFontHandle(FontManager::FONT_TETUBINN, 90);
+	mnConmmentsCountFont = Master::mpFontManager->GetFontHandle(FontManager::FONT_TETUBINN, 90);
+	mbAnimationFlag.reset();
+
 	Master::mpUIManager->AddUI(mnSceneBackGroundHandle, 0, 0, Master::Width, Master::Height);
 	Master::mpUIManager->AddUI(mnShowResultHandle, Master::gridWidth*24, Master::gridHeight*23, Master::gridWidth*97, Master::gridHeight*93);
 	Master::mpUIManager->AddUI(mnNextButtonHandle, Master::gridWidth * 47, Master::gridHeight * 95, Master::gridWidth * 74, Master::gridHeight * 112);
@@ -40,23 +45,23 @@ void ResultScene::Initialize()
 
 void ResultScene::Update()
 {
-	//ãƒžã‚¦ã‚¹åº§æ¨™å—ã‘å–ã‚Š
+	//ƒ}ƒEƒXÀ•WŽó‚¯Žæ‚è
 	Master::mpMouseManager->GetMousePosition(&mnMouseX, &mnMouseY);
 
 	bool insideStartButton = Master::mpUIManager->InsideUI(mnNextButtonHandle, mnMouseX, mnMouseY);
-	//ãƒžã‚¦ã‚¹ãŒãƒœã‚¿ãƒ³ã®ç¯„å›²å†…ã ã£ãŸã‚‰
+	//ƒ}ƒEƒX‚ªƒ{ƒ^ƒ“‚Ì”ÍˆÍ“à‚¾‚Á‚½‚ç
 	if (insideStartButton)
 	{
-		//å°‘ã—æ‹¡å¤§
+		//­‚µŠg‘å
 		Master::mpUIManager->ChangeUISize(mnNextButtonHandle, 1.1f);
 
 	}
 	else
 	{
-		//å…ƒã®å¤§ãã•ã«æˆ»ã—ã¦ãŠã
+		//Œ³‚Ì‘å‚«‚³‚É–ß‚µ‚Ä‚¨‚­
 		Master::mpUIManager->ResetUISize(mnNextButtonHandle);
 	}
-	//å·¦ã‚¯ãƒªãƒƒã‚¯æŠ¼ã•ã‚ŒãŸã¨ã
+	//¶ƒNƒŠƒbƒN‰Ÿ‚³‚ê‚½‚Æ‚«
 	if (Master::mpUIManager->ClickedUI(mnNextButtonHandle, insideStartButton))
 	{
 		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_SELECT);
@@ -68,6 +73,35 @@ void ResultScene::Update()
 void ResultScene::Draw()
 {
 	Master::mpUIManager->DrawUI();
+
+	/*for (size_t i = 0; i <= 120; i++)
+	{
+		int T = 1;
+		if (i % 5 == 0)
+		{
+			T = 2;
+		}
+		if (i % 20 == 0)
+		{
+			T = 4;
+		}
+
+		DrawLine(
+			Master::gridWidth * i, 0,
+			Master::gridWidth * i, Master::Height,
+			0, T);
+		DrawLine(
+			0, Master::gridHeight * i,
+			Master::Width, Master::gridHeight * i,
+			0, T);
+	}*/
+
+	DrawViewersCount(1.0f, Master::mpViewers->GetViewersCount(), Master::mpViewers->GetStartViewersCount());
+
+	DrawCommentCount(100);
+
+	DrawCorrectAnswerCount(10000);
+
 	Scene::Draw();
 }
 
@@ -75,4 +109,123 @@ void ResultScene::Finalize()
 {
 	Master::mpUIManager->ClearUI();
 
+}
+
+void ResultScene::DrawViewersCount(float _viwersCountTime, int _count, int _startCount)
+{
+	unsigned int color = GetColor(50, 255, 50);
+	char sign = '+';
+	if (Master::mpViewers->GetViewersCount() < 0)
+	{
+		sign = '-';
+		color = GetColor(255, 50, 50);
+	}
+
+	int drawCount = ViewersCount(_viwersCountTime, _count);
+
+	ViewersAnimation(0, drawCount, _startCount, sign, color);
+}
+
+void ResultScene::DrawCommentCount(int _count)
+{
+	int commentCountWidth, commentCountHeight;
+	GetDrawFormatStringSizeToHandle(&commentCountWidth, &commentCountHeight, NULL, mnViewersCountFont, "%d", _count);
+	
+	int commentDrawPosX = Master::gridWidth * (20 * 4 - 1) - commentCountWidth / 2;
+	int commentDrawPosY = Master::gridHeight * (20 * 3 + 5 * 3) - commentCountHeight / 2;
+	DrawFormatStringToHandle(commentDrawPosX, commentDrawPosY, GetColor(0, 0, 0), mnViewersCountFont, "%d", _count);
+}
+
+void ResultScene::DrawCorrectAnswerCount(int _count)
+{
+	int correctAnswerCountWidth, correctAnswerCountHeight;
+	GetDrawFormatStringSizeToHandle(&correctAnswerCountWidth, &correctAnswerCountHeight, NULL, mnViewersCountFont, "%d", _count);
+
+	int correctAnswerCountDrawPosX = Master::gridWidth * (20 * 2 + 1) + (Master::gridWidth / 2) - correctAnswerCountWidth / 2;
+	int correctAnswerCountDrawPosY = Master::gridHeight * (20 * 3 + 5 * 3) - correctAnswerCountHeight / 2;
+	DrawFormatStringToHandle(correctAnswerCountDrawPosX, correctAnswerCountDrawPosY, GetColor(0, 0, 0), mnViewersCountFont, "%d", _count);
+}
+
+int ResultScene::ViewersCount(float _duration, int _count)
+{
+	constexpr float frameTime = 1.0f / 60.0f;
+	float t = mfViwersCountTime / _duration;
+	mfViwersCountTime += frameTime;
+	if (mfViwersCountTime >= _duration)
+	{
+		mfViwersCountTime = _duration;
+	}
+	return Lerp(0, _count, t);
+}
+
+void ResultScene::ViewersAnimation(size_t _phase, float _duration, int _count, int _startCount, char _sign, unsigned int _color)
+{
+	if (mbAnimationFlag.size() <= _phase)
+	{
+		return;
+	}
+
+	constexpr float frameTime = 1.0f / 60.0f;
+
+	int signWidth, plusHeight;
+	int startCountWidth, startCountHeight;
+	int countWidth, countHeight;
+
+	// î•ñŽæ“¾
+	GetDrawFormatStringSizeToHandle(&signWidth, &plusHeight, NULL, mnViewersCountFont, "%c", _sign);
+	GetDrawFormatStringSizeToHandle(&startCountWidth, &startCountHeight, NULL, mnViewersStartCountFont, "%dl", _startCount);
+	GetDrawFormatStringSizeToHandle(&countWidth, &countHeight, NULL, mnViewersCountFont, "%dl", _count);
+
+	constexpr int tmp = Master::gridHeight * (20 * 2 + 5);
+
+	const float t = mfAnimationTime / _duration;
+
+	int signDrawPosX = Master::gridWidth * (20 * 3) - (signWidth / 2);
+	int signDrawPosY = tmp - (plusHeight / 2);
+
+	int startCountDrawPosX = signDrawPosX - startCountWidth;
+	int startCountDrawPosY = tmp - (startCountHeight / 2);
+
+	int countDrawPosX = signDrawPosX + signWidth;
+	int countDrawPosY = tmp - (countHeight / 2);
+
+	int startCountAnimation = Lerp(startCountDrawPosX, Master::gridWidth * (20 * 3) - (startCountWidth / 2), t);
+	int countAnimation = Lerp(countDrawPosX, Master::gridWidth * (20 * 3), t);
+
+	if(mbAnimationFlag.test(_phase) && _phase==3)
+	{
+		mfAnimationTime += frameTime;
+		if (mfAnimationTime <= _duration)
+		{
+			mfAnimationTime = _duration;
+			mbAnimationFlag.set(3);
+		}
+	}
+
+	// •\Ž¦
+	if (_phase <= 3)
+	{
+		if (_phase <= 2)
+		{
+			DrawFormatStringToHandle(signDrawPosX, signDrawPosY + Master::gridHeight, _color, mnViewersCountFont, "%c", _sign);
+		}
+		else if (_phase == 3)
+		{
+			DrawFormatStringToHandle(startCountAnimation - Master::gridWidth, startCountDrawPosY + Master::gridHeight, GetColor(0, 0, 0), mnViewersStartCountFont, "%dl", _startCount);
+			DrawFormatStringToHandle(countDrawPosX + Master::gridHeight * 2, countDrawPosY, _color, mnViewersCountFont, "%dl", _count);
+			return;
+		}
+
+		DrawFormatStringToHandle(startCountDrawPosX - Master::gridWidth, startCountDrawPosY + Master::gridHeight, GetColor(0, 0, 0), mnViewersStartCountFont, "%dl", _startCount);
+		DrawFormatStringToHandle(countDrawPosX + Master::gridHeight * 2, countDrawPosY, _color, mnViewersCountFont, "%dl", _count);
+		return;
+	}
+
+	int allCountWidth, allCountHeight;
+	GetDrawFormatStringSizeToHandle(&allCountWidth, &allCountHeight, NULL, mnViewersCountFont, "%d", _startCount + _count);
+
+	int allCountDrawPosX = Master::gridWidth * (20 * 3 + 3) - allCountWidth / 2;
+	int allCountDrawPosY = Master::gridHeight * (20 * 2 + 5) - allCountHeight / 2;
+
+	DrawFormatStringToHandle(signDrawPosX, signDrawPosY + Master::gridHeight, _color, mnViewersCountFont, "%d", _startCount + _count);
 }

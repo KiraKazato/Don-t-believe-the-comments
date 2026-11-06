@@ -15,6 +15,8 @@ void Viewers::Initialize()
 	mnStringHandle = Master::mpFontManager->GetFontHandle(FontManager::FONT_TETUBINN,50);
 	DecideViewers();
 
+	mnStartViewersCount = mnCurrentViwers;
+	mnViewersCount = 100000;
 }
 
 void Viewers::Update()
@@ -27,7 +29,7 @@ void Viewers::Update()
 			mnCurrentViwers = mnTargetViwers;
 		}
 	}
-	if (mnCurrentViwers > mnTargetViwers)
+	else if (mnCurrentViwers > mnTargetViwers)
 	{
 		mnCurrentViwers--;
 		if (mnCurrentViwers <= mnTargetViwers)
@@ -39,6 +41,8 @@ void Viewers::Update()
 	{
 		mnCurrentViwers = 0;
 	}
+
+	mnViewersCount = mnCurrentViwers - mnStartViewersCount;
 }
 
 void Viewers::Draw()
@@ -65,4 +69,14 @@ void Viewers::DecideViewers()
 {
 	mnTargetViwers = rand() % (mnMaxDefauktViewers - mnMinDefauktViewers + 1) + mnMinDefauktViewers;
 	mnCurrentViwers = mnTargetViwers;
+}
+
+int Viewers::GetStartViewersCount()
+{
+	return mnStartViewersCount;
+}
+
+int Viewers::GetViewersCount()
+{
+	return mnViewersCount;
 }

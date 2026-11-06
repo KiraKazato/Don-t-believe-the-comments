@@ -387,6 +387,16 @@ bool QuestionManager::IsSpawnedQuestion(int _questionIndex, int _difficultIndex)
 	return false;
 }
 
+int QuestionManager::GetCorrectAnswerCount()
+{
+	return mnCorrectAnswerCount;
+}
+
+void QuestionManager::CorrectAnswerAdd()
+{
+	mnCorrectAnswerCount++;
+}
+
 void QuestionManager::SetQuestion(int _index, int _difficulty)
 {
 	mnCurrentIndex = _index;

@@ -15,14 +15,22 @@ public:
 	void LeaveViewers();
 	//最初の視聴者数決める
 	void DecideViewers();
+	//カウント
+	void ViewersCount(float _duration);
+	//視聴者数が変わったときの共通処理
+	void ChangeViewers(int _changeValue);
+
+
+	void SetStartViewers(int _count);
 
 	int GetStartViewersCount();
 	int GetViewersCount();
 private:
-	int mnCurrentViwers{};
-	int mnTargetViwers{};
+	int mnCurrentViewers{};			//今の視聴者数
+	int mnCountStartViewers{};		//カウントの開始値
+	int mnTargetViewers{};			//カウントの目標値
 	int mnMaxDefauktViewers = 500;
-	int mnMinDefauktViewers =300;
+	int mnMinDefauktViewers = 300;
 	int mnMaxAddValue = 600;
 	int mnMinAddValue = 200;
 	int mnMaxSubtractValue = 150;
@@ -31,6 +39,9 @@ private:
 	int mnDrawX1{};
 	int mnDrawY1{};
 
-	int mnStartViewersCount = 0;
-	int mnViewersCount = 0;
+	bool mbIsCountFinish = false;		//カウントが終わったか
+	int mnStartViewersCount = 0;		//視聴者数初期値
+	int mnViewersCount = 0;				//視聴者数の増減値
+
+	float mfViewersCountTime = 0.0f;	//カウントの経過時間
 };

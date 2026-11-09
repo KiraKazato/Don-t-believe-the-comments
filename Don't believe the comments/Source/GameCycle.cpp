@@ -17,8 +17,6 @@ void GameCycle::Initialize()
 	Master::mpCommenterManager->SetCommentSpawnKind(STATE_BEFORE);
 	mnNextButtonHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/Button/NextButton.png");
 	Master::mpUIManager->AddUI(mnNextButtonHandle,mnNextButtonX1, mnNextButtonY1, mnNextButtonX2, mnNextButtonY2, false);
-
-	mbGameEnd = true;
 }
 void GameCycle::Update()
 {

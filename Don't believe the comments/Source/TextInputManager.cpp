@@ -15,6 +15,8 @@ void TextInputManager::Initialize(int _fontHandle)
 {
 	mnFontHandle = _fontHandle;
 
+	ClearInputCharBuf();
+
 	//SetKeyInputStringFont(_fontHandle);
 
 	//mnInputHandle = MakeKeyInput(sizeof(mInputString) - 1, TRUE, TRUE, FALSE);

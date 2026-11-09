@@ -16,7 +16,6 @@ void Viewers::Initialize()
 	DecideViewers();
 
 	mnStartViewersCount = mnCurrentViwers;
-	mnViewersCount = 100000;
 }
 
 void Viewers::Update()

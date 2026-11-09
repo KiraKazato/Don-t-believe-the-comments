@@ -397,6 +397,16 @@ void QuestionManager::CorrectAnswerAdd()
 	mnCorrectAnswerCount++;
 }
 
+void QuestionManager::SetMaxQuestionCount(int _count)
+{
+	mnMaxQuestionCount = _count;
+}
+
+int QuestionManager::GetMaxQuestionCount()
+{
+	return mnMaxQuestionCount;
+}
+
 void QuestionManager::SetQuestion(int _index, int _difficulty)
 {
 	mnCurrentIndex = _index;

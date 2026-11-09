@@ -32,6 +32,11 @@ void ResultScene::Initialize()
 	mnViewersStartCountFont = Master::mpFontManager->GetFontHandle(FontManager::FONT_TETUBINN, 90);
 	mnConmmentsCountFont = Master::mpFontManager->GetFontHandle(FontManager::FONT_TETUBINN, 90);
 	mbAnimationFlag.reset();
+	
+	mfAnimationDuration[0] = 1.0f;		// カウント時間
+	mfAnimationDuration[1] = 0.0f;		// カウント後に見せる時間
+	mfAnimationDuration[2] = 1.5f;		// カウントを合成する時間
+	mfAnimationDuration[3] = 100.0f;	// 実質的な演出終わり
 
 	Master::mpUIManager->AddUI(mnSceneBackGroundHandle, 0, 0, Master::Width, Master::Height);
 	Master::mpUIManager->AddUI(mnShowResultHandle, Master::gridWidth*24, Master::gridHeight*23, Master::gridWidth*97, Master::gridHeight*93);
@@ -74,33 +79,11 @@ void ResultScene::Draw()
 {
 	Master::mpUIManager->DrawUI();
 
-	/*for (size_t i = 0; i <= 120; i++)
-	{
-		int T = 1;
-		if (i % 5 == 0)
-		{
-			T = 2;
-		}
-		if (i % 20 == 0)
-		{
-			T = 4;
-		}
+	DrawViewersCount(mfAnimationDuration[0], Master::mpViewers->GetViewersCount(), Master::mpViewers->GetStartViewersCount());
 
-		DrawLine(
-			Master::gridWidth * i, 0,
-			Master::gridWidth * i, Master::Height,
-			0, T);
-		DrawLine(
-			0, Master::gridHeight * i,
-			Master::Width, Master::gridHeight * i,
-			0, T);
-	}*/
+	DrawCommentCount(Master::mpCommenterManager->GetCommentsCount());
 
-	DrawViewersCount(1.0f, Master::mpViewers->GetViewersCount(), Master::mpViewers->GetStartViewersCount());
-
-	DrawCommentCount(100);
-
-	DrawCorrectAnswerCount(10000);
+	DrawCorrectAnswerCount(Master::mpQuestionManager->GetCorrectAnswerCount(), Master::mpQuestionManager->GetMaxQuestionCount());
 
 	Scene::Draw();
 }
@@ -110,6 +93,16 @@ void ResultScene::Finalize()
 	Master::mpUIManager->ClearUI();
 
 }
+
+auto Easing = [](float x)
+	{
+		return x == 0
+			? 0
+			: x == 1
+			? 1
+			: x < 0.5 ? powf(2, 20 * x - 10) / 2
+			: (2 - powf(2, -20 * x + 10)) / 2;
+	};
 
 void ResultScene::DrawViewersCount(float _viwersCountTime, int _count, int _startCount)
 {
@@ -123,65 +116,87 @@ void ResultScene::DrawViewersCount(float _viwersCountTime, int _count, int _star
 
 	int drawCount = ViewersCount(_viwersCountTime, _count);
 
-	ViewersAnimation(0, drawCount, _startCount, sign, color);
+	ViewersAnimation(drawCount, _startCount, sign, color);
 }
 
 void ResultScene::DrawCommentCount(int _count)
 {
 	int commentCountWidth, commentCountHeight;
-	GetDrawFormatStringSizeToHandle(&commentCountWidth, &commentCountHeight, NULL, mnViewersCountFont, "%d", _count);
+	GetDrawFormatStringSizeToHandle(&commentCountWidth, &commentCountHeight, NULL, mnConmmentsCountFont, "%d", _count);
 	
-	int commentDrawPosX = Master::gridWidth * (20 * 4 - 1) - commentCountWidth / 2;
-	int commentDrawPosY = Master::gridHeight * (20 * 3 + 5 * 3) - commentCountHeight / 2;
-	DrawFormatStringToHandle(commentDrawPosX, commentDrawPosY, GetColor(0, 0, 0), mnViewersCountFont, "%d", _count);
+	int commentDrawPosX = Master::gridWidth * 79 - commentCountWidth / 2;
+	int commentDrawPosY = Master::gridHeight * 75 - commentCountHeight / 2;
+	DrawFormatStringToHandle(commentDrawPosX, commentDrawPosY, GetColor(0, 0, 0), mnConmmentsCountFont, "%d", _count);
 }
 
-void ResultScene::DrawCorrectAnswerCount(int _count)
+void ResultScene::DrawCorrectAnswerCount(int _count, int _maxCount)
 {
 	int correctAnswerCountWidth, correctAnswerCountHeight;
-	GetDrawFormatStringSizeToHandle(&correctAnswerCountWidth, &correctAnswerCountHeight, NULL, mnViewersCountFont, "%d", _count);
+	int divWidth, divHeight;
+	int maxCountWidth, maxCountHeight;
+	GetDrawFormatStringSizeToHandle(&correctAnswerCountWidth, &correctAnswerCountHeight, NULL, mnConmmentsCountFont, "%d", _count);
+	GetDrawFormatStringSizeToHandle(&divWidth, &divHeight, NULL, mnConmmentsCountFont, "/");
+	GetDrawFormatStringSizeToHandle(&maxCountWidth, &maxCountHeight, NULL, mnConmmentsCountFont, "%d", _maxCount);
 
-	int correctAnswerCountDrawPosX = Master::gridWidth * (20 * 2 + 1) + (Master::gridWidth / 2) - correctAnswerCountWidth / 2;
-	int correctAnswerCountDrawPosY = Master::gridHeight * (20 * 3 + 5 * 3) - correctAnswerCountHeight / 2;
-	DrawFormatStringToHandle(correctAnswerCountDrawPosX, correctAnswerCountDrawPosY, GetColor(0, 0, 0), mnViewersCountFont, "%d", _count);
+	int correctAnswerCountDrawPosX = Master::gridWidth * 41 + (Master::gridWidth / 2) - correctAnswerCountWidth / 2 - Master::gridWidth * 4;
+	int correctAnswerCountDrawPosY = Master::gridHeight * 75 - correctAnswerCountHeight / 2;
+
+	int divDrawPosX = correctAnswerCountDrawPosX + correctAnswerCountWidth + divWidth / 2 - Master::gridWidth;
+	int divDrawPosY = Master::gridHeight * 75 - divHeight / 2;
+
+	int maxCountDrawPosX = divDrawPosX + divWidth;
+	int maxCountDrawPosY = Master::gridHeight * 75 - maxCountHeight / 2;
+
+	DrawFormatStringToHandle(correctAnswerCountDrawPosX, correctAnswerCountDrawPosY, GetColor(0, 0, 0), mnConmmentsCountFont, "%d", _count);
+	DrawFormatStringToHandle(divDrawPosX, divDrawPosY, GetColor(0, 0, 0), mnConmmentsCountFont, "/");
+	DrawFormatStringToHandle(maxCountDrawPosX, maxCountDrawPosY, GetColor(0, 0, 0), mnConmmentsCountFont, "%d", _maxCount);
 }
 
 int ResultScene::ViewersCount(float _duration, int _count)
 {
+	// 0.カウント
+	if (mbAnimationFlag.test(0))
+	{
+		return _count;
+	}
+
 	constexpr float frameTime = 1.0f / 60.0f;
 	float t = mfViwersCountTime / _duration;
 	mfViwersCountTime += frameTime;
 	if (mfViwersCountTime >= _duration)
 	{
 		mfViwersCountTime = _duration;
+		mbAnimationFlag.set(mnAnimationIndex);
+		mnAnimationIndex++;
 	}
-	return Lerp(0, _count, t);
+	return Lerp(0, _count, Easing(t));
 }
 
-void ResultScene::ViewersAnimation(size_t _phase, float _duration, int _count, int _startCount, char _sign, unsigned int _color)
+void ResultScene::ViewersAnimation(int _count, int _startCount, char _sign, unsigned int _color)
 {
-	if (mbAnimationFlag.size() <= _phase)
+	if (mbAnimationFlag.size() <= mnAnimationIndex)
 	{
 		return;
 	}
 
 	constexpr float frameTime = 1.0f / 60.0f;
 
-	int signWidth, plusHeight;
+	int signWidth, signHeight;
 	int startCountWidth, startCountHeight;
 	int countWidth, countHeight;
 
 	// 情報取得
-	GetDrawFormatStringSizeToHandle(&signWidth, &plusHeight, NULL, mnViewersCountFont, "%c", _sign);
+	GetDrawFormatStringSizeToHandle(&signWidth, &signHeight, NULL, mnViewersCountFont, "%c", _sign);
 	GetDrawFormatStringSizeToHandle(&startCountWidth, &startCountHeight, NULL, mnViewersStartCountFont, "%d人", _startCount);
 	GetDrawFormatStringSizeToHandle(&countWidth, &countHeight, NULL, mnViewersCountFont, "%d人", _count);
 
-	constexpr int tmp = Master::gridHeight * (20 * 2 + 5);
+	constexpr int tmp = Master::gridHeight * 45;
 
-	const float t = mfAnimationTime / _duration;
+	float t = mfAnimationTime[mnAnimationIndex] / mfAnimationDuration[mnAnimationIndex];
+	t = std::min(std::max(0.0f, t), 1.0f);
 
-	int signDrawPosX = Master::gridWidth * (20 * 3) - (signWidth / 2);
-	int signDrawPosY = tmp - (plusHeight / 2);
+	int signDrawPosX = Master::gridWidth * 60 - (signWidth / 2);
+	int signDrawPosY = tmp - (signHeight / 2);
 
 	int startCountDrawPosX = signDrawPosX - startCountWidth;
 	int startCountDrawPosY = tmp - (startCountHeight / 2);
@@ -189,43 +204,55 @@ void ResultScene::ViewersAnimation(size_t _phase, float _duration, int _count, i
 	int countDrawPosX = signDrawPosX + signWidth;
 	int countDrawPosY = tmp - (countHeight / 2);
 
-	int startCountAnimation = Lerp(startCountDrawPosX, Master::gridWidth * (20 * 3) - (startCountWidth / 2), t);
-	int countAnimation = Lerp(countDrawPosX, Master::gridWidth * (20 * 3), t);
+	int startCountAnimation = startCountDrawPosX;
+	int countAnimation = countDrawPosX;
 
-	if(mbAnimationFlag.test(_phase) && _phase==3)
+	float easingVal = Easing(t);
+	if (mnAnimationIndex == 2)
+	{ 
+		startCountAnimation = Lerp(startCountDrawPosX, Master::gridWidth * 60 - (startCountWidth / 2), easingVal);
+		countAnimation = Lerp(countDrawPosX, Master::gridWidth * 60 - (countWidth / 2), easingVal);
+	}
+
+	if (!mbAnimationFlag.test(mnAnimationIndex) && mnAnimationIndex != 0 && mnAnimationIndex != 3)
 	{
-		mfAnimationTime += frameTime;
-		if (mfAnimationTime <= _duration)
+		mfAnimationTime[mnAnimationIndex] += frameTime;
+		bool easingFinish = (mnAnimationIndex == 2) && easingVal >= 0.9f;
+		if (mfAnimationTime[mnAnimationIndex] >= mfAnimationDuration[mnAnimationIndex] || easingFinish)
 		{
-			mfAnimationTime = _duration;
-			mbAnimationFlag.set(3);
+			mbAnimationFlag.set(mnAnimationIndex);
+			mfAnimationTime[mnAnimationIndex] = mfAnimationDuration[mnAnimationIndex];
+			mnAnimationIndex++;
 		}
 	}
 
 	// 表示
-	if (_phase <= 3)
+	if (mnAnimationIndex <= 2)
 	{
-		if (_phase <= 2)
+		int tmp = countDrawPosX;
+		countDrawPosX = countAnimation;
+		startCountDrawPosX = startCountAnimation;
+		int footmp = signDrawPosX;
+		signDrawPosX += countAnimation - tmp;
+		if (mnAnimationIndex <= 1)
 		{
-			DrawFormatStringToHandle(signDrawPosX, signDrawPosY + Master::gridHeight, _color, mnViewersCountFont, "%c", _sign);
-		}
-		else if (_phase == 3)
-		{
-			DrawFormatStringToHandle(startCountAnimation - Master::gridWidth, startCountDrawPosY + Master::gridHeight, GetColor(0, 0, 0), mnViewersStartCountFont, "%d人", _startCount);
-			DrawFormatStringToHandle(countDrawPosX + Master::gridHeight * 2, countDrawPosY, _color, mnViewersCountFont, "%d人", _count);
-			return;
+			signDrawPosX = footmp;
+			easingVal = 0.0f;
 		}
 
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255.0f * (1.0f - easingVal)));
+		DrawFormatStringToHandle(signDrawPosX, signDrawPosY + Master::gridHeight, _color, mnViewersCountFont, "%c", _sign);
 		DrawFormatStringToHandle(startCountDrawPosX - Master::gridWidth, startCountDrawPosY + Master::gridHeight, GetColor(0, 0, 0), mnViewersStartCountFont, "%d人", _startCount);
 		DrawFormatStringToHandle(countDrawPosX + Master::gridHeight * 2, countDrawPosY, _color, mnViewersCountFont, "%d人", _count);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		return;
 	}
 
 	int allCountWidth, allCountHeight;
 	GetDrawFormatStringSizeToHandle(&allCountWidth, &allCountHeight, NULL, mnViewersCountFont, "%d", _startCount + _count);
 
-	int allCountDrawPosX = Master::gridWidth * (20 * 3 + 3) - allCountWidth / 2;
-	int allCountDrawPosY = Master::gridHeight * (20 * 2 + 5) - allCountHeight / 2;
+	int allCountDrawPosX = Master::gridWidth * 60 - allCountWidth / 2;
+	int allCountDrawPosY = Master::gridHeight * 45 - allCountHeight / 2;
 
-	DrawFormatStringToHandle(signDrawPosX, signDrawPosY + Master::gridHeight, _color, mnViewersCountFont, "%d", _startCount + _count);
+	DrawFormatStringToHandle(allCountDrawPosX, allCountDrawPosY + Master::gridHeight, GetColor(0, 0, 0), mnViewersCountFont, "%d", _startCount + _count);
 }

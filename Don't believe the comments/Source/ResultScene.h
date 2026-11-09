@@ -14,11 +14,11 @@ public:
 
 	void DrawViewersCount(float _viwersCountTime, int _count, int _startCount);
 	void DrawCommentCount(int _count);
-	void DrawCorrectAnswerCount(int _count);
+	void DrawCorrectAnswerCount(int _count, int _maxCount);
 
 	int ViewersCount(float _duration, int _count);
 
-	void ViewersAnimation(size_t _phase, float _duration, int _count, int _startCount, char _sign, unsigned int _color);
+	void ViewersAnimation(int _count, int _startCount, char _sign, unsigned int _color);
 
 private:
 	template<typename _StartTy, typename _Ty>
@@ -46,13 +46,15 @@ private:
 	float mfViwersCountTime = 0.0f;
 
 	//視聴者数アニメーションフラグ
-	std::bitset<5> mbAnimationFlag{};
-	float mfAnimationTime = 0.0f;
+	std::bitset<4> mbAnimationFlag{};	// 0.カウント 1.見せ 2.アニメーション(カウント合成) 3.見せ（終了）
+	int mnAnimationIndex = 0;
+	float mfAnimationTime[4] = { 0.0f };	// 0.カウント 1.見せ 2.アニメーション(カウント合成) 3.見せ
+	float mfAnimationDuration[4] = { 0.0f };// 0.カウント 1.見せ 2.アニメーション(カウント合成) 3.見せ
 };
 
+// a + (b - a) * t
 template<typename _StartTy, typename _Ty>
 inline _Ty ResultScene::Lerp(_StartTy _startVal, _Ty _val, float _t)
 {
-	_t = (((0.0f) < ((((_t) > (1.0f)) ? (_t) : (1.0f)))) ? (0.0f) : ((((_t) > (1.0f)) ? (_t) : (1.0f))));
-	return _Ty(static_cast<float>(_startVal + (_val - _startVal)) * _t);
+	return _Ty(static_cast<float>(_startVal) + (static_cast<float>(_val) - static_cast<float>(_startVal)) * _t);
 }

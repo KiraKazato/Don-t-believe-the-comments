@@ -80,6 +80,9 @@ public:
 
 	void CorrectAnswerAdd();
 
+	void SetMaxQuestionCount(int _count);
+	int GetMaxQuestionCount();
+
 private:
 	// 読み込み
 	void Load(const std::string& _filePath);
@@ -115,6 +118,7 @@ private:
 	std::vector<std::pair<int, int>>mSpawnedQuestion{};		// 既に出した問題
 
 	int mnCorrectAnswerCount = 0;
+	int mnMaxQuestionCount = 0;
 
 private:
 	//ステージと、そのステージで出る問題の難易度と難易度の出る確率

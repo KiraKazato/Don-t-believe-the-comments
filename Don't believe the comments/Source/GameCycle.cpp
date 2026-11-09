@@ -15,6 +15,10 @@ void GameCycle::Initialize()
 	mTextInputManager.SetKeyInputDrawPosition(Master::gridWidth * 45, Master::gridHeight * 82);
 	Master::mpQuestionManager->SetMaxQuestionCount(mnMaxQuestionNumber);
 	Master::mpCommenterManager->SetCommentSpawnKind(STATE_BEFORE);
+	mnNextButtonHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/Button/NextButton.png");
+	Master::mpUIManager->AddUI(mnNextButtonHandle,mnNextButtonX1, mnNextButtonY1, mnNextButtonX2, mnNextButtonY2, false);
+
+	mbGameEnd = true;
 }
 void GameCycle::Update()
 {
@@ -84,6 +88,7 @@ void GameCycle::Draw()
 
 	if (mbGameEnd)
 	{
+		DrawNextButton();
 		return;
 	}
 
@@ -170,7 +175,6 @@ bool GameCycle::AnswerJudge()
 	{
 		mTextInputManager.ResetInput();
 		answer = "";
-		Master::mpViewers->LeaveViewers();
 		return false;
 	}
 
@@ -189,6 +193,28 @@ bool GameCycle::AnswerJudge()
 		answer = "";
 		Master::mpViewers->LeaveViewers();
 		return false;
+	}
+}
+
+void GameCycle::DrawNextButton()
+{
+	auto button=Master::mpUIManager->GetUIData(mnNextButtonHandle);
+	button->displayed = true;
+	int mouseX, mouseY;
+	Master::mpMouseManager->GetMousePosition(&mouseX, &mouseY);
+	bool inside = Master::mpUIManager->InsideUI(mnNextButtonX1, mnNextButtonY1, mnNextButtonX2, mnNextButtonY2, mouseX, mouseY);
+	if(inside)
+	{
+		Master::mpUIManager->ChangeUISize(mnNextButtonHandle, 1.1);
+		if (Master::mpUIManager->ClickedUI(mnNextButtonHandle, inside))
+		{
+			Master::mpTransitor->XFadeInit(SceneManager::SCENE_RESULT);
+			button->displayed = false;
+		}
+	}
+	else
+	{
+		Master::mpUIManager->ResetUISize(mnNextButtonHandle);
 	}
 }
 

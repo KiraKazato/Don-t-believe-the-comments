@@ -34,6 +34,8 @@ private:
 	
 	bool AnswerJudge();//回答の判定
 
+	void DrawNextButton();//次へボタンの追加
+
 	void GameEnd();
 private:
 	//入力する文字のフォントハンドルを入れる
@@ -55,6 +57,13 @@ private:
 	int mnQuestionNumber = 1;
 	//最大問題数
 	int mnMaxQuestionNumber = 10;
+
+private:
+	int mnNextButtonX1 = Master::gridWidth * 35;
+	int mnNextButtonX2 = Master::gridWidth * 55;
+	int mnNextButtonY1 = Master::gridHeight * 101;
+	int mnNextButtonY2 = Master::gridHeight * 115;
+	int mnNextButtonHandle{};
 
 private:
 	bool mbQuestionNumberDrawn = false;

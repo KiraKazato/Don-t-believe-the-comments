@@ -15,6 +15,9 @@ public:
 	void LeaveViewers();
 	//Å‰‚Ì‹’®Ò”Œˆ‚ß‚é
 	void DecideViewers();
+
+	int GetStartViewersCount();
+	int GetViewersCount();
 private:
 	int mnCurrentViwers{};
 	int mnTargetViwers{};
@@ -26,6 +29,8 @@ private:
 	int mnMinSubtractValue = 50;
 	int mnStringHandle{};
 	int mnDrawX1{};
-	int mnDrawY1;
+	int mnDrawY1{};
 
+	int mnStartViewersCount = 0;
+	int mnViewersCount = 0;
 };

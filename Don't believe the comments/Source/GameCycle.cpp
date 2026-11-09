@@ -13,6 +13,7 @@ void GameCycle::Initialize()
 	mnQuestionNumberHandle = Master::mpFontManager->GetFontHandle(Master::mpFontManager->FONT_TETUBINN, 26);
 	mTextInputManager.Initialize(mnInputStringHandle);
 	mTextInputManager.SetKeyInputDrawPosition(Master::gridWidth * 45, Master::gridHeight * 82);
+	Master::mpQuestionManager->SetMaxQuestionCount(mnMaxQuestionNumber);
 	Master::mpCommenterManager->SetCommentSpawnKind(STATE_BEFORE);
 }
 void GameCycle::Update()
@@ -179,6 +180,7 @@ bool GameCycle::AnswerJudge()
 		mTextInputManager.ResetInput();
 		answer = "";
 		Master::mpViewers->ComeViewers();
+		Master::mpQuestionManager->CorrectAnswerAdd();
 		return true;
 	}
 	else

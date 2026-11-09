@@ -7,7 +7,7 @@
 
 CommenterManager::CommenterManager()
 {
-
+	mnCountComments = 100;
 }
 
 CommenterManager::~CommenterManager()

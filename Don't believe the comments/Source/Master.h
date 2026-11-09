@@ -32,7 +32,7 @@ public:
 	static MouseManager* mpMouseManager;//マウスマネージャーのポインタ
 	static CommenterManager* mpCommenterManager;//コメント表示のポインタ
 	static Viewers* mpViewers;//視聴者クラスのポインタ
-	static Transitor* mpTransitor;
+	static Transitor* mpTransitor;//トランジションのポインタ
 
 public:
 	static const int Width = 1920;

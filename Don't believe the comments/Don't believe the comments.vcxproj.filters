@@ -82,6 +82,9 @@
     <ClCompile Include="Source\Transitor.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Pause.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Commenter.h">
@@ -163,6 +166,9 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\Transitor.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Pause.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

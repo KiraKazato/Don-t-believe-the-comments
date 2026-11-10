@@ -29,6 +29,16 @@ void GameScene::Initialize()
 
 void GameScene::Update()
 {
+	//エスケープ押されたr
+	if (CheckHitKey(KEY_INPUT_ESCAPE)!=0)
+	{
+		Master::mpPause->StartPause();
+	}
+	if (Master::mpPause->GetStartPause())
+	{
+		Master::mpPause->Update();
+		return;
+	}
 	mGameCycle.Update();
 	Scene::Update();
 }
@@ -36,10 +46,13 @@ void GameScene::Update()
 void GameScene::Draw()
 {
 	DrawBox(0, 0, Master::Width, Master::Height, GetColor(229, 242, 248), TRUE);
-	
 	Master::mpUIManager->DrawUI();
 	mGameCycle.Draw();
 	Scene::Draw();
+	if (Master::mpPause->GetStartPause())
+	{
+		Master::mpPause->Draw();
+	}
 }
 
 void GameScene::Finalize()

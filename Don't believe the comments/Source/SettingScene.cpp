@@ -16,6 +16,7 @@ SettingScene::SettingScene()
 	,volumeRatio(0)
 	,volumeGaugeHeight(0)
 	,volumeGaugeWidth(0)
+	, mnBackButtonHandle(0)
 {
 
 }
@@ -39,6 +40,9 @@ void SettingScene::Initialize()
 	//音量調節に使うつまみ
 	volumeDial = Master::mpResourceManager->LoadGraphics("Resource/SettingScene/VolumeDial.png");
 
+	mnBackButtonHandle = Master::mpResourceManager->LoadGraphics("Resource/SettingScene/BackButton.png");
+
+
 	//つまみサイズ
 	GetGraphSize(volumeDial, &dialWidth, &dialHeight);
 
@@ -50,7 +54,10 @@ void SettingScene::Initialize()
 	Master::mpUIManager->AddUI(settingGraph, 0, 0, Master::Width, Master::Height);
 
 	//音量バーの登録
-	Master::mpUIManager->AddUI(volumeBar, Master::gridWidth * 32, Master::gridHeight * 93, Master::gridWidth * 87, Master::gridHeight * 100);
+	Master::mpUIManager->AddUI(volumeBar, Master::gridWidth * 32, Master::gridHeight * 63, Master::gridWidth * 87, Master::gridHeight * 70);
+
+	Master::mpUIManager->AddUI(mnBackButtonHandle, Master::gridWidth * 47, Master::gridHeight * 90, Master::gridWidth * 74, Master::gridHeight * 107);
+
 
 	Master::mpSoundManager->PlayBGM(SoundManager::BGM_SETTING);//bgm再生
 
@@ -69,17 +76,37 @@ void SettingScene::Initialize()
 
 	//音量調節つまみの位置
 	dialX = barLeftX + (overallLength * volumeRatio);
-	dialY = Master::gridHeight * 96.5f - (dialHeight / static_cast<float>(2));
+	dialY = Master::gridHeight * 66.5f - (dialHeight / static_cast<float>(2));
 
 	//ボリュームゲージの位置
 	volumeGaugeX = (int)(Master::gridWidth * 32.8f);
-	volumeGaugeY = (int)(Master::gridHeight * 94.0f);
+	volumeGaugeY = (int)(Master::gridHeight *64.0f);
 }
 
 void SettingScene::Update()
 {
 	//マウス座標受け取り
 	Master::mpMouseManager->GetMousePosition(&MouseX, &MouseY);
+
+
+	bool insideStartButton = Master::mpUIManager->InsideUI(mnBackButtonHandle, MouseX, MouseY);
+	//マウスがボタンの範囲内だったら
+	if (insideStartButton)
+	{
+		//少し拡大
+		Master::mpUIManager->ChangeUISize(mnBackButtonHandle, 1.1f);
+
+	}
+	else
+	{
+		//元の大きさに戻しておく
+		Master::mpUIManager->ResetUISize(mnBackButtonHandle);
+	}
+	//左クリック押されたとき
+	if (Master::mpUIManager->ClickedUI(mnBackButtonHandle, insideStartButton))
+	{
+		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
+	}
 
 	//左クリックが押されているか
 	if ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)
@@ -239,7 +266,7 @@ void SettingScene::Draw()
 
 	SetFontSize(45);
 
-	DrawString(Master::gridHeight *83, Master::gridWidth * 49, "  音  量  設  定  ", color);
+	DrawString(Master::gridHeight *82, Master::gridWidth * 29, "  音  量  設  定  ", color);
 
 	SetFontSize(size);
 

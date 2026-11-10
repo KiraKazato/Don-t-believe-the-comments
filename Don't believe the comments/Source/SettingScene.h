@@ -55,4 +55,7 @@ private:
 
 	//ƒ{ƒŠƒ…[ƒ€‚ÌŠ„‡
 	float volumeRatio;
+
+	int mnBackButtonHandle;
+
 };

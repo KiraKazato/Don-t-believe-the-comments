@@ -392,9 +392,14 @@ int QuestionManager::GetCorrectAnswerCount()
 	return mnCorrectAnswerCount;
 }
 
-void QuestionManager::CorrectAnswerAdd()
+void QuestionManager::AddCorrectAnswer()
 {
 	mnCorrectAnswerCount++;
+}
+
+void QuestionManager::ResetCorrectAnswer()
+{
+	mnCorrectAnswerCount = 0;
 }
 
 void QuestionManager::SetMaxQuestionCount(int _count)

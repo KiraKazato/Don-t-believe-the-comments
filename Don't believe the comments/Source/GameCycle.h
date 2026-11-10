@@ -36,6 +36,8 @@ private:
 
 	void DrawNextButton();//次へボタンの追加
 
+	void GameOver();
+
 	void GameEnd();
 private:
 	//入力する文字のフォントハンドルを入れる

@@ -22,10 +22,6 @@ void Viewers::Initialize()
 void Viewers::Update()
 {
 	ViewersCount(2.0f);
-	if (mnCurrentViewers <= 0)
-	{
-		mnCurrentViewers = 0;
-	}
 
 	mnViewersCount = mnCurrentViewers - mnStartViewersCount;
 }
@@ -64,6 +60,12 @@ void Viewers::ViewersCount(float _duration)
 {
 	if (mbIsCountFinish)
 	{
+		return;
+	}
+
+	if (mnCurrentViewers <= 0)
+	{
+		mnCurrentViewers = 0;
 		return;
 	}
 
@@ -117,4 +119,14 @@ int Viewers::GetStartViewersCount()
 int Viewers::GetViewersCount()
 {
 	return mnViewersCount;
+}
+
+int Viewers::GetTargetViewers()
+{
+	return mnTargetViewers;
+}
+
+int Viewers::GetCurrentViewers()
+{
+	return mnCurrentViewers;
 }

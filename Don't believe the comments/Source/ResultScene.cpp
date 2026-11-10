@@ -157,7 +157,7 @@ int ResultScene::ViewersCount(float _duration, int _count)
 	// 0.ƒJƒEƒ“ƒg
 	if (mbAnimationFlag.test(0))
 	{
-		return _count;
+		return abs(_count);
 	}
 
 	constexpr float frameTime = 1.0f / 60.0f;
@@ -169,7 +169,7 @@ int ResultScene::ViewersCount(float _duration, int _count)
 		mbAnimationFlag.set(mnAnimationIndex);
 		mnAnimationIndex++;
 	}
-	return Lerp(0, _count, Easing(t));
+	return Lerp(0, abs(_count), Easing(t));
 }
 
 void ResultScene::ViewersAnimation(int _count, int _startCount, char _sign, unsigned int _color)
@@ -248,11 +248,16 @@ void ResultScene::ViewersAnimation(int _count, int _startCount, char _sign, unsi
 		return;
 	}
 
+	if (_sign == '-')
+	{
+		_count *= -1;
+	}
+	int allCount  = _count + _startCount;
 	int allCountWidth, allCountHeight;
-	GetDrawFormatStringSizeToHandle(&allCountWidth, &allCountHeight, NULL, mnViewersCountFont, "%d", _startCount + _count);
+	GetDrawFormatStringSizeToHandle(&allCountWidth, &allCountHeight, NULL, mnViewersCountFont, "%d", allCount);
 
 	int allCountDrawPosX = Master::gridWidth * 60 - allCountWidth / 2;
 	int allCountDrawPosY = Master::gridHeight * 45 - allCountHeight / 2;
 
-	DrawFormatStringToHandle(allCountDrawPosX, allCountDrawPosY + Master::gridHeight, GetColor(0, 0, 0), mnViewersCountFont, "%d", _startCount + _count);
+	DrawFormatStringToHandle(allCountDrawPosX, allCountDrawPosY + Master::gridHeight, GetColor(0, 0, 0), mnViewersCountFont, "%d", allCount);
 }

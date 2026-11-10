@@ -78,7 +78,8 @@ public:
 
 	int GetCorrectAnswerCount();
 
-	void CorrectAnswerAdd();
+	void AddCorrectAnswer();
+	void ResetCorrectAnswer();
 
 	void SetMaxQuestionCount(int _count);
 	int GetMaxQuestionCount();

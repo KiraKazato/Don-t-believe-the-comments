@@ -36,7 +36,7 @@ void LevelSelectScene::Initialize()
 	mnLeftArrowGraph = Master::mpResourceManager->LoadGraphics("Resource/LevelSelectScene/LeftArrow.png");
 	mnBackToTitleScene = Master::mpResourceManager->LoadGraphics("Resource/LevelSelectScene/BackToTitle.png");
 
-	gameStartEffect = new EffekseerEffect("Resource/Effect/GameStartEffect.efk", centerPosition, 10.0f);
+	gameStartEffect = new EffekseerEffect("Resource/Effect/GameStartEffect.efk", 10.0f);
 	gameStartEffect->SetSpeed(2.0f);
 
 	//必要なUI
@@ -111,7 +111,7 @@ void LevelSelectScene::Update()
 			{
 				isWaitingSceneChange = true;
 				waitFrameCounter = 0; // カウンターを0にリセット
-				gameStartEffect->Play();
+				gameStartEffect->Play(Master::Width / 2.0f, Master::Height / 2.0f);
 			}
 
 		}

@@ -61,6 +61,4 @@ private:
 	int waitFrameCounter = 0;          // 経過したフレーム数を数える変数
 	const int WAIT_TIME = 159;          // 待ちたいフレーム数
 
-	
-	VECTOR centerPosition = VGet(Master::Width / 2.0f, Master::Height / 2.0f, 0.0f);
 };

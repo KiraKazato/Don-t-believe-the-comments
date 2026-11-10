@@ -3,6 +3,7 @@
 #include "Master.h"
 #include "QuestionManager.h"
 #include "TextInputManager.h"
+#include "EffekseerEffect.h"
 
 enum GameState
 {
@@ -23,6 +24,10 @@ public:
 	void Draw();
 	void Finalize();
 	void SetStage(StageNumber _stageNumeber);
+
+	int GetShakeX() const { return mnShakeX; }
+	int GetShakeY() const { return mnShakeY; }
+
 private:
 	void CommentDraw();//コメントの表示
 	
@@ -35,6 +40,7 @@ private:
 	bool AnswerJudge();//回答の判定
 
 	void GameEnd();
+
 private:
 	//入力する文字のフォントハンドルを入れる
 	int mnInputStringHandle = -1;
@@ -66,4 +72,10 @@ private:
 	std::string answer{};
 private:
 	TextInputManager mTextInputManager;
+	EffekseerEffect* mnCorrectAnswer;
+	EffekseerEffect* mnFallingCrossMiss;
+
+	int mnShakeTime = 0;  // 揺れる残り時間（フレーム数）
+	int mnShakeX = 0;     // 横方向のズレ量
+	int mnShakeY = 0;     // 縦方向のズレ量
 };

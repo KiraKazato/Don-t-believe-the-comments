@@ -1,11 +1,15 @@
 #include "GameCycle.h"
 
 GameCycle::GameCycle()
+	:mnCorrectAnswer(0)
+	,mnFallingCrossMiss(0)
 {
+
 }
 
 GameCycle::~GameCycle()
 {
+
 }
 void GameCycle::Initialize()
 {
@@ -14,14 +18,49 @@ void GameCycle::Initialize()
 	mTextInputManager.Initialize(mnInputStringHandle);
 	mTextInputManager.SetKeyInputDrawPosition(Master::gridWidth * 45, Master::gridHeight * 82);
 	Master::mpCommenterManager->SetCommentSpawnKind(STATE_BEFORE);
+
+	mnCorrectAnswer = new EffekseerEffect("Resource/Effect/CorrectAnswer.efk",300.0f);
+	mnFallingCrossMiss = new EffekseerEffect("Resource/Effect/FallingCrossMiss.efk", 95.0f);
+
 }
 void GameCycle::Update()
 {
 	Master::mpCommenterManager->Update();
 
+	//画面シェイクの更新処理
+	if (mnShakeTime > 0)
+	{
+		mnShakeTime--; // 残り時間を1減らす
+
+		// 揺れの強さ
+		int shakePower = 10;
+
+		//ランダムなズレにする
+		mnShakeX = GetRand(shakePower * 2) - shakePower;
+		mnShakeY = GetRand(shakePower * 2) - shakePower;
+	}
+	else
+	{
+		// 揺れ終わったらズレを 0に戻す
+		mnShakeX = 0;
+		mnShakeY = 0;
+	}
+
+	mTextInputManager.SetKeyInputDrawPosition(Master::gridWidth * 45 + mnShakeX,Master::gridHeight * 82 + mnShakeY);
+
+
 	if (mbGameEnd)
 	{
 		return;
+	}
+
+	if (mnCorrectAnswer != nullptr)
+	{
+		mnCorrectAnswer->Update();
+	}
+	if (mnFallingCrossMiss != nullptr)
+	{
+		mnFallingCrossMiss->Update();
 	}
 
 	if (!mbQuestionSpawned)
@@ -94,6 +133,8 @@ void GameCycle::Draw()
 		mTextInputManager.Draw();
 	}
 
+
+
 }
 
 
@@ -117,8 +158,15 @@ void GameCycle::QuestionNumberDraw()
 	int numberWidth,numberHeight;
 	GetDrawFormatStringSizeToHandle(&numberWidth, &numberHeight, NULL, mnQuestionNumberHandle, "Q: %d / %d", mnQuestionNumber, mnMaxQuestionNumber);
 
-	DrawFormatStringToHandle(Master::gridWidth * 45 - numberWidth / 2,Master::gridHeight * 15 - numberHeight / 2, GetColor(0, 0, 0), mnQuestionNumberHandle, "Q: %d / %d", mnQuestionNumber, mnMaxQuestionNumber);
-
+	DrawFormatStringToHandle(
+		Master::gridWidth * 45 - numberWidth / 2 + mnShakeX,
+		Master::gridHeight * 15 - numberHeight / 2 + mnShakeY,
+		GetColor(0, 0, 0),
+		mnQuestionNumberHandle,
+		"Q: %d / %d",
+		mnQuestionNumber,
+		mnMaxQuestionNumber
+	);
 	mbQuestionNumberDrawn = true;
 }
 
@@ -128,12 +176,20 @@ void GameCycle::QuestionDraw()
 	constexpr auto easing = [](float t) {return t < 0.5f ? 4.0f * t * t * t : 1.0f - powf(-2.0f * t + 2.0f, 3.0f) * 0.5f; };
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255 * easing(mfQuestionDrawEasing)));
-	DrawExtendGraph(mnQuestionImageX1, mnQuestionImageY1, mnQuestionImageX2, mnQuestionImageY2, mnNowQuestionImageHandle, TRUE);
+	DrawExtendGraph(
+		mnQuestionImageX1 + mnShakeX,
+		mnQuestionImageY1 + mnShakeY,
+		mnQuestionImageX2 + mnShakeX,
+		mnQuestionImageY2 + mnShakeY,
+		mnNowQuestionImageHandle,
+		TRUE
+	);
+
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	// 1,0f / (60.0f * x) -> x 秒かけての表示
 	constexpr float easingCount = 1.0f / (60.0f * 1.0f);
-	mfQuestionDrawEasing += easingCount;	
+	mfQuestionDrawEasing += easingCount;
 
 	// 終わった
 	mbQuestionDrawn = true;
@@ -170,6 +226,8 @@ bool GameCycle::AnswerJudge()
 		mTextInputManager.ResetInput();
 		answer = "";
 		Master::mpViewers->LeaveViewers();
+
+
 		return false;
 	}
 
@@ -179,6 +237,9 @@ bool GameCycle::AnswerJudge()
 		mTextInputManager.ResetInput();
 		answer = "";
 		Master::mpViewers->ComeViewers();
+
+		mnCorrectAnswer->Play(Master::gridWidth * 45, Master::gridHeight * 50);
+
 		return true;
 	}
 	else
@@ -186,6 +247,10 @@ bool GameCycle::AnswerJudge()
 		mTextInputManager.ResetInput();
 		answer = "";
 		Master::mpViewers->LeaveViewers();
+
+		mnFallingCrossMiss->Play(Master::gridWidth * 45, Master::gridHeight * 60);
+		mnShakeTime = 20;
+
 		return false;
 	}
 }

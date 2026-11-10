@@ -13,6 +13,7 @@ LevelSelectScene::LevelSelectScene()
 	, mnBackToTitleScene(0)
 	, isWaitingSceneChange(false)
 	, waitFrameCounter(0)
+	,gameStartEffect(0)
 {
 
 }

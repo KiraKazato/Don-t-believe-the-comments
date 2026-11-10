@@ -58,14 +58,19 @@ void Viewers::DecideViewers()
 
 void Viewers::ViewersCount(float _duration)
 {
-	if (mbIsCountFinish)
-	{
-		return;
-	}
-
 	if (mnCurrentViewers <= 0)
 	{
 		mnCurrentViewers = 0;
+		return;
+	}
+
+	if (mbIsCountFinish)
+	{
+		if (mnCurrentViewers != mnTargetViewers)
+		{
+			return;
+		}
+
 		return;
 	}
 
@@ -78,6 +83,7 @@ void Viewers::ViewersCount(float _duration)
 	{
 		//経過した（計測終了）
 		mfViewersCountTime = _duration;
+		t = 1.0f;
 	}
 	//線形補完
 	//@{ 

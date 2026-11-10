@@ -177,21 +177,40 @@ const std::vector<std::string> QuestionManager::LoadComment(std::stringstream& _
 {
 	std::vector<std::string> ret;
 
-	// } で区切る
-	while (getline(_ss, _cell, '}'))
+	std::string inCharactor = "";
+	std::string str = _ss.str();
+	bool isInMode = false;
+	for (size_t i = 0; i < str.size();)
 	{
-		size_t pos = 0;
-
-		// 処理をする上で {～ というようになっているため削除
-		// whileにした場合、文字コード関係で別の文字の削除が起きるため
-		// ifにして一つの削除のみにする
-		if ((pos = _cell.find("{")) != std::string::npos)
+		int loadLength = 1;
+		if (IsCharactorLargeByte(str[i]))
 		{
-			_cell.replace(pos, 1, "");
+			loadLength = 2;
+		}
+		inCharactor = str.substr(i, loadLength);
+
+		if (inCharactor == "{")
+		{
+			isInMode = true;
+			i += loadLength;
+			continue;
 		}
 
-		// 入れる
-		ret.emplace_back(_cell);
+		if (inCharactor == "}")
+		{
+			isInMode = false;
+			i += loadLength;
+			ret.emplace_back(_cell);
+			_cell.clear();
+			continue;
+		}
+
+		if(isInMode)
+		{
+			_cell += inCharactor;
+		}
+
+		i += loadLength;
 	}
 	return ret;
 }
@@ -380,6 +399,23 @@ bool QuestionManager::IsSpawnedQuestion(int _questionIndex, int _difficultIndex)
 	{
 		const auto& spawned = mSpawnedQuestion[i];
 		if (spawned.first == _questionIndex && spawned.second == _difficultIndex)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool QuestionManager::IsCharactorLargeByte(char _charactor)
+{
+	unsigned char c = static_cast<unsigned char>(_charactor);
+
+	constexpr int LargeByteSmall[] = { 0x81,0xE0 };
+	constexpr int LargeByteHigh[] = { 0x9F,0xFC };
+
+	for (size_t i = 0; i < 2; i++)
+	{
+		if (LargeByteSmall[i] <= c && c <= LargeByteHigh[i])
 		{
 			return true;
 		}

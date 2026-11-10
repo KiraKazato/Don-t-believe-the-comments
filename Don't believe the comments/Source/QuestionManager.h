@@ -109,6 +109,9 @@ private:
 	// @return 出題済みか
 	bool IsSpawnedQuestion(int _questionIndex, int _difficultIndex);
 
+	// @return そのバイトが大文字の頭文字か
+	bool IsCharactorLargeByte(char _charactor);
+
 private:
 	std::vector<std::pair<std::vector<QuestionData>, bool>> mQuestions{};	// クイズ
 

@@ -28,6 +28,7 @@ void GameCycle::Initialize()
 void GameCycle::Update()
 {
 	Master::mpCommenterManager->Update();
+	Master::mpViewers->Update();
 
 	if (mbGameEnd)
 	{
@@ -65,7 +66,6 @@ void GameCycle::Update()
 	}
 
 	InputAnswer();
-	Master::mpViewers->Update();
 	if (mbInputAnswered && AnswerJudge())
 	{
 		mbQuestionSpawned = false;
@@ -113,7 +113,6 @@ void GameCycle::Finalize()
 {
 	mTextInputManager.Finalize();
 	Master::mpCommenterManager->GameEnd();
-
 }
 
 void GameCycle::CommentDraw()
@@ -146,6 +145,10 @@ void GameCycle::QuestionDraw()
 	// 1,0f / (60.0f * x) -> x •b‚©‚¯‚Ä‚Ì•\Ž¦
 	constexpr float easingCount = 1.0f / (60.0f * 1.0f);
 	mfQuestionDrawEasing += easingCount;	
+	if (mfQuestionDrawEasing >= 1.0f)
+	{
+		mfQuestionDrawEasing = 1.0f;
+	}
 
 	// I‚í‚Á‚½
 	mbQuestionDrawn = true;
@@ -248,6 +251,7 @@ void GameCycle::GameEnd()
 {
 	mbGameEnd = true;
 	mTextInputManager.Finalize();
+	Master::mpQuestionManager->ClearSpawnedQuestion();
 	Master::mpCommenterManager->QuestionStarted(false);
 	Master::mpCommenterManager->SetCommentSpawnKind(STATE_AFTER);
 }

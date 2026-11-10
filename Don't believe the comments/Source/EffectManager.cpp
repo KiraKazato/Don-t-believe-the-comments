@@ -2,13 +2,20 @@
 #include "Master.h"
 
 // コンストラクタ
-EffectManager::EffectManager():effectResourceHandle(-1), playingEffectHandle(-1)
+EffectManager::EffectManager()
+    : effectResourceHandle(-1)
+    , playingEffectHandle(-1)
+    , mnClickEffect(0) 
 {
 }
 
 // デストラクタ
 EffectManager::~EffectManager()
 {
+	if (mnClickEffect != -1)
+	{
+		DeleteEffekseerEffect(mnClickEffect);
+	}
 }
 
 // 初期化
@@ -31,10 +38,27 @@ void EffectManager::Initalize()
 	// DXライブラリのデバイスロストした時のコールバックを設定する。
 	// ウィンドウとフルスクリーンの切り替えが発生する場合は必ず実行する
 	Effekseer_SetGraphicsDeviceLostCallbackFunctions();
+
+	mnClickEffect = LoadEffekseerEffect("Resource/Effect/ClickEffect.efk", 20.0f);
+
 }
 
 void EffectManager::Update()
 {
+	//左クリックされたならマウスの位置にエフェクトを出す
+	if (Master::mpMouseManager->PressLeftClick())
+	{
+		int mouseX = 0;
+		int mouseY = 0;
+		Master::mpMouseManager->GetMousePosition(&mouseX, &mouseY);
+
+		//クリックした座標に配置する
+		playingEffectHandle = PlayEffekseer2DEffect(mnClickEffect);
+		if (playingEffectHandle != -1)
+		{
+			SetPosPlayingEffekseer2DEffect(playingEffectHandle, static_cast<float>(mouseX), static_cast<float>(mouseY), 0.0f);
+		}
+	}
 	//2D用のアップデート
 	UpdateEffekseer2D();
 }

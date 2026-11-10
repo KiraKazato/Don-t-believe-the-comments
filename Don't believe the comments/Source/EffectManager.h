@@ -20,4 +20,5 @@ private:
 	
 	int effectResourceHandle;// エフェクトのリソース用
 	int playingEffectHandle;// 再生中のエフェクトハンドル
+	int mnClickEffect;
 };

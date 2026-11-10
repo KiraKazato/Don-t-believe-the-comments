@@ -248,7 +248,7 @@ bool GameCycle::AnswerJudge()
 		answer = "";
 		Master::mpViewers->LeaveViewers();
 
-		mnFallingCrossMiss->Play(Master::gridWidth * 45, Master::gridHeight * 60);
+		mnFallingCrossMiss->Play(Master::gridWidth * 45, Master::gridHeight * 65);
 		mnShakeTime = 20;
 
 		return false;

@@ -75,6 +75,4 @@ private:
 	bool mbGameEnd = false;
 private:
 	std::string answer{};
-private:
-	TextInputManager mTextInputManager;
 };

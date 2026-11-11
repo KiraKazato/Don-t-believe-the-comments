@@ -6,11 +6,13 @@
 #include "FontManager.h"
 #include "QuestionManager.h"
 #include "UIManager.h"
-#include "MouseManager.h"
 #include "CommenterManager.h"
 #include "Viewers.h"
 #include "Transitor.h"
 #include "Pause.h"
+#include "MouseManager.h"
+#include "TextInputManager.h"
+#include "KeyInputManager.h"
 
 // ゲーム内で1つだけしか存在しないものを管理するクラス
 //例えば、
@@ -31,6 +33,8 @@ public:
 	static QuestionManager* mpQuestionManager;//問題生成マネージャーのポインタ
 	static UIManager* mpUIManager;//UI管理クラスのポインタ
 	static MouseManager* mpMouseManager;//マウスマネージャーのポインタ
+	static TextInputManager* mpTextInputManager;//テキストインプットマネージャーのポインタ
+	static KeyInputManager* mpKeyInputManager;//キーインプットマネージャーのポインタ
 	static CommenterManager* mpCommenterManager;//コメント表示のポインタ
 	static Viewers* mpViewers;//視聴者クラスのポインタ
 	static Transitor* mpTransitor;//トランジションのポインタ

@@ -9,11 +9,14 @@
 #include "FontManager.h"
 #include "QuestionManager.h"
 #include "UIManager.h"
-#include "MouseManager.h"
 #include "CommenterManager.h"
 #include "Viewers.h"
 #include "Transitor.h"
 #include "Pause.h"
+#include "MouseManager.h"
+#include "TextInputManager.h"
+#include "KeyInputManager.h"
+
 /**
 * @note リファレンス https://dxlib.xsrv.jp/dxfunc.html
 */
@@ -27,6 +30,8 @@ FontManager* Master::mpFontManager = new FontManager();
 QuestionManager* Master::mpQuestionManager = new QuestionManager();
 UIManager* Master::mpUIManager = new UIManager();
 MouseManager* Master::mpMouseManager = new MouseManager();
+TextInputManager* Master::mpTextInputManager = new TextInputManager();
+KeyInputManager* Master::mpKeyInputManager = new KeyInputManager();
 CommenterManager* Master::mpCommenterManager = new CommenterManager();
 Viewers* Master::mpViewers = new Viewers();
 Transitor* Master::mpTransitor = new Transitor();
@@ -86,6 +91,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		int time = GetNowCount();
 
 		Master::mpMouseManager->Update();
+		Master::mpKeyInputManager->Update();
 		Master::mpSceneManager->Update();
 	
 		//画面を初期化する
@@ -93,6 +99,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		Master::mpSceneManager->Draw();
 		Master::mpMouseManager->Draw();
+		Master::mpKeyInputManager->Draw();
 		//裏画面の内容を表画面に映す
 		ScreenFlip();
 		//17ミリ秒　（秒間約６０フレームだった場合の１フレーム当たりの経過時間）
@@ -122,6 +129,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	delete Master::mpQuestionManager;
 	delete Master::mpUIManager;
 	delete Master::mpMouseManager;
+	delete Master::mpTextInputManager;
+	delete Master::mpKeyInputManager;
 	Master::mpCommenterManager->Finalize();
 	delete Master::mpCommenterManager;
 	Master::mpViewers->Finalize();

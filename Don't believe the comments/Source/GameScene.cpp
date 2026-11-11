@@ -24,19 +24,16 @@ void GameScene::Initialize()
 	Master::mpUIManager->AddUI(commentFieldHandle, Master::gridWidth * 88, Master::gridHeight * 3, Master::gridWidth * 118, Master::gridHeight * 115);
 
 	mGameCycle.Initialize();
+	Master::mpPause->Initialize();
 	Master::mpQuestionManager->SetRandomNumber();
 }
 
 void GameScene::Update()
 {
-	//エスケープ押されたr
-	if (CheckHitKey(KEY_INPUT_ESCAPE)!=0)
+	Master::mpPause->Update();
+	if (Master::mpPause->IsPause())
 	{
-		Master::mpPause->StartPause();
-	}
-	if (Master::mpPause->GetStartPause())
-	{
-		Master::mpPause->Update();
+		Scene::Update();
 		return;
 	}
 	mGameCycle.Update();
@@ -49,7 +46,7 @@ void GameScene::Draw()
 	Master::mpUIManager->DrawUI();
 	mGameCycle.Draw();
 	Scene::Draw();
-	if (Master::mpPause->GetStartPause())
+	if (Master::mpPause->IsPause())
 	{
 		Master::mpPause->Draw();
 	}

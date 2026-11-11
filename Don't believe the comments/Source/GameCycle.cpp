@@ -11,8 +11,8 @@ void GameCycle::Initialize()
 {
 	mnInputStringHandle = Master::mpFontManager->GetFontHandle(Master::mpFontManager->FONT_NONE, 48);
 	mnQuestionNumberHandle = Master::mpFontManager->GetFontHandle(Master::mpFontManager->FONT_TETUBINN, 26);
-	mTextInputManager.Initialize(mnInputStringHandle);
-	mTextInputManager.SetKeyInputDrawPosition(Master::gridWidth * 45, Master::gridHeight * 82);
+	Master::mpTextInputManager->Initialize(mnInputStringHandle);
+	Master::mpTextInputManager->SetKeyInputDrawPosition(Master::gridWidth * 45, Master::gridHeight * 82);
 	Master::mpQuestionManager->SetMaxQuestionCount(mnMaxQuestionNumber);
 	Master::mpQuestionManager->ResetCorrectAnswer();
 	Master::mpCommenterManager->SetCommentSpawnKind(STATE_BEFORE);
@@ -103,7 +103,7 @@ void GameCycle::Draw()
 	Master::mpViewers->Draw();
 	if (mbQuestionNumberDrawn &&mbQuestionDrawn)
 	{
-		mTextInputManager.Draw();
+		Master::mpTextInputManager->Draw();
 	}
 
 }
@@ -111,7 +111,7 @@ void GameCycle::Draw()
 
 void GameCycle::Finalize()
 {
-	mTextInputManager.Finalize();
+	Master::mpTextInputManager->Finalize();
 	Master::mpCommenterManager->GameEnd();
 }
 
@@ -157,16 +157,16 @@ void GameCycle::QuestionDraw()
 void GameCycle::InputAnswer()
 {
 	//Œ»Ý‚Ì“ü—Íó‘Ô
-	int nowState = mTextInputManager.CheckInput();
-	mTextInputManager.ResetState();
+	int nowState = Master::mpTextInputManager->CheckInput();
+	Master::mpTextInputManager->ResetState();
 	if (nowState == 0)
 	{
-		mTextInputManager.Update();
+		Master::mpTextInputManager->Update();
 	}
 	else if (nowState == 1)
 	{
 		//•¶Žš“ü—Í
-		answer = mTextInputManager.GetInputString();
+		answer = Master::mpTextInputManager->GetInputString();
 		
 		mbInputAnswered = true;
 	}
@@ -182,7 +182,7 @@ bool GameCycle::AnswerJudge()
 	
 	if (answer == "")
 	{
-		mTextInputManager.ResetInput();
+		Master::mpTextInputManager->ResetInput();
 		answer = "";
 		return false;
 	}
@@ -190,7 +190,7 @@ bool GameCycle::AnswerJudge()
 	auto& data = Master::mpQuestionManager->GetQuestionData();
 	if (data.answer == answer)
 	{
-		mTextInputManager.ResetInput();
+		Master::mpTextInputManager->ResetInput();
 		answer = "";
 		Master::mpViewers->ComeViewers();
 		Master::mpQuestionManager->AddCorrectAnswer();
@@ -198,7 +198,7 @@ bool GameCycle::AnswerJudge()
 	}
 	else
 	{
-		mTextInputManager.ResetInput();
+		Master::mpTextInputManager->ResetInput();
 		answer = "";
 		Master::mpViewers->LeaveViewers();
 		return false;
@@ -235,8 +235,8 @@ void GameCycle::GameOver()
 		return;
 	}
 
-	mTextInputManager.SetNoInput();
-	mTextInputManager.Finalize();
+	Master::mpTextInputManager->SetNoInput();
+	Master::mpTextInputManager->Finalize();
 
 	// •]‰¿‚ð‰Šú‰»
 	Master::mpCommenterManager->ResetCommenterReputation();
@@ -256,7 +256,7 @@ void GameCycle::GameOver()
 void GameCycle::GameEnd()
 {
 	mbGameEnd = true;
-	mTextInputManager.Finalize();
+	Master::mpTextInputManager->Finalize();
 	Master::mpQuestionManager->ClearSpawnedQuestion();
 	Master::mpCommenterManager->QuestionStarted(false);
 	Master::mpCommenterManager->SetCommentSpawnKind(STATE_AFTER);

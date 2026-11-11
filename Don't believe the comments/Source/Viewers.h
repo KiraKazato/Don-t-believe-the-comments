@@ -25,6 +25,9 @@ public:
 
 	int GetStartViewersCount();
 	int GetViewersCount();
+
+	int GetTargetViewers();
+	int GetCurrentViewers();
 private:
 	int mnCurrentViewers{};			//今の視聴者数
 	int mnCountStartViewers{};		//カウントの開始値

@@ -41,6 +41,8 @@ public:
 	// 削除やカーソル移動等
 	void ControllInput(char _input);
 
+	void SetNoInput();
+
 private:
 	int mnFontHandle = -1;		// フォントハンドル
 	

@@ -78,7 +78,8 @@ public:
 
 	int GetCorrectAnswerCount();
 
-	void CorrectAnswerAdd();
+	void AddCorrectAnswer();
+	void ResetCorrectAnswer();
 
 	void SetMaxQuestionCount(int _count);
 	int GetMaxQuestionCount();
@@ -107,6 +108,9 @@ private:
 	// 出題済み問題の探索
 	// @return 出題済みか
 	bool IsSpawnedQuestion(int _questionIndex, int _difficultIndex);
+
+	// @return そのバイトが大文字の頭文字か
+	bool IsCharactorLargeByte(char _charactor);
 
 private:
 	std::vector<std::pair<std::vector<QuestionData>, bool>> mQuestions{};	// クイズ

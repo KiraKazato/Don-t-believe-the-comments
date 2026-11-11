@@ -60,6 +60,7 @@ void TextInputManager::Update()
 {
 	if (mbIsFinal)
 	{
+		ClearInputCharBuf();
 		return;
 	}
 
@@ -184,4 +185,9 @@ void TextInputManager::ControllInput(char _input)
 
 	mInputString = mTyping.GetRoma();
 	mOutputString = mTyping.GetKana();
+}
+
+void TextInputManager::SetNoInput()
+{
+	mnKeyInputState = -1;
 }

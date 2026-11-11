@@ -7,7 +7,6 @@
 
 CommenterManager::CommenterManager()
 {
-	mnCountComments = 100;
 }
 
 CommenterManager::~CommenterManager()
@@ -396,4 +395,17 @@ void CommenterManager::GameEnd()
 void CommenterManager::SetCommentSpawnKind(int _kind)
 {
 	mnCommentKind = _kind;
+}
+
+void CommenterManager::ResetCommentCount()
+{
+	mnCountComments = 0;
+}
+
+void CommenterManager::ResetCommenterReputation()
+{
+	for (auto& commenter : mCommenters)
+	{
+		commenter->SetReputation(1.0f);
+	}
 }

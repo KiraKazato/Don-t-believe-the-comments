@@ -20,6 +20,8 @@ public:
 
 	void ViewersAnimation(int _count, int _startCount, char _sign, unsigned int _color);
 
+	void ProcessButton();
+
 private:
 	template<typename _StartTy, typename _Ty>
 	_Ty Lerp(_StartTy _startVal, _Ty _val, float _t);
@@ -32,6 +34,8 @@ private:
 	int mnNumberOfCorrectAnswers;
 	int mnNumberOfViewers;
 	int mnStreamEnded;
+	int mnStreamFailed;
+	int mnBackToTitle;
 
 	//フォントハンドル
 	int mnViewersCountFont = -1;

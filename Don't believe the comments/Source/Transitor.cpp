@@ -12,6 +12,7 @@ void Transitor::XFadeInit(bool _isIn, float _duration, SceneManager::SCENE_TYPE 
 	}
 
 	mfTransitorMaxTime = _duration;
+
 	mfTransitorTime = 0.0f;	// 時間計測の初期化
 	mbIsFadeIn = _isIn;
 	mf_t = 0.0f;			// 進行度
@@ -42,7 +43,31 @@ void Transitor::XFade()
 		mf_t = 1.0f - mf_t;
 	}
 
+	TransitorUpdate();
+
 	Master::mpSceneManager->SetNextSceneFade(mNextScene, true);
+
+	// 関数リストを消す
+	if (IsTransitionFinish())
+	{
+		mUpdateFunction.clear();
+	}
+}
+
+
+void Transitor::AddTransitorUpdate(std::function<void()> _func)
+{
+	// あっちこっちでの処理を行いたいのを考えるためリストにする
+	mUpdateFunction.emplace_back(_func);
+}
+
+void Transitor::TransitorUpdate()
+{
+	for (auto& updateFunction : mUpdateFunction)
+	{
+		// 実行する
+		updateFunction();
+	}
 }
 
 void Transitor::FadeDraw()

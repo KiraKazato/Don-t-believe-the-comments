@@ -14,13 +14,21 @@ void GameCycle::Initialize()
 	mTextInputManager.Initialize(mnInputStringHandle);
 	mTextInputManager.SetKeyInputDrawPosition(Master::gridWidth * 45, Master::gridHeight * 82);
 	Master::mpQuestionManager->SetMaxQuestionCount(mnMaxQuestionNumber);
+	Master::mpQuestionManager->ResetCorrectAnswer();
 	Master::mpCommenterManager->SetCommentSpawnKind(STATE_BEFORE);
+	Master::mpCommenterManager->ResetCommentCount();
 	mnNextButtonHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/Button/NextButton.png");
 	Master::mpUIManager->AddUI(mnNextButtonHandle,mnNextButtonX1, mnNextButtonY1, mnNextButtonX2, mnNextButtonY2, false);
+
+	if (Master::mpViewers->GetCurrentViewers() <= 0)
+	{
+		Master::mpViewers->Initialize();
+	}
 }
 void GameCycle::Update()
 {
 	Master::mpCommenterManager->Update();
+	Master::mpViewers->Update();
 
 	if (mbGameEnd)
 	{
@@ -58,7 +66,6 @@ void GameCycle::Update()
 	}
 
 	InputAnswer();
-	Master::mpViewers->Update();
 	if (mbInputAnswered && AnswerJudge())
 	{
 		mbQuestionSpawned = false;
@@ -75,6 +82,7 @@ void GameCycle::Update()
 			mnQuestionNumber++;
 		}
 	}
+	GameOver();
 }
 
 
@@ -105,7 +113,6 @@ void GameCycle::Finalize()
 {
 	mTextInputManager.Finalize();
 	Master::mpCommenterManager->GameEnd();
-
 }
 
 void GameCycle::CommentDraw()
@@ -138,6 +145,10 @@ void GameCycle::QuestionDraw()
 	// 1,0f / (60.0f * x) -> x 秒かけての表示
 	constexpr float easingCount = 1.0f / (60.0f * 1.0f);
 	mfQuestionDrawEasing += easingCount;	
+	if (mfQuestionDrawEasing >= 1.0f)
+	{
+		mfQuestionDrawEasing = 1.0f;
+	}
 
 	// 終わった
 	mbQuestionDrawn = true;
@@ -182,7 +193,7 @@ bool GameCycle::AnswerJudge()
 		mTextInputManager.ResetInput();
 		answer = "";
 		Master::mpViewers->ComeViewers();
-		Master::mpQuestionManager->CorrectAnswerAdd();
+		Master::mpQuestionManager->AddCorrectAnswer();
 		return true;
 	}
 	else
@@ -203,7 +214,7 @@ void GameCycle::DrawNextButton()
 	bool inside = Master::mpUIManager->InsideUI(mnNextButtonX1, mnNextButtonY1, mnNextButtonX2, mnNextButtonY2, mouseX, mouseY);
 	if(inside)
 	{
-		Master::mpUIManager->ChangeUISize(mnNextButtonHandle, 1.1);
+		Master::mpUIManager->ChangeUISize(mnNextButtonHandle, 1.1f);
 		if (Master::mpUIManager->ClickedUI(mnNextButtonHandle, inside))
 		{
 			Master::mpTransitor->XFadeInit(SceneManager::SCENE_RESULT);
@@ -216,10 +227,37 @@ void GameCycle::DrawNextButton()
 	}
 }
 
+void GameCycle::GameOver()
+{
+	constexpr float gameOverFadeTime = 4.0f;
+	if (Master::mpViewers->GetTargetViewers() > 0)
+	{
+		return;
+	}
+
+	mTextInputManager.SetNoInput();
+	mTextInputManager.Finalize();
+
+	// 評価を初期化
+	Master::mpCommenterManager->ResetCommenterReputation();
+
+	// トランジション中にやりたい処理
+	std::function<void()>transitorFunction = [&]() 
+		{
+			Master::mpViewers->Update(); 
+		};
+
+	// ラムダ式でトランジション中にやりたい処理を保存
+	Master::mpTransitor->AddTransitorUpdate(transitorFunction);
+	// フェードアウト、リザルトシーンへ変更
+	Master::mpTransitor->XFadeInit(false, gameOverFadeTime, SceneManager::SCENE_TYPE::SCENE_RESULT);
+}
+
 void GameCycle::GameEnd()
 {
 	mbGameEnd = true;
 	mTextInputManager.Finalize();
+	Master::mpQuestionManager->ClearSpawnedQuestion();
 	Master::mpCommenterManager->QuestionStarted(false);
 	Master::mpCommenterManager->SetCommentSpawnKind(STATE_AFTER);
 }

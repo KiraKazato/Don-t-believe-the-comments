@@ -27,6 +27,8 @@ void ResultScene::Initialize()
 	mnNumberOfCorrectAnswers = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/Number Of Correct Answers.png");
 	mnNumberOfViewers = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/Number Of Viewers.png");
 	mnStreamEnded = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/StreamEnded.png");
+	mnStreamFailed = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/StreamFailed.png");
+	mnBackToTitle = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/BackToTitle.png");
 
 	mnViewersCountFont = Master::mpFontManager->GetFontHandle(FontManager::FONT_TETUBINN, 115);
 	mnViewersStartCountFont = Master::mpFontManager->GetFontHandle(FontManager::FONT_TETUBINN, 90);
@@ -44,8 +46,17 @@ void ResultScene::Initialize()
 	Master::mpUIManager->AddUI(mnNumberOfViewers, Master::gridWidth * 48, Master::gridHeight * 25, Master::gridWidth * 72, Master::gridHeight * 34);
 	Master::mpUIManager->AddUI(mnNumberOfComments, Master::gridWidth * 71, Master::gridHeight * 57, Master::gridWidth * 87, Master::gridHeight * 63);
 	Master::mpUIManager->AddUI(mnNumberOfCorrectAnswers, Master::gridWidth * 36, Master::gridHeight * 57, Master::gridWidth * 47, Master::gridHeight * 63);
-	Master::mpUIManager->AddUI(mnStreamEnded, Master::gridWidth * 43, Master::gridHeight * 8, Master::gridWidth * 82, Master::gridHeight * 20);
-
+	
+	if(Master::mpViewers->GetCurrentViewers() > 0)
+	{
+		Master::mpUIManager->AddUI(mnStreamEnded, Master::gridWidth * 43, Master::gridHeight * 8, Master::gridWidth * 82, Master::gridHeight * 20);
+		Master::mpUIManager->AddUI(mnNextButtonHandle, Master::gridWidth * 47, Master::gridHeight * 95, Master::gridWidth * 74, Master::gridHeight * 112);
+	}
+	else
+	{
+		Master::mpUIManager->AddUI(mnStreamFailed, Master::gridWidth * 44, Master::gridHeight * 8, Master::gridWidth * 83, Master::gridHeight * 20);
+		Master::mpUIManager->AddUI(mnBackToTitle, Master::gridWidth * 47, Master::gridHeight * 95, Master::gridWidth * 74, Master::gridHeight * 112);
+	}
 }
 
 void ResultScene::Update()
@@ -53,24 +64,8 @@ void ResultScene::Update()
 	//マウス座標受け取り
 	Master::mpMouseManager->GetMousePosition(&mnMouseX, &mnMouseY);
 
-	bool insideStartButton = Master::mpUIManager->InsideUI(mnNextButtonHandle, mnMouseX, mnMouseY);
-	//マウスがボタンの範囲内だったら
-	if (insideStartButton)
-	{
-		//少し拡大
-		Master::mpUIManager->ChangeUISize(mnNextButtonHandle, 1.1f);
+	ProcessButton();
 
-	}
-	else
-	{
-		//元の大きさに戻しておく
-		Master::mpUIManager->ResetUISize(mnNextButtonHandle);
-	}
-	//左クリック押されたとき
-	if (Master::mpUIManager->ClickedUI(mnNextButtonHandle, insideStartButton))
-	{
-		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_SELECT);
-	}
 	Scene::Update();
 
 }
@@ -91,7 +86,7 @@ void ResultScene::Draw()
 void ResultScene::Finalize()
 {
 	Master::mpUIManager->ClearUI();
-
+	Master::mpViewers->SetStartViewers(Master::mpViewers->GetCurrentViewers());
 }
 
 auto Easing = [](float x)
@@ -157,7 +152,7 @@ int ResultScene::ViewersCount(float _duration, int _count)
 	// 0.カウント
 	if (mbAnimationFlag.test(0))
 	{
-		return _count;
+		return abs(_count);
 	}
 
 	constexpr float frameTime = 1.0f / 60.0f;
@@ -169,7 +164,7 @@ int ResultScene::ViewersCount(float _duration, int _count)
 		mbAnimationFlag.set(mnAnimationIndex);
 		mnAnimationIndex++;
 	}
-	return Lerp(0, _count, Easing(t));
+	return Lerp(0, abs(_count), Easing(t));
 }
 
 void ResultScene::ViewersAnimation(int _count, int _startCount, char _sign, unsigned int _color)
@@ -248,11 +243,50 @@ void ResultScene::ViewersAnimation(int _count, int _startCount, char _sign, unsi
 		return;
 	}
 
+	if (_sign == '-')
+	{
+		_count *= -1;
+	}
+	int allCount  = _count + _startCount;
 	int allCountWidth, allCountHeight;
-	GetDrawFormatStringSizeToHandle(&allCountWidth, &allCountHeight, NULL, mnViewersCountFont, "%d", _startCount + _count);
+	GetDrawFormatStringSizeToHandle(&allCountWidth, &allCountHeight, NULL, mnViewersCountFont, "%d", allCount);
 
 	int allCountDrawPosX = Master::gridWidth * 60 - allCountWidth / 2;
 	int allCountDrawPosY = Master::gridHeight * 45 - allCountHeight / 2;
 
-	DrawFormatStringToHandle(allCountDrawPosX, allCountDrawPosY + Master::gridHeight, GetColor(0, 0, 0), mnViewersCountFont, "%d", _startCount + _count);
+	DrawFormatStringToHandle(allCountDrawPosX, allCountDrawPosY + Master::gridHeight, GetColor(0, 0, 0), mnViewersCountFont, "%d", allCount);
+}
+
+void ResultScene::ProcessButton()
+{
+	bool isClear = (Master::mpViewers->GetCurrentViewers() > 0);
+
+	// もしコメントが0より大きいのなら次へのボタンを表示
+	int handle = isClear ? mnNextButtonHandle : mnBackToTitle;
+
+	bool insideStartButton = Master::mpUIManager->InsideUI(handle, mnMouseX, mnMouseY);
+	//マウスがボタンの範囲内だったら
+	if (insideStartButton)
+	{
+		//少し拡大
+		Master::mpUIManager->ChangeUISize(handle, 1.1f);
+
+	}
+	else
+	{
+		//元の大きさに戻しておく
+		Master::mpUIManager->ResetUISize(handle);
+	}
+	//左クリック押されたとき
+	if (Master::mpUIManager->ClickedUI(handle, insideStartButton))
+	{
+		if(isClear)
+		{
+			Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_SELECT);
+		}
+		else
+		{
+			Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
+		}
+	}
 }

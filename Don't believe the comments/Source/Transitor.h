@@ -1,5 +1,7 @@
 #pragma once
 #include "SceneManager.h"
+#include <functional>
+#include <vector>
 
 // デフォルトの時間
 constexpr float DEFALT_DURATION = 0.7f;
@@ -14,13 +16,19 @@ public:
 	// フェードの更新
 	void XFade();
 
+	// トランジション中にやりたい処理の追加
+	// std::fuction<戻り値(引数)>について：関数そのものを保存・実行することが可能
+	// ※これはvoid型で引数がないもののみ
+	void AddTransitorUpdate(std::function<void()> _func);
+
+	// トランジション中にやりたい処理を実行
+	void TransitorUpdate();
+
 	// フェードが終了したか
 	bool IsTransitionFinish() { return mfTransitorTime >= mfTransitorMaxTime; }
 
 	// フェードを進める
 	void FadeStep(float _step) { mfTransitorTime += _step; }
-
-	void SetT(float _time) { mf_t = _time; }
 
 	// フェードを書く
 	void FadeDraw();
@@ -38,4 +46,6 @@ private:
 	bool mbIsBoot = true;
 
 	SceneManager::SCENE_TYPE mNextScene{};
+
+	std::vector<std::function<void()>> mUpdateFunction{};	// トランジション中に処理したいこと
 };

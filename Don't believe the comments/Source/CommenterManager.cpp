@@ -157,9 +157,11 @@ void CommenterManager::ChooseDisplayCommenter()
 	float totalReputation{};
 	float reputationPool{};
 	std::string comment;
+	int totalHeight{};
 	for (const auto& commenter : mCommenters)
 	{
 		totalReputation += commenter->GetReputation();
+		
 	}
 	reputationPool = GetRand(10000) / 10000.0f * totalReputation;
 	for (const auto& commenter : mCommenters)
@@ -172,7 +174,11 @@ void CommenterManager::ChooseDisplayCommenter()
 		comment = GetDisplayComment(commenter->GetState());
 		new Commenter(commenter,commenter->GetName(), commenter->GetState(), comment, mnID);
 
-		int commentY = mnCurrentCommentGridPositionY + (commenter->GetTotalHeight() * (mnID+1));
+		for (const auto& displayCommenter : mDisplayCommenters)
+		{
+			totalHeight += displayCommenter->GetTotalHeight();
+		}
+		int commentY = mnCurrentCommentGridPositionY + totalHeight;
 		if (mnMaxCommentGridPositionY <= commentY)
 		{
 			int diff = commentY - mnMaxCommentGridPositionY;

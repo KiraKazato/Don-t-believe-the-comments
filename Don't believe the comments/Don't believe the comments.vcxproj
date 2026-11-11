@@ -31,6 +31,7 @@
     <ClCompile Include="Source\MouseManager.cpp" />
     <ClCompile Include="Source\Object2D.cpp" />
     <ClCompile Include="Source\ObjectManager.cpp" />
+    <ClCompile Include="Source\Pause.cpp" />
     <ClCompile Include="Source\QuestionManager.cpp" />
     <ClCompile Include="Source\ResourceManager.cpp" />
     <ClCompile Include="Source\ResultScene.cpp" />
@@ -60,6 +61,7 @@
     <ClInclude Include="Source\MouseManager.h" />
     <ClInclude Include="Source\Object2D.h" />
     <ClInclude Include="Source\ObjectManager.h" />
+    <ClInclude Include="Source\Pause.h" />
     <ClInclude Include="Source\QuestionManager.h" />
     <ClInclude Include="Source\ResourceManager.h" />
     <ClInclude Include="Source\ResultScene.h" />

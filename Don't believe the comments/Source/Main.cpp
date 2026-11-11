@@ -13,6 +13,7 @@
 #include "CommenterManager.h"
 #include "Viewers.h"
 #include "Transitor.h"
+#include "Pause.h"
 /**
 * @note リファレンス https://dxlib.xsrv.jp/dxfunc.html
 */
@@ -29,7 +30,7 @@ MouseManager* Master::mpMouseManager = new MouseManager();
 CommenterManager* Master::mpCommenterManager = new CommenterManager();
 Viewers* Master::mpViewers = new Viewers();
 Transitor* Master::mpTransitor = new Transitor();
-
+Pause* Master::mpPause = new Pause();
 /**
 * @fn WinMain
 * @brief Main関数
@@ -80,7 +81,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	srand(static_cast<unsigned int>(time(nullptr)));
 
-	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
+	while (ProcessMessage() == 0)
 	{
 		int time = GetNowCount();
 
@@ -126,6 +127,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	Master::mpViewers->Finalize();
 	delete Master::mpViewers;
 	delete Master::mpTransitor;
+	delete Master::mpPause;
 
 
 	Effkseer_End();

@@ -241,8 +241,14 @@ void GameCycle::GameOver()
 	// 評価を初期化
 	Master::mpCommenterManager->ResetCommenterReputation();
 
+	// トランジション中にやりたい処理
+	std::function<void()>transitorFunction = [&]() 
+		{
+			Master::mpViewers->Update(); 
+		};
+
 	// ラムダ式でトランジション中にやりたい処理を保存
-	Master::mpTransitor->AddTransitorUpdate([&]() {Master::mpViewers->Update(); });
+	Master::mpTransitor->AddTransitorUpdate(transitorFunction);
 	// フェードアウト、リザルトシーンへ変更
 	Master::mpTransitor->XFadeInit(false, gameOverFadeTime, SceneManager::SCENE_TYPE::SCENE_RESULT);
 }

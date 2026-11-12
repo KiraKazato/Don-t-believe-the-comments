@@ -8,7 +8,8 @@ SoundManager::SoundManager()
 	,NowBgmvolume(255)
 	,NowSevolume(255)
 {
-
+	ChangeBGMVolume(50);
+	ChangeSEVolume(50);
 }
 
 SoundManager::~SoundManager()
@@ -18,6 +19,8 @@ SoundManager::~SoundManager()
 
 void SoundManager::Initialize()
 {
+	LoadBGM(SOUND_BGM::BGM_TITLE, "Resource/TitleScene/Music.mp3");
+
 	LoadBGM(SOUND_BGM::BGM_SETTING, "Resource/SettingScene/audiostock_1570406.mp3");
 
 

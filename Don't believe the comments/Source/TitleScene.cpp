@@ -24,6 +24,9 @@ void TitleScene::Initialize()
 	Master::mpUIManager->AddUI(mnStartBottonHandle, Master::gridWidth * 30, Master::gridHeight * 90, Master::gridWidth * 57, Master::gridHeight * 107);
 	Master::mpUIManager->AddUI(mnSettingBottonHandle, Master::gridWidth * 63, Master::gridHeight * 90, Master::gridWidth * 90, Master::gridHeight * 107);
 	Master::mpTransitor->XFadeInit(true);
+
+	Master::mpSoundManager->PlayBGM(SoundManager::BGM_TITLE);
+
 }
 
 void TitleScene::Update()

@@ -448,6 +448,16 @@ int QuestionManager::GetMaxQuestionCount()
 	return mnMaxQuestionCount;
 }
 
+void QuestionManager::SetIsAllClear(bool _flag)
+{
+	mbIsAllClear = _flag;
+}
+
+bool QuestionManager::IsAllClear()
+{
+	return mbIsAllClear;
+}
+
 void QuestionManager::SetQuestion(int _index, int _difficulty)
 {
 	mnCurrentIndex = _index;

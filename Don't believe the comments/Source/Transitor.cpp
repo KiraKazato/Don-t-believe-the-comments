@@ -51,6 +51,7 @@ void Transitor::XFade()
 	if (IsTransitionFinish())
 	{
 		mUpdateFunction.clear();
+		mAfterFunction.clear();
 	}
 }
 
@@ -61,12 +62,25 @@ void Transitor::AddTransitorUpdate(std::function<void()> _func)
 	mUpdateFunction.emplace_back(_func);
 }
 
+void Transitor::AddAfterUpdate(std::function<void()> _func)
+{
+	mAfterFunction.emplace_back(_func);
+}
+
 void Transitor::TransitorUpdate()
 {
 	for (auto& updateFunction : mUpdateFunction)
 	{
 		// é¿çsÇ∑ÇÈ
 		updateFunction();
+	}
+}
+
+void Transitor::TransitorAfter()
+{
+	for (auto& afterFunction : mAfterFunction)
+	{
+		afterFunction();
 	}
 }
 

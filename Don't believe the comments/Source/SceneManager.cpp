@@ -112,6 +112,7 @@ void SceneManager::SetNextSceneFade(SCENE_TYPE next, bool isFade)
 	{
 		return;
 	}
+	Master::mpTransitor->TransitorAfter();
 	mnNextSceneType = Master::mpTransitor->GetNextScene();
 }
 

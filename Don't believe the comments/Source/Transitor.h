@@ -20,11 +20,20 @@ public:
 
 	// トランジション中にやりたい処理の追加
 	// std::fuction<戻り値(引数)>について：関数そのものを保存・実行することが可能
-	// ※これはvoid型で引数がないもののみ
+	// ※これはvoid型で引数がないもののみ（void型ラムダ式である）
+	// ※[&](){～}という形で
 	void AddTransitorUpdate(std::function<void()> _func);
+
+	// トランジション後にやりたい処理の追加
+	// ※これはvoid型で引数がないもののみ（void型ラムダ式である）
+	// ※[&](){～}という形で
+	void AddAfterUpdate(std::function<void()> _func);
 
 	// トランジション中にやりたい処理を実行
 	void TransitorUpdate();
+
+	// トランジション後にやりたい処理を実行
+	void TransitorAfter();
 
 	// フェードが終了したか
 	bool IsTransitionFinish() { return mfTransitorTime >= mfTransitorMaxTime; }
@@ -50,4 +59,5 @@ private:
 	SceneManager::SCENE_TYPE mNextScene{};
 
 	std::vector<std::function<void()>> mUpdateFunction{};	// トランジション中に処理したいこと
+	std::vector<std::function<void()>> mAfterFunction{};	// トランジション後に処理したいこと
 };

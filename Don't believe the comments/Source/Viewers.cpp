@@ -139,6 +139,11 @@ int Viewers::GetCurrentViewers()
 
 void Viewers::IdleFluctuation()
 {
+	if (mnTargetViewers <= 0 || Master::mpQuestionManager->IsAllClear())
+	{
+		return;
+	}
+
 	//Šî€‚ÌŠÔ
 	static int lastTime = GetNowCount();
 	static int targetTime = rand() % mnMaxFluctuation + mnMinFluctuation;

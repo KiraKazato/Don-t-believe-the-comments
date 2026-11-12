@@ -15,11 +15,12 @@ void GameCycle::Initialize()
 	Master::mpTextInputManager->SetKeyInputDrawPosition(Master::gridWidth * 45, Master::gridHeight * 82);
 	Master::mpQuestionManager->SetMaxQuestionCount(mnMaxQuestionNumber);
 	Master::mpQuestionManager->ResetCorrectAnswer();
+	Master::mpQuestionManager->SetIsAllClear(false);
 	Master::mpCommenterManager->SetCommentSpawnKind(STATE_BEFORE);
 	Master::mpCommenterManager->ResetCommentCount();
 	mnNextButtonHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/Button/NextButton.png");
 	Master::mpUIManager->AddUI(mnNextButtonHandle,mnNextButtonX1, mnNextButtonY1, mnNextButtonX2, mnNextButtonY2, false);
-
+	
 	if (Master::mpViewers->GetCurrentViewers() <= 0)
 	{
 		Master::mpViewers->Initialize();
@@ -75,6 +76,7 @@ void GameCycle::Update()
 		Master::mpCommenterManager->QuestionStarted(false);
 		if (mnQuestionNumber >= mnMaxQuestionNumber)
 		{
+
 			GameEnd();
 		}
 		else
@@ -92,6 +94,12 @@ void GameCycle::Draw()
 
 	QuestionNumberDraw();
 
+	Master::mpViewers->Draw();
+	if (mbQuestionNumberDrawn && mbQuestionDrawn)
+	{
+		Master::mpTextInputManager->Draw();
+	}
+
 	if (mbGameEnd)
 	{
 		DrawNextButton();
@@ -99,12 +107,6 @@ void GameCycle::Draw()
 	}
 
 	QuestionDraw();
-
-	Master::mpViewers->Draw();
-	if (mbQuestionNumberDrawn &&mbQuestionDrawn)
-	{
-		Master::mpTextInputManager->Draw();
-	}
 
 }
 
@@ -258,6 +260,7 @@ void GameCycle::GameEnd()
 	mbGameEnd = true;
 	Master::mpTextInputManager->Finalize();
 	Master::mpQuestionManager->ClearSpawnedQuestion();
+	Master::mpQuestionManager->SetIsAllClear(true);
 	Master::mpCommenterManager->QuestionStarted(false);
 	Master::mpCommenterManager->SetCommentSpawnKind(STATE_AFTER);
 }

@@ -28,6 +28,8 @@ public:
 
 	int GetTargetViewers();
 	int GetCurrentViewers();
+
+	void IdleFluctuation();
 private:
 	int mnCurrentViewers{};			//今の視聴者数
 	int mnCountStartViewers{};		//カウントの開始値
@@ -41,6 +43,8 @@ private:
 	int mnStringHandle{};
 	int mnDrawX1{};
 	int mnDrawY1{};
+	int mnMaxFluctuation = 2501;
+	int mnMinFluctuation = 500;
 
 	bool mbIsCountFinish = false;		//カウントが終わったか
 	int mnStartViewersCount = 0;		//視聴者数初期値

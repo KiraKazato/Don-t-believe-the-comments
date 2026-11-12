@@ -22,13 +22,13 @@ void Viewers::Initialize()
 void Viewers::Update()
 {
 	ViewersCount(2.0f);
-
 	mnViewersCount = mnCurrentViewers - mnStartViewersCount;
+	IdleFluctuation();
 }
 
 void Viewers::Draw()
 {
-	DrawFormatStringToHandle(10, 10, GetColor(0, 0, 0), mnStringHandle, "Ž‹’®ŽÒ”:%d", mnCurrentViewers);
+	DrawFormatStringToHandle(Master::gridWidth*4, Master::gridHeight*96, GetColor(0, 0, 0), mnStringHandle, "Ž‹’®ŽÒ”:%d", mnCurrentViewers);
 }
 
 void Viewers::Finalize()
@@ -135,4 +135,28 @@ int Viewers::GetTargetViewers()
 int Viewers::GetCurrentViewers()
 {
 	return mnCurrentViewers;
+}
+
+void Viewers::IdleFluctuation()
+{
+	//Šî€‚ÌŽžŠÔ
+	static int lastTime = GetNowCount();
+	static int targetTime = rand() % mnMaxFluctuation + mnMinFluctuation;
+	int currentTime = GetNowCount();
+
+	int diffTime = currentTime - lastTime;
+
+	if (diffTime >= targetTime)
+	{
+		lastTime = currentTime;
+		targetTime= rand() % mnMaxFluctuation + mnMinFluctuation;
+		if (!(mnCurrentViewers < 250))
+		{
+			ChangeViewers(rand() % 41 - 20);
+		}
+		else
+		{
+			ChangeViewers(rand() % 21);
+		}
+	}	
 }

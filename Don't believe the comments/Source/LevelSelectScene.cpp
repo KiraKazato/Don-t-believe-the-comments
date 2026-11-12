@@ -95,26 +95,77 @@ void LevelSelectScene::Update()
 	if (Master::mpUIManager->GetUIData(mStageButtonHandle[currentStage]) != nullptr)
 	{
 		Master::mpUIManager->GetUIData(mStageButtonHandle[currentStage])->insideObject = Master::mpUIManager->InsideUI(mStageButtonHandle[currentStage], mouseX, mouseY);
-		if (Master::mpUIManager->GetUIData(mStageButtonHandle[currentStage])->insideObject)
+
+		//ComingSoonではない時だけ、マウスを重ねたら拡大する
+		if (currentStage != STAGE_COMMINGSOON)
 		{
-			//少し大きく
-			Master::mpUIManager->ChangeUISize(mStageButtonHandle[currentStage], 1.1f);
+			if (Master::mpUIManager->GetUIData(mStageButtonHandle[currentStage])->insideObject)
+			{
+				//少し大きく
+				Master::mpUIManager->ChangeUISize(mStageButtonHandle[currentStage], 1.1f);
+			}
+			else
+			{
+				//なかったらサイズをもとに戻す
+				Master::mpUIManager->ResetUISize(mStageButtonHandle[currentStage]);
+			}
 		}
-		else
-		{
-			//なかったらサイズをもとに戻す
-			Master::mpUIManager->ResetUISize(mStageButtonHandle[currentStage]);
-		}
+
 		//左クリックされたら
 		if (Master::mpUIManager->ClickedUI(mStageButtonHandle[currentStage], Master::mpUIManager->GetUIData(mStageButtonHandle[currentStage])->insideObject))
 		{
 			if (currentStage != STAGE_COMMINGSOON)
 			{
 				isWaitingSceneChange = true;
-				waitFrameCounter = 0; // カウンターを0にリセット
+				waitFrameCounter = 0; //カウンターを0にリセット
 				gameStartEffect->Play(Master::Width / 2.0f, Master::Height / 2.0f);
 			}
+			else
+			{
+				//ComingSoonがクリックされたら震えを開始する
+				isShaking = true;
+				shakeFrameCounter = 0;
+			}
+		}
 
+		//震えている最中の処理
+		if (isShaking)
+		{
+			shakeFrameCounter++; //毎フレーム1ずつ増やす
+
+			//まだ震える時間内の場合
+			if (shakeFrameCounter < SHAKE_TIME)
+			{
+				//残り時間の割合を計算す
+				//小数点で割り算をするためにをつけています
+				float remainingRate = (float)(SHAKE_TIME - shakeFrameCounter) / (float)SHAKE_TIME;
+
+				//今回のフレームの揺れの強さを決める
+				float currentShakePower = MAX_SHAKE_POWER * remainingRate;
+
+				//フレーム数が偶数なら右、奇数なら左にする
+				float shakeOffset = 0.0f;
+				if (shakeFrameCounter % 2 == 0)
+				{
+					shakeOffset = currentShakePower;
+				}
+				else
+				{
+					shakeOffset = -currentShakePower;
+				}
+
+				//ComingSoon画像の左右のX座標を基準位置からずらす
+				Master::mpUIManager->GetUIData(mStageButtonHandle[STAGE_COMMINGSOON])->drawX1 = stageButtonPositionX1 + shakeOffset;
+				Master::mpUIManager->GetUIData(mStageButtonHandle[STAGE_COMMINGSOON])->drawX2 = stageButtonPositionX2 + shakeOffset;
+			}
+			else
+			{
+				//時間が来たら震えを止めて、元の位置にピタッと戻す
+				isShaking = false;
+				shakeFrameCounter = 0;
+				Master::mpUIManager->GetUIData(mStageButtonHandle[STAGE_COMMINGSOON])->drawX1 = stageButtonPositionX1;
+				Master::mpUIManager->GetUIData(mStageButtonHandle[STAGE_COMMINGSOON])->drawX2 = stageButtonPositionX2;
+			}
 		}
 	}
 

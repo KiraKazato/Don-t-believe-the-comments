@@ -61,4 +61,9 @@ private:
 	int waitFrameCounter = 0;          // 経過したフレーム数を数える変数
 	const int WAIT_TIME = 159;          // 待ちたいフレーム数
 
+	bool isShaking = false;               // 画像が震えている最中かどうか
+	int shakeFrameCounter = 0;            // 震えているフレーム数を数える変数
+	const int SHAKE_TIME = 15;            // 震わせる時間
+	const float MAX_SHAKE_POWER = 6.0f;  // 最初の最大の揺れ幅
+
 };

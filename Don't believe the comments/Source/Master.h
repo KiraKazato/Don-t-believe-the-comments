@@ -20,8 +20,6 @@
 //SoundManager‚¾‚Á‚½‚è
 //ResourceManager‚¾‚Á‚½‚è
 
-enum class EnemyType;
-
 class Master
 {
 public:
@@ -46,4 +44,6 @@ public:
 	//120•ªŠ„‚µ‚½‚Æ‚«‚Ì1—ñ–Ú
 	static const int gridWidth = 16;
 	static const int gridHeight = 9;
+
+	static bool EndGame;
 };

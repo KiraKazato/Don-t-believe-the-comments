@@ -36,6 +36,9 @@ CommenterManager* Master::mpCommenterManager = new CommenterManager();
 Viewers* Master::mpViewers = new Viewers();
 Transitor* Master::mpTransitor = new Transitor();
 Pause* Master::mpPause = new Pause();
+
+bool Master::EndGame = false;
+
 /**
 * @fn WinMain
 * @brief Main関数
@@ -86,7 +89,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	srand(static_cast<unsigned int>(time(nullptr)));
 
-	while (ProcessMessage() == 0)
+	while (ProcessMessage() == 0 && !Master::EndGame)
 	{
 		int time = GetNowCount();
 

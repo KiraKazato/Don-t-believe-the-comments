@@ -16,19 +16,25 @@ void Pause::Initialize()
 	mnBackToTitleHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/Button/BackToTitle.png");
 	mnBackToGameHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/Button/BackToGame.png");
 	mnPauseBackGroundHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/BackGround/PauseBackGround.png");
+	mnEndToGameHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/Button/EndToGame.png");
 }
 
 void Pause::Update()
 {
-	mnX1BackToGame = Master::gridWidth * 50;
-	mnY1BackToGame = Master::gridHeight * 40;
-	mnX2BackToGame = Master::gridWidth * 70;
-	mnY2BackToGame = Master::gridHeight * 55;
+	mnX1BackToGame = Master::gridWidth * 48;
+	mnY1BackToGame = Master::gridHeight * 35;
+	mnX2BackToGame = Master::gridWidth * 72;
+	mnY2BackToGame = Master::gridHeight * 50;
 
-	mnX1BackToTitle = Master::gridWidth * 50;
-	mnY1BackToTitle = Master::gridHeight * 70;
-	mnX2BackToTitle = Master::gridWidth * 70;
-	mnY2BackToTitle = Master::gridHeight * 85;
+	mnX1BackToTitle = Master::gridWidth * 48;
+	mnY1BackToTitle = Master::gridHeight * 55;
+	mnX2BackToTitle = Master::gridWidth * 72;
+	mnY2BackToTitle = Master::gridHeight * 70;
+
+	mnX1EndToGame = Master::gridWidth * 48;
+	mnY1EndToGame = Master::gridHeight * 75;
+	mnX2EndToGame = Master::gridWidth * 72;
+	mnY2EndToGame = Master::gridHeight * 90;
 
 	if (Master::mpKeyInputManager->KeyInputDown(KEY_INPUT_ESCAPE) != 0)
 	{
@@ -112,6 +118,11 @@ void Pause::Update()
 
 		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TITLE);
 	}
+
+	mnDrawX1EndToGame = mnX1EndToGame;
+	mnDrawX2EndToGame = mnX2EndToGame;
+	mnDrawY1EndToGame = mnY1EndToGame;
+	mnDrawY2EndToGame = mnY2EndToGame;
 }
 
 void Pause::Draw()
@@ -123,8 +134,28 @@ void Pause::Draw()
 	DrawExtendGraph(Master::gridWidth * 42, Master::gridHeight * 20, Master::gridWidth * 78, Master::gridHeight * 100, mnPauseBackGroundHandle, TRUE);
 	DrawExtendGraph(mnDrawX1BackToGame, mnDrawY1BackToGame, mnDrawX2BackToGame, mnDrawY2BackToGame, mnBackToGameHandle, TRUE);
 	DrawExtendGraph(mnDrawX1BackToTitle, mnDrawY1BackToTitle, mnDrawX2BackToTitle, mnDrawY2BackToTitle, mnBackToTitleHandle, TRUE);
+	DrawExtendGraph(mnDrawX1EndToGame, mnDrawY1EndToGame, mnDrawX2EndToGame, mnDrawY2EndToGame, mnEndToGameHandle, TRUE);
 
 	//ここでタイトルに戻れるようにしたり、操作説明。
+	/*for (size_t i = 0; i < 120; i++)
+	{
+		int T = 1;
+		if (i % 20 == 0)
+		{
+			T = 6;
+		}
+		else if (i % 10 == 0)
+		{
+			T = 4;
+		}
+		else if (i % 5 == 0)
+		{
+			T = 2;
+		}
+
+		DrawLine(0, Master::gridHeight * i, Master::Width, Master::gridHeight * i, GetColor(0, 200, 0), T);
+		DrawLine(Master::gridWidth * i, 0, Master::gridWidth * i, Master::Height, GetColor(0, 200, 0), T);
+	}*/
 }
 
 void Pause::StartPause()

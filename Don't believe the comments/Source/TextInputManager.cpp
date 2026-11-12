@@ -69,7 +69,12 @@ void TextInputManager::Update()
 	if (CheckHitKey(KEY_INPUT_RETURN))
 	{
 		mnKeyInputState = 1;
-		if (mInputString == "/p" || mInputString == "/ｐ" || mInputString == "・p" || mInputString == "・ｐ")
+		if (mOutputString.substr(mOutputString.size() - 2 , 2) == "ｎ")
+		{
+			mOutputString = mOutputString.erase(mOutputString.size() - 2, 2);
+			mOutputString += "ん";
+		}
+		else if (mInputString == "/p" || mInputString == "/ｐ" || mInputString == "・p" || mInputString == "・ｐ")
 		{
 			mbIsPause = true;
 			mnKeyInputState = 2;

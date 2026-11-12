@@ -10,7 +10,9 @@ class Transitor
 {
 public:
 	// フェード初期化
+	// フェード時間などを諸々決められる
 	void XFadeInit(bool _isIn, float _duration = DEFALT_DURATION, SceneManager::SCENE_TYPE _nextScene = SceneManager::SCENE_TYPE(-1));
+	// 通常画面遷移
 	void XFadeInit(SceneManager::SCENE_TYPE _nextScene);
 
 	// フェードの更新

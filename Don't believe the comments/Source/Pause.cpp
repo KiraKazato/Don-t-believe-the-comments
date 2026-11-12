@@ -97,15 +97,19 @@ void Pause::Draw()
 	if (Master::mpUIManager->ClickedUI(&mbIsBackToTitleButtonClicked, insideBackToTitleButton))
 	{
 		// ‰Šú‰»
-		{
-			Master::mpTextInputManager->SetNoInput();
-			Master::mpTextInputManager->Finalize();
+		std::function<void()> afterFunction = [&]()
+			{
+				Master::mpTextInputManager->SetNoInput();
+				Master::mpTextInputManager->Finalize();
 
-			// •]‰¿‚ð‰Šú‰»
-			Master::mpCommenterManager->ResetCommenterReputation();
+				// •]‰¿‚ð‰Šú‰»
+				Master::mpCommenterManager->ResetCommenterReputation();
 
-			Master::mpViewers->Initialize();
-		}
+				Master::mpViewers->Initialize();
+				Master::mpTextInputManager->Initialize();
+			};
+
+		Master::mpTransitor->AddAfterUpdate(afterFunction);
 
 		EndPause();
 

@@ -50,13 +50,13 @@ void ResultScene::Initialize()
 	if(Master::mpViewers->GetCurrentViewers() > 0)
 	{
 		Master::mpUIManager->AddUI(mnStreamEnded, Master::gridWidth * 43, Master::gridHeight * 8, Master::gridWidth * 82, Master::gridHeight * 20);
-		Master::mpUIManager->AddUI(mnNextButtonHandle, Master::gridWidth * 47, Master::gridHeight * 95, Master::gridWidth * 74, Master::gridHeight * 112);
 	}
 	else
 	{
 		Master::mpUIManager->AddUI(mnStreamFailed, Master::gridWidth * 44, Master::gridHeight * 8, Master::gridWidth * 83, Master::gridHeight * 20);
-		Master::mpUIManager->AddUI(mnBackToTitle, Master::gridWidth * 47, Master::gridHeight * 95, Master::gridWidth * 74, Master::gridHeight * 112);
 	}
+	Master::mpUIManager->AddUI(mnBackToTitle, Master::gridWidth * 47, Master::gridHeight * 95, Master::gridWidth * 74, Master::gridHeight * 112);
+
 }
 
 void ResultScene::Update()
@@ -262,7 +262,7 @@ void ResultScene::ProcessButton()
 	bool isClear = (Master::mpViewers->GetCurrentViewers() > 0);
 
 	// もしコメントが0より大きいのなら次へのボタンを表示
-	int handle = isClear ? mnNextButtonHandle : mnBackToTitle;
+	int handle =  mnBackToTitle;
 
 	bool insideStartButton = Master::mpUIManager->InsideUI(handle, mnMouseX, mnMouseY);
 	//マウスがボタンの範囲内だったら
@@ -280,13 +280,6 @@ void ResultScene::ProcessButton()
 	//左クリック押されたとき
 	if (Master::mpUIManager->ClickedUI(handle, insideStartButton))
 	{
-		if(isClear)
-		{
-			Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_SELECT);
-		}
-		else
-		{
-			Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
-		}
+		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
 	}
 }

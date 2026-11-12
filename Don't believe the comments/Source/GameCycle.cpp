@@ -211,7 +211,7 @@ void GameCycle::DrawNextButton()
 	button->displayed = true;
 	int mouseX, mouseY;
 	Master::mpMouseManager->GetMousePosition(&mouseX, &mouseY);
-	bool inside = Master::mpUIManager->InsideUI(mnNextButtonX1, mnNextButtonY1, mnNextButtonX2, mnNextButtonY2, mouseX, mouseY);
+	bool inside = Master::mpUIManager->InsideUI(static_cast<int>(mnNextButtonX1), static_cast<int>(mnNextButtonY1), static_cast<int>(mnNextButtonX2), static_cast<int>(mnNextButtonY2), mouseX, mouseY);
 	if(inside)
 	{
 		Master::mpUIManager->ChangeUISize(mnNextButtonHandle, 1.1f);

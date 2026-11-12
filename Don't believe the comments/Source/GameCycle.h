@@ -61,10 +61,10 @@ private:
 	int mnMaxQuestionNumber = 10;
 
 private:
-	int mnNextButtonX1 = Master::gridWidth * 35;
-	int mnNextButtonX2 = Master::gridWidth * 55;
-	int mnNextButtonY1 = Master::gridHeight * 101;
-	int mnNextButtonY2 = Master::gridHeight * 115;
+	float mnNextButtonX1 = Master::gridWidth * 35;
+	float mnNextButtonX2 = Master::gridWidth * 55;
+	float mnNextButtonY1 = Master::gridHeight * 101;
+	float mnNextButtonY2 = Master::gridHeight * 115;
 	int mnNextButtonHandle{};
 
 private:

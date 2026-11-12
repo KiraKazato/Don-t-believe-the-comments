@@ -3,62 +3,62 @@
 
 // コンストラクタ
 EffectManager::EffectManager()
-    : effectResourceHandle(-1)
-    , playingEffectHandle(-1)
-    , mnClickEffect(0) 
+	: effectResourceHandle(-1)
+	, playingEffectHandle(-1)
+	, holdEffectResourceHandle(-1)
+	, playingHoldEffectHandle(-1)
 {
 }
 
 // デストラクタ
 EffectManager::~EffectManager()
 {
-	if (mnClickEffect != -1)
+	if (effectResourceHandle != -1)
 	{
-		DeleteEffekseerEffect(mnClickEffect);
+		DeleteEffekseerEffect(effectResourceHandle);
+	}
+	// ★追加：長押し用エフェクトの解放
+	if (holdEffectResourceHandle != -1)
+	{
+		DeleteEffekseerEffect(holdEffectResourceHandle);
 	}
 }
 
 // 初期化
 void EffectManager::Initalize()
 {
-
-	// 引数には画面に表示する最大パーティクル数を設定する
 	if (Effekseer_Init(effectParticleLimit) == -1)
 	{
 		DxLib_End();
 	}
 
-	//2Dの設定
 	Effekseer_Set2DSetting(Master::Width, Master::Height);
-
-	//フルスクリーンウィンドウの切り替えで表示する最大パーティクル数を設定する
-	// Effekseerを使用する場合は必ず設定する・
 	SetChangeScreenModeGraphicsSystemResetFlag(FALSE);
-
-	// DXライブラリのデバイスロストした時のコールバックを設定する。
-	// ウィンドウとフルスクリーンの切り替えが発生する場合は必ず実行する
 	Effekseer_SetGraphicsDeviceLostCallbackFunctions();
 
-	mnClickEffect = LoadEffekseerEffect("Resource/Effect/ClickEffect.efk", 20.0f);
+	//単発クリック用のエフェクト読み込み
+	effectResourceHandle = LoadEffekseerEffect("Resource/Effect/ClickEffect.efk", 20.0f);
 
+	//長押し用の違うエフェクトを読み込む
+	holdEffectResourceHandle = LoadEffekseerEffect("Resource/Effect/LongPressEffect.efk",60.0f);
 }
 
 void EffectManager::Update()
 {
-	//左クリックされたならマウスの位置にエフェクトを出す
+	// 左クリックした瞬間だけ単発クリックエフェクトを出す
 	if (Master::mpMouseManager->PressLeftClick())
 	{
 		int mouseX = 0;
 		int mouseY = 0;
 		Master::mpMouseManager->GetMousePosition(&mouseX, &mouseY);
 
-		//クリックした座標に配置する
-		playingEffectHandle = PlayEffekseer2DEffect(mnClickEffect);
+		playingEffectHandle = PlayEffekseer2DEffect(effectResourceHandle);
 		if (playingEffectHandle != -1)
 		{
 			SetPosPlayingEffekseer2DEffect(playingEffectHandle, static_cast<float>(mouseX), static_cast<float>(mouseY), 0.0f);
 		}
 	}
+
 	//2D用のアップデート
 	UpdateEffekseer2D();
 }
@@ -67,4 +67,31 @@ void EffectManager::Draw()
 {
 	//2D用の描画
 	DrawEffekseer2D();
+}
+
+//長押しエフェクト：終わったらすぐ最初から再生＋位置を追従させる
+void EffectManager::KeepPlayingEffect(float x, float y)
+{
+	// まだ再生されていない、または最後まで再生し終わった瞬間なら
+	if (playingHoldEffectHandle == -1 || IsEffekseer2DEffectPlaying(playingHoldEffectHandle) == -1)
+	{
+		// すぐにまた最初から再生を開始する
+		playingHoldEffectHandle = PlayEffekseer2DEffect(holdEffectResourceHandle);
+	}
+
+	// 再生中のエフェクトを現在の座標（x, y）に追従させる
+	if (playingHoldEffectHandle != -1)
+	{
+		SetPosPlayingEffekseer2DEffect(playingHoldEffectHandle, x, y, 0.0f);
+	}
+}
+
+//長押しをやめたときにエフェクトをピタッと止める関数
+void EffectManager::StopHoldEffect()
+{
+	if (playingHoldEffectHandle != -1)
+	{
+		StopEffekseer2DEffect(playingHoldEffectHandle);
+		playingHoldEffectHandle = -1;
+	}
 }

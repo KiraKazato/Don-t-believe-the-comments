@@ -9,6 +9,7 @@ ResultScene::ResultScene()
 	,mnNumberOfCorrectAnswers(0)
 	,mnNumberOfViewers(0)
 	,mnStreamEnded(0)
+	,mnResultEffect(0)
 {
 
 }
@@ -36,10 +37,21 @@ void ResultScene::Initialize()
 	Master::mpUIManager->AddUI(mnNumberOfCorrectAnswers, Master::gridWidth * 36, Master::gridHeight * 57, Master::gridWidth * 47, Master::gridHeight * 63);
 	Master::mpUIManager->AddUI(mnStreamEnded, Master::gridWidth * 43, Master::gridHeight * 8, Master::gridWidth * 82, Master::gridHeight * 20);
 
+	mnResultEffect = new EffekseerEffect("Resource/Effect/ResultEffect.efk", 35.0f);
+
+	mnResultEffect->Play(Master::gridWidth*60,Master::gridHeight*70);
+
+
+
 }
 
 void ResultScene::Update()
 {
+	if (mnResultEffect != nullptr)
+	{
+		mnResultEffect->Update();
+	}
+
 	//マウス座標受け取り
 	Master::mpMouseManager->GetMousePosition(&mnMouseX, &mnMouseY);
 
@@ -68,7 +80,13 @@ void ResultScene::Update()
 void ResultScene::Draw()
 {
 	Master::mpUIManager->DrawUI();
-	Scene::Draw();
+	Scene::Draw();	
+	if (CheckHitKey(KEY_INPUT_BACK))
+	{
+		//BGMを止めてシーン遷移
+		Master::mpSoundManager->StopBGM();
+		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
+	}
 }
 
 void ResultScene::Finalize()

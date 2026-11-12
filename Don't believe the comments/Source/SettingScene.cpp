@@ -158,6 +158,14 @@ void SettingScene::Update()
 
 		//ゲージと同期させるためここで更新
 		volumeRatio = (volume / 100.0f);
+
+		//つまみをつかんでいる間、長押しエフェクトを出し続ける
+		Master::mpEffectManager->KeepPlayingEffect(dialX + (dialWidth / 2.0f),dialY + (dialHeight / 2.0f));
+
+	}
+	else
+	{
+		Master::mpEffectManager->StopHoldEffect();
 	}
 
 	bool isVolumeChanged = false; 

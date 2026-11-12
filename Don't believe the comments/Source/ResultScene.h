@@ -1,5 +1,7 @@
 #pragma once
 #include"Scene.h"
+#include "EffekseerEffect.h"
+
 
 class ResultScene : public Scene
 {
@@ -25,6 +27,8 @@ private:
 	//マウスの座標を受け取る
 	int mnMouseX{};
 	int mnMouseY{};
+
+	EffekseerEffect* mnResultEffect;
 
 };
 

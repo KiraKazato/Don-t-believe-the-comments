@@ -57,6 +57,7 @@ void ResultScene::Initialize()
 	}
 	Master::mpUIManager->AddUI(mnBackToTitle, Master::gridWidth * 47, Master::gridHeight * 95, Master::gridWidth * 74, Master::gridHeight * 112);
 
+	Master::mpSoundManager->PlayBGM(SoundManager::BGM_RESULT);
 }
 
 void ResultScene::Update()
@@ -280,6 +281,7 @@ void ResultScene::ProcessButton()
 	//¶ƒNƒŠƒbƒN‰Ÿ‚³‚ê‚½‚Æ‚«
 	if (Master::mpUIManager->ClickedUI(handle, insideStartButton))
 	{
+		Master::mpSoundManager->StopBGM();
 		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
 	}
 }

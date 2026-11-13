@@ -70,7 +70,7 @@ void SceneManager::ChageSceneIfNeeded()
 		delete mpCurrentScene;
 		mpCurrentScene = nullptr;
 	}
-
+	
 	// 次シーンにするためシーンタイプを更新
 	mnSceneType = mnNextSceneType;
 

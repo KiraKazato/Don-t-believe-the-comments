@@ -19,6 +19,7 @@ void GameScene::Initialize()
 	questionScreenHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/BackBoard.png");
 	inputFieldHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/InputPlace.png");
 	commentFieldHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/CommentField.png");
+	mnBackGround = Master::mpResourceManager->LoadGraphics("Resource/GameScene/GameBackGround.png");
 
 	Master::mpUIManager->AddUI(commentFieldHandle, Master::gridWidth * 88, Master::gridHeight * 3, Master::gridWidth * 118, Master::gridHeight * 115);
 
@@ -42,7 +43,7 @@ void GameScene::Update()
 
 void GameScene::Draw()
 {
-	DrawBox(0, 0, Master::Width, Master::Height, GetColor(229, 242, 248), TRUE);
+	DrawExtendGraph(0, 0, Master::Width, Master::Height, mnBackGround, TRUE);
 
 	
 	//GameCycle ���猻�݂̗h��̃Y���ʂ��󂯎��

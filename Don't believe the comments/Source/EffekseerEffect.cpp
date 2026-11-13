@@ -2,7 +2,7 @@
 #include <EffekseerForDXLib.h>
 #include"Master.h"
 
-EffekseerEffect::EffekseerEffect(const char* filename, VECTOR initPos, float EffectSize): PlayPos(initPos), mvRotation(VGet(0.0f, 0.0f, 0.0f)), effectResourcehandle(-1), filePath(filename), effectSize(EffectSize), PlayCount(0), playingEffectHandle(-1), LoopFlag(true)
+EffekseerEffect::EffekseerEffect(const char* filename, VECTOR initPos, float EffectSize): PlayPos(initPos), mvRotation(VGet(0.0f, 0.0f, 0.0f)), effectResourcehandle(-1), filePath(filename), effectSize(EffectSize), PlayCount(0), playingEffectHandle(-1), LoopFlag(true), effectSpeed(1.0f)
 {
 	Load();
 }
@@ -17,6 +17,11 @@ void EffekseerEffect::Load()
 {
 	// エフェクトのリソースを読み込む
 	effectResourcehandle = LoadEffekseerEffect(filePath, effectSize);
+
+	if (effectResourcehandle == -1)
+	{
+		MessageBox(NULL, "エフェクトの読み込みに失敗しています！", "確認", MB_OK);
+	}
 }
 
 void EffekseerEffect::Update()
@@ -29,6 +34,9 @@ void EffekseerEffect::Update()
 
 		//画面の奥を軸(Z軸)にして回転させるため Z だけ設定
 		SetRotationPlayingEffekseer2DEffect(playingEffectHandle, 0.0f, 0.0f, mvRotation.z);
+
+		//再生速度を反映させる
+		SetSpeedPlayingEffekseer2DEffect(playingEffectHandle, effectSpeed);
 
 		//エフェクトが終わっていたらハンドルを -1 に戻す
 		if (IsEffekseer2DEffectPlaying(playingEffectHandle) == -1)
@@ -50,10 +58,15 @@ void EffekseerEffect::Play()
 	//再生関数
 	playingEffectHandle = PlayEffekseer2DEffect(effectResourcehandle);
 
+	
+
 	//座標の設定
 	if (playingEffectHandle != -1)
 	{
 		SetPosPlayingEffekseer2DEffect(playingEffectHandle, PlayPos.x, PlayPos.y, 0.0f);
+
+		//再生開始時にも速度を設定する
+		SetSpeedPlayingEffekseer2DEffect(playingEffectHandle, effectSpeed);
 	}
 }
 

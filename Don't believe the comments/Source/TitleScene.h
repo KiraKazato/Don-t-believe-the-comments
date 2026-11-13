@@ -2,6 +2,8 @@
 #include "Scene.h"
 #include "SoundManager.h"
 
+class SelectionManager;
+
 class TitleScene :public Scene
 {
 public:
@@ -21,5 +23,7 @@ private:
 	//マウスの座標を受け取る
 	int mnMouseX{};
 	int mnMouseY{};
+
+	int mnDemoMusic;
 };
 

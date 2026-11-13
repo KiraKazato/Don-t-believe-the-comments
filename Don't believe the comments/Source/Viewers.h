@@ -9,15 +9,15 @@ public:
 	void Finalize();
 	void Update();
 	void Draw();
-	//³‰ğ‚µ‚½
+	//æ­£è§£ã—ãŸæ™‚
 	void ComeViewers();
-	//•s³‰ğ‚¾‚Á‚½
+	//ä¸æ­£è§£ã ã£ãŸæ™‚
 	void LeaveViewers();
-	//Å‰‚Ì‹’®Ò”Œˆ‚ß‚é
+	//æœ€åˆã®è¦–è´è€…æ•°æ±ºã‚ã‚‹
 	void DecideViewers();
-	//ƒJƒEƒ“ƒg
+	//ã‚«ã‚¦ãƒ³ãƒˆ
 	void ViewersCount(float _duration);
-	//‹’®Ò”‚ª•Ï‚í‚Á‚½‚Æ‚«‚Ì‹¤’Êˆ—
+	//è¦–è´è€…æ•°ãŒå¤‰ã‚ã£ãŸã¨ãã®å…±é€šå‡¦ç†
 	void ChangeViewers(int _changeValue);
 
 
@@ -31,9 +31,9 @@ public:
 
 	void IdleFluctuation();
 private:
-	int mnCurrentViewers{};			//¡‚Ì‹’®Ò”
-	int mnCountStartViewers{};		//ƒJƒEƒ“ƒg‚ÌŠJn’l
-	int mnTargetViewers{};			//ƒJƒEƒ“ƒg‚Ì–Ú•W’l
+	int mnCurrentViewers{};			//ä»Šã®è¦–è´è€…æ•°
+	int mnCountStartViewers{};		//ã‚«ã‚¦ãƒ³ãƒˆã®é–‹å§‹å€¤
+	int mnTargetViewers{};			//ã‚«ã‚¦ãƒ³ãƒˆã®ç›®æ¨™å€¤
 	int mnMaxDefauktViewers = 500;
 	int mnMinDefauktViewers = 300;
 	int mnMaxAddValue = 600;
@@ -42,13 +42,15 @@ private:
 	int mnMinSubtractValue = 50;
 	int mnStringHandle{};
 	int mnDrawX1{};
+	int mnDrawY1;
+	float mfScale = 1.0f; // 1.0f ãŒé€šå¸¸ã®å¤§ãã•
 	int mnDrawY1{};
 	int mnMaxFluctuation = 2501;
 	int mnMinFluctuation = 500;
 
-	bool mbIsCountFinish = false;		//ƒJƒEƒ“ƒg‚ªI‚í‚Á‚½‚©
-	int mnStartViewersCount = 0;		//‹’®Ò”‰Šú’l
-	int mnViewersCount = 0;				//‹’®Ò”‚Ì‘Œ¸’l
+	bool mbIsCountFinish = false;		//ã‚«ã‚¦ãƒ³ãƒˆãŒçµ‚ã‚ã£ãŸã‹
+	int mnStartViewersCount = 0;		//è¦–è´è€…æ•°åˆæœŸå€¤
+	int mnViewersCount = 0;				//è¦–è´è€…æ•°ã®å¢—æ¸›å€¤
 
-	float mfViewersCountTime = 0.0f;	//ƒJƒEƒ“ƒg‚ÌŒo‰ßŠÔ
+	float mfViewersCountTime = 0.0f;	//ã‚«ã‚¦ãƒ³ãƒˆã®çµŒéæ™‚é–“
 };

@@ -16,7 +16,7 @@ TitleScene::~TitleScene()
 
 void TitleScene::Initialize()
 {
-	//ƒnƒ“ƒhƒ‹‚ÌŽæ“¾‚ÆUIManaer‚Ö‚Ì’Ç‰Á
+	//ãƒãƒ³ãƒ‰ãƒ«ã®å–å¾—ã¨UIManaerã¸ã®è¿½åŠ 
 	mnTitleBackGroundHandle = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/TitleBackGround.png");
 	mnStartBottonHandle = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/StartButton.png");
 	mnSettingBottonHandle = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/SettingButton.png");
@@ -24,6 +24,9 @@ void TitleScene::Initialize()
 	Master::mpUIManager->AddUI(mnStartBottonHandle, Master::gridWidth * 30, Master::gridHeight * 90, Master::gridWidth * 57, Master::gridHeight * 107);
 	Master::mpUIManager->AddUI(mnSettingBottonHandle, Master::gridWidth * 63, Master::gridHeight * 90, Master::gridWidth * 90, Master::gridHeight * 107);
 	Master::mpTransitor->XFadeInit(true);
+
+	Master::mpSoundManager->PlayBGM(SoundManager::BGM_TITLE);
+
 	Master::mpViewers->Initialize();
 	Master::mpQuestionManager->ResetCorrectAnswer();
 	Master::mpSoundManager->PlayBGM(SoundManager::BGM_TITLE);
@@ -31,23 +34,23 @@ void TitleScene::Initialize()
 
 void TitleScene::Update()
 {
-	//ƒ}ƒEƒXÀ•WŽó‚¯Žæ‚è
+	//ãƒžã‚¦ã‚¹åº§æ¨™å—ã‘å–ã‚Š
 	Master::mpMouseManager->GetMousePosition(&mnMouseX, &mnMouseY);
 	
 	bool insideStartButton = Master::mpUIManager->InsideUI(mnStartBottonHandle, mnMouseX, mnMouseY);
-	//ƒ}ƒEƒX‚ªƒ{ƒ^ƒ“‚Ì”ÍˆÍ“à‚¾‚Á‚½‚ç
+	//ãƒžã‚¦ã‚¹ãŒãƒœã‚¿ãƒ³ã®ç¯„å›²å†…ã ã£ãŸã‚‰
 	if (insideStartButton)
 	{
-		//­‚µŠg‘å
+		//å°‘ã—æ‹¡å¤§
 		Master::mpUIManager->ChangeUISize(mnStartBottonHandle, 1.1f);
 		
 	}
 	else
 	{
-		//Œ³‚Ì‘å‚«‚³‚É–ß‚µ‚Ä‚¨‚­
+		//å…ƒã®å¤§ãã•ã«æˆ»ã—ã¦ãŠã
 		Master::mpUIManager->ResetUISize(mnStartBottonHandle);
 	}
-	//¶ƒNƒŠƒbƒN‰Ÿ‚³‚ê‚½‚Æ‚«
+	//å·¦ã‚¯ãƒªãƒƒã‚¯æŠ¼ã•ã‚ŒãŸã¨ã
 	if (Master::mpUIManager->ClickedUI(mnStartBottonHandle, insideStartButton))
 	{
 		Master::mpSoundManager->PlaySE(SoundManager::SE_CUT);
@@ -56,15 +59,15 @@ void TitleScene::Update()
 
 
 	bool insideSettingButton = Master::mpUIManager->InsideUI(mnSettingBottonHandle, mnMouseX, mnMouseY);
-	//ƒ}ƒEƒX‚ªƒ{ƒ^ƒ“‚Ì”ÍˆÍ“à‚¾‚Á‚½‚ç
+	//ãƒžã‚¦ã‚¹ãŒãƒœã‚¿ãƒ³ã®ç¯„å›²å†…ã ã£ãŸã‚‰
 	if (insideSettingButton)
 	{
-		//­‚µŠg‘å
+		//å°‘ã—æ‹¡å¤§
 		Master::mpUIManager->ChangeUISize(mnSettingBottonHandle, 1.1f);
 	}
 	else
 	{
-		//Œ³‚Ì‘å‚«‚³‚É–ß‚µ‚Ä‚¨‚­
+		//å…ƒã®å¤§ãã•ã«æˆ»ã—ã¦ãŠã
 		Master::mpUIManager->ResetUISize(mnSettingBottonHandle);
 	}
 	if (Master::mpUIManager->ClickedUI(mnSettingBottonHandle, insideSettingButton))
@@ -73,10 +76,10 @@ void TitleScene::Update()
 		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_SETTING);
 	}
 
-	//ƒoƒbƒNƒXƒy[ƒXƒL[‚Åƒ^ƒCƒgƒ‹‚É–ß‚é
+	//ãƒãƒƒã‚¯ã‚¹ãƒšãƒ¼ã‚¹ã‚­ãƒ¼ã§ã‚¿ã‚¤ãƒˆãƒ«ã«æˆ»ã‚‹
 	if (CheckHitKey(KEY_INPUT_SPACE))
 	{
-		//BGM‚ðŽ~‚ß‚ÄƒV[ƒ“‘JˆÚ
+		//BGMã‚’æ­¢ã‚ã¦ã‚·ãƒ¼ãƒ³é·ç§»
 		Master::mpSoundManager->StopBGM();
 		Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_RESULT);
 	}

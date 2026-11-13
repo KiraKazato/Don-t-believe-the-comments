@@ -1,5 +1,7 @@
 #pragma once
 #include"Scene.h"
+#include "EffekseerEffect.h"
+
 #include <bitset>
 
 class ResultScene : public Scene
@@ -26,7 +28,7 @@ private:
 	template<typename _StartTy, typename _Ty>
 	_Ty Lerp(_StartTy _startVal, _Ty _val, float _t);
 
-	//‰æ‘œƒnƒ“ƒhƒ‹
+	//ç”»åƒãƒãƒ³ãƒ‰ãƒ«
 	int mnNextButtonHandle;
 	int mnSceneBackGroundHandle;
 	int mnShowResultHandle;
@@ -37,23 +39,25 @@ private:
 	int mnStreamFailed;
 	int mnBackToTitle;
 
-	//ƒtƒHƒ“ƒgƒnƒ“ƒhƒ‹
+	//ãƒ•ã‚©ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ«
 	int mnViewersCountFont = -1;
 	int mnViewersStartCountFont = -1;
 	int mnConmmentsCountFont = -1;
 
-	//ƒ}ƒEƒX‚ÌÀ•W‚ğó‚¯æ‚é
+	//ãƒã‚¦ã‚¹ã®åº§æ¨™ã‚’å—ã‘å–ã‚‹
 	int mnMouseX{};
 	int mnMouseY{};
 
-	//‹’®Ò”ƒJƒEƒ“ƒg
+	EffekseerEffect* mnResultEffect;
+
+	//è¦–è´è€…æ•°ã‚«ã‚¦ãƒ³ãƒˆ
 	float mfViwersCountTime = 0.0f;
 
-	//‹’®Ò”ƒAƒjƒ[ƒVƒ‡ƒ“ƒtƒ‰ƒO
-	std::bitset<4> mbAnimationFlag{};	// 0.ƒJƒEƒ“ƒg 1.Œ©‚¹ 2.ƒAƒjƒ[ƒVƒ‡ƒ“(ƒJƒEƒ“ƒg‡¬) 3.Œ©‚¹iI—¹j
+	//è¦–è´è€…æ•°ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ãƒ©ã‚°
+	std::bitset<4> mbAnimationFlag{};	// 0.ã‚«ã‚¦ãƒ³ãƒˆ 1.è¦‹ã› 2.ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³(ã‚«ã‚¦ãƒ³ãƒˆåˆæˆ) 3.è¦‹ã›ï¼ˆçµ‚äº†ï¼‰
 	int mnAnimationIndex = 0;
-	float mfAnimationTime[4] = { 0.0f };	// 0.ƒJƒEƒ“ƒg 1.Œ©‚¹ 2.ƒAƒjƒ[ƒVƒ‡ƒ“(ƒJƒEƒ“ƒg‡¬) 3.Œ©‚¹
-	float mfAnimationDuration[4] = { 0.0f };// 0.ƒJƒEƒ“ƒg 1.Œ©‚¹ 2.ƒAƒjƒ[ƒVƒ‡ƒ“(ƒJƒEƒ“ƒg‡¬) 3.Œ©‚¹
+	float mfAnimationTime[4] = { 0.0f };	// 0.ã‚«ã‚¦ãƒ³ãƒˆ 1.è¦‹ã› 2.ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³(ã‚«ã‚¦ãƒ³ãƒˆåˆæˆ) 3.è¦‹ã›
+	float mfAnimationDuration[4] = { 0.0f };// 0.ã‚«ã‚¦ãƒ³ãƒˆ 1.è¦‹ã› 2.ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³(ã‚«ã‚¦ãƒ³ãƒˆåˆæˆ) 3.è¦‹ã›
 };
 
 // a + (b - a) * t

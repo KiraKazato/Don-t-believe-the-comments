@@ -27,8 +27,10 @@ void GameCycle::Initialize()
 
 	Master::mpCommenterManager->ResetCommentCount();
 	mnNextButtonHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/Button/NextButton.png");
-	Master::mpUIManager->AddUI(mnNextButtonHandle,mnNextButtonX1, mnNextButtonY1, mnNextButtonX2, mnNextButtonY2, false);
+	//Master::mpUIManager->AddUI(mnNextButtonHandle,mnNextButtonX1, mnNextButtonY1, mnNextButtonX2, mnNextButtonY2, false);
 	
+
+	mfNextButtonDrawTime = 1.0f;
 	if (Master::mpViewers->GetCurrentViewers() <= 0)
 	{
 		Master::mpViewers->Initialize();
@@ -151,9 +153,6 @@ void GameCycle::Draw()
 	{
 		mTextInputManager.Draw();
 	}
-
-
-
 }
 
 
@@ -282,25 +281,45 @@ bool GameCycle::AnswerJudge()
 
 void GameCycle::DrawNextButton()
 {
-	auto button = Master::mpUIManager->GetUIData(mnNextButtonHandle);
-	button->displayed = true;
+	if (mfNextButtonDrawTime >= 0.0f)
+	{
+		mfNextButtonDrawTime -= 1.0f / 60.0f;
+		return;
+	}
+
 	int mouseX, mouseY;
 	Master::mpMouseManager->GetMousePosition(&mouseX, &mouseY);
 	bool inside = Master::mpUIManager->InsideUI(static_cast<int>(mnNextButtonX1), static_cast<int>(mnNextButtonY1), static_cast<int>(mnNextButtonX2), static_cast<int>(mnNextButtonY2), mouseX, mouseY);
+	
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255.0f * mfNextButtonDrawEasing));
 	if (inside)
 	{
-		Master::mpUIManager->ChangeUISize(mnNextButtonHandle, 1.1f);
-		if (Master::mpUIManager->ClickedUI(mnNextButtonHandle, inside))
+		int centerX = (mnNextButtonX1 + mnNextButtonX2) * 0.5f;
+		int centerY = (mnNextButtonY1 + mnNextButtonY2) * 0.5f;
+
+		int halfX = (mnNextButtonX2 - mnNextButtonX1) * 0.5f * 1.1f;
+		int halfY = (mnNextButtonY2 - mnNextButtonY1) * 0.5f * 1.1f;
+
+		int drawX1 = centerX - halfX;
+		int drawY1 = centerY - halfY;
+		int drawX2 = centerX + halfX;
+		int drawY2 = centerY + halfY;
+
+		DrawExtendGraph(drawX1, drawY1, drawX2, drawY2, mnNextButtonHandle, TRUE);
+
+		if (Master::mpUIManager->ClickedUI(&mbClickButton, inside))
 		{
 			Master::mpTransitor->AddTransitorProcessingUpdate("CycleViewerCount", [&]() {Master::mpViewers->Update(); });
 			Master::mpTransitor->XFadeInit(SceneManager::SCENE_RESULT);
-			button->displayed = false;
 		}
 	}
 	else
 	{
-		Master::mpUIManager->ResetUISize(mnNextButtonHandle);
+		DrawExtendGraph(mnNextButtonX1, mnNextButtonY1, mnNextButtonX2, mnNextButtonY2, mnNextButtonHandle, TRUE);
 	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	mfNextButtonDrawEasing += 1.0f / (60.0f * 1.5f);
 }
 
 void GameCycle::GameOver()

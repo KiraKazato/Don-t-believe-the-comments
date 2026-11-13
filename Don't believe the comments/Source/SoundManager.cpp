@@ -5,7 +5,7 @@ SoundManager::SoundManager()
 	, mnNowPlayingSe((SOUND_SE)-1)     //‰Šúó‘Ô‚Í‰½‚àÄ¶‚³‚ê‚Ä‚¢‚È‚¢ó‘Ô
 	, NowPlayingBgmHandle(-1)   //‰Šúó‘Ô‚Í‰½‚àÄ¶‚³‚ê‚Ä‚¢‚È‚¢ó‘Ô
 	, NowPlayingSeHandle(-1)     //‰Šúó‘Ô‚Í‰½‚àÄ¶‚³‚ê‚Ä‚¢‚È‚¢ó‘Ô
-	,NowBgmvolume(255/2)
+	,NowBgmvolume(255)
 	,NowSevolume(255)
 {
 	ChangeBGMVolume(50);

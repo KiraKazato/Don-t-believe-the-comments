@@ -41,21 +41,21 @@ void GameCycle::Update()
 	Master::mpCommenterManager->Update();
 	Master::mpViewers->Update();
 
-	//ç”»é¢ã‚·ã‚§ã‚¤ã‚¯ã®æ›´æ–°å‡¦ç†
+	//‰æ–ÊƒVƒFƒCƒN‚ÌXVˆ—
 	if (mnShakeTime > 0)
 	{
-		mnShakeTime--; // æ®‹ã‚Šæ™‚é–“ã‚’1æ¸›ã‚‰ã™
+		mnShakeTime--; // c‚èŠÔ‚ğ1Œ¸‚ç‚·
 
-		// æºã‚Œã®å¼·ã•
+		// —h‚ê‚Ì‹­‚³
 		int shakePower = 10;
 
-		//ãƒ©ãƒ³ãƒ€ãƒ ãªã‚ºãƒ¬ã«ã™ã‚‹
+		//ƒ‰ƒ“ƒ_ƒ€‚ÈƒYƒŒ‚É‚·‚é
 		mnShakeX = GetRand(shakePower * 2) - shakePower;
 		mnShakeY = GetRand(shakePower * 2) - shakePower;
 	}
 	else
 	{
-		// æºã‚Œçµ‚ã‚ã£ãŸã‚‰ã‚ºãƒ¬ã‚’ 0ã«æˆ»ã™
+		// —h‚êI‚í‚Á‚½‚çƒYƒŒ‚ğ 0‚É–ß‚·
 		mnShakeX = 0;
 		mnShakeY = 0;
 	}
@@ -171,7 +171,7 @@ void GameCycle::CommentDraw()
 
 void GameCycle::QuestionNumberDraw()
 {
-	// æœ€åˆã¯falseã«ã™ã‚‹
+	// Å‰‚Ífalse‚É‚·‚é
 	int numberWidth,numberHeight;
 	GetDrawFormatStringSizeToHandle(&numberWidth, &numberHeight, NULL, mnQuestionNumberHandle, "Q: %d / %d", mnQuestionNumber, mnMaxQuestionNumber);
 
@@ -189,7 +189,7 @@ void GameCycle::QuestionNumberDraw()
 
 void GameCycle::QuestionDraw()
 {
-	// ã‚¤ãƒ¼ã‚¸ãƒ³ã‚°é–¢æ•°
+	// ƒC[ƒWƒ“ƒOŠÖ”
 	constexpr auto easing = [](float t) {return t < 0.5f ? 4.0f * t * t * t : 1.0f - powf(-2.0f * t + 2.0f, 3.0f) * 0.5f; };
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255 * easing(mfQuestionDrawEasing)));
@@ -204,7 +204,7 @@ void GameCycle::QuestionDraw()
 
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	// 1,0f / (60.0f * x) -> x ç§’ã‹ã‘ã¦ã®è¡¨ç¤º
+	// 1,0f / (60.0f * x) -> x •b‚©‚¯‚Ä‚Ì•\¦
 	constexpr float easingCount = 1.0f / (60.0f * 1.0f);
 	mfQuestionDrawEasing += easingCount;	
 	if (mfQuestionDrawEasing >= 1.0f)
@@ -212,13 +212,13 @@ void GameCycle::QuestionDraw()
 		mfQuestionDrawEasing = 1.0f;
 	}
 
-	// çµ‚ã‚ã£ãŸ
+	// I‚í‚Á‚½
 	mbQuestionDrawn = true;
 }
 
 void GameCycle::InputAnswer()
 {
-	//ç¾åœ¨ã®å…¥åŠ›çŠ¶æ…‹
+	//Œ»İ‚Ì“ü—Íó‘Ô
 	int nowState = Master::mpTextInputManager->CheckInput();
 	Master::mpTextInputManager->ResetState();
 	if (nowState == 0)
@@ -227,7 +227,7 @@ void GameCycle::InputAnswer()
 	}
 	else if (nowState == 1)
 	{
-		//æ–‡å­—å…¥åŠ›
+		//•¶š“ü—Í
 		answer = Master::mpTextInputManager->GetInputString();
 		
 		mbInputAnswered = true;
@@ -294,11 +294,11 @@ void GameCycle::DrawNextButton()
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255.0f * mfNextButtonDrawEasing));
 	if (inside)
 	{
-		int centerX = (mnNextButtonX1 + mnNextButtonX2) * 0.5f;
-		int centerY = (mnNextButtonY1 + mnNextButtonY2) * 0.5f;
+		int centerX = int((mnNextButtonX1 + mnNextButtonX2) * 0.5f);
+		int centerY = int((mnNextButtonY1 + mnNextButtonY2) * 0.5f);
 
-		int halfX = (mnNextButtonX2 - mnNextButtonX1) * 0.5f * 1.1f;
-		int halfY = (mnNextButtonY2 - mnNextButtonY1) * 0.5f * 1.1f;
+		int halfX = int((mnNextButtonX2 - mnNextButtonX1) * 0.5f * 1.1f);
+		int halfY = int((mnNextButtonY2 - mnNextButtonY1) * 0.5f * 1.1f);
 
 		int drawX1 = centerX - halfX;
 		int drawY1 = centerY - halfY;
@@ -315,7 +315,7 @@ void GameCycle::DrawNextButton()
 	}
 	else
 	{
-		DrawExtendGraph(mnNextButtonX1, mnNextButtonY1, mnNextButtonX2, mnNextButtonY2, mnNextButtonHandle, TRUE);
+		DrawExtendGraph(int(mnNextButtonX1), int(mnNextButtonY1), int(mnNextButtonX2), int(mnNextButtonY2), mnNextButtonHandle, TRUE);
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
@@ -333,18 +333,18 @@ void GameCycle::GameOver()
 	Master::mpTextInputManager->SetNoInput();
 	Master::mpTextInputManager->Finalize();
 
-	// è©•ä¾¡ã‚’åˆæœŸåŒ–
+	// •]‰¿‚ğ‰Šú‰»
 	Master::mpCommenterManager->ResetCommenterReputation();
 
-	// ãƒˆãƒ©ãƒ³ã‚¸ã‚·ãƒ§ãƒ³ä¸­ã«ã‚„ã‚ŠãŸã„å‡¦ç†
+	// ƒgƒ‰ƒ“ƒWƒVƒ‡ƒ“’†‚É‚â‚è‚½‚¢ˆ—
 	std::function<void()>transitorFunction = [&]() 
 		{
 			Master::mpViewers->Update(); 
 		};
 
-	// ãƒ©ãƒ ãƒ€å¼ã§ãƒˆãƒ©ãƒ³ã‚¸ã‚·ãƒ§ãƒ³ä¸­ã«ã‚„ã‚ŠãŸã„å‡¦ç†ã‚’ä¿å­˜
+	// ƒ‰ƒ€ƒ_®‚Åƒgƒ‰ƒ“ƒWƒVƒ‡ƒ“’†‚É‚â‚è‚½‚¢ˆ—‚ğ•Û‘¶
 	Master::mpTransitor->AddTransitorProcessingUpdate("GameOver", transitorFunction);
-	// ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆã€ãƒªã‚¶ãƒ«ãƒˆã‚·ãƒ¼ãƒ³ã¸å¤‰æ›´
+	// ƒtƒF[ƒhƒAƒEƒgAƒŠƒUƒ‹ƒgƒV[ƒ“‚Ö•ÏX
 	Master::mpTransitor->XFadeInit(false, gameOverFadeTime, SceneManager::SCENE_TYPE::SCENE_RESULT);
 }
 

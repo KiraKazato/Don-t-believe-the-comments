@@ -19,6 +19,7 @@ private:
 	int mnTitleBackGroundHandle;
 	int mnStartBottonHandle;
 	int mnSettingBottonHandle;
+	int mnReturnToDesktop;
 
 	//マウスの座標を受け取る
 	int mnMouseX{};

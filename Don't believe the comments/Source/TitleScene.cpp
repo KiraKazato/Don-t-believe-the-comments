@@ -16,13 +16,15 @@ TitleScene::~TitleScene()
 
 void TitleScene::Initialize()
 {
-	//ãƒãƒ³ãƒ‰ãƒ«ã®å–å¾—ã¨UIManaerã¸ã®è¿½åŠ 
+	//ƒnƒ“ƒhƒ‹‚ÌŽæ“¾‚ÆUIManaer‚Ö‚Ì’Ç‰Á
 	mnTitleBackGroundHandle = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/TitleBackGround.png");
 	mnStartBottonHandle = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/StartButton.png");
 	mnSettingBottonHandle = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/SettingButton.png");
+	mnReturnToDesktop = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/ReturnToDesktop.png");
 	Master::mpUIManager->AddUI(mnTitleBackGroundHandle, 0, 0, Master::Width, Master::Height);
-	Master::mpUIManager->AddUI(mnStartBottonHandle, Master::gridWidth * 30, Master::gridHeight * 90, Master::gridWidth * 57, Master::gridHeight * 107);
-	Master::mpUIManager->AddUI(mnSettingBottonHandle, Master::gridWidth * 63, Master::gridHeight * 90, Master::gridWidth * 90, Master::gridHeight * 107);
+	Master::mpUIManager->AddUI(mnStartBottonHandle, Master::gridWidth * 48, Master::gridHeight * 80, Master::gridWidth * 72, Master::gridHeight * 95);
+	Master::mpUIManager->AddUI(mnSettingBottonHandle, Master::gridWidth * 68, Master::gridHeight * 100, Master::gridWidth * 92, Master::gridHeight * 115);
+	Master::mpUIManager->AddUI(mnReturnToDesktop, Master::gridWidth * 28, Master::gridHeight * 100, Master::gridWidth * 52, Master::gridHeight * 115);
 	Master::mpTransitor->XFadeInit(true);
 
 	Master::mpSoundManager->PlayBGM(SoundManager::BGM_TITLE);
@@ -34,23 +36,23 @@ void TitleScene::Initialize()
 
 void TitleScene::Update()
 {
-	//ãƒžã‚¦ã‚¹åº§æ¨™å—ã‘å–ã‚Š
+	//ƒ}ƒEƒXÀ•WŽó‚¯Žæ‚è
 	Master::mpMouseManager->GetMousePosition(&mnMouseX, &mnMouseY);
 	
 	bool insideStartButton = Master::mpUIManager->InsideUI(mnStartBottonHandle, mnMouseX, mnMouseY);
-	//ãƒžã‚¦ã‚¹ãŒãƒœã‚¿ãƒ³ã®ç¯„å›²å†…ã ã£ãŸã‚‰
+	//ƒ}ƒEƒX‚ªƒ{ƒ^ƒ“‚Ì”ÍˆÍ“à‚¾‚Á‚½‚ç
 	if (insideStartButton)
 	{
-		//å°‘ã—æ‹¡å¤§
+		//­‚µŠg‘å
 		Master::mpUIManager->ChangeUISize(mnStartBottonHandle, 1.1f);
 		
 	}
 	else
 	{
-		//å…ƒã®å¤§ãã•ã«æˆ»ã—ã¦ãŠã
+		//Œ³‚Ì‘å‚«‚³‚É–ß‚µ‚Ä‚¨‚­
 		Master::mpUIManager->ResetUISize(mnStartBottonHandle);
 	}
-	//å·¦ã‚¯ãƒªãƒƒã‚¯æŠ¼ã•ã‚ŒãŸã¨ã
+	//¶ƒNƒŠƒbƒN‰Ÿ‚³‚ê‚½‚Æ‚«
 	if (Master::mpUIManager->ClickedUI(mnStartBottonHandle, insideStartButton))
 	{
 		Master::mpSoundManager->PlaySE(SoundManager::SE_CUT);
@@ -59,15 +61,15 @@ void TitleScene::Update()
 
 
 	bool insideSettingButton = Master::mpUIManager->InsideUI(mnSettingBottonHandle, mnMouseX, mnMouseY);
-	//ãƒžã‚¦ã‚¹ãŒãƒœã‚¿ãƒ³ã®ç¯„å›²å†…ã ã£ãŸã‚‰
+	//ƒ}ƒEƒX‚ªƒ{ƒ^ƒ“‚Ì”ÍˆÍ“à‚¾‚Á‚½‚ç
 	if (insideSettingButton)
 	{
-		//å°‘ã—æ‹¡å¤§
+		//­‚µŠg‘å
 		Master::mpUIManager->ChangeUISize(mnSettingBottonHandle, 1.1f);
 	}
 	else
 	{
-		//å…ƒã®å¤§ãã•ã«æˆ»ã—ã¦ãŠã
+		//Œ³‚Ì‘å‚«‚³‚É–ß‚µ‚Ä‚¨‚­
 		Master::mpUIManager->ResetUISize(mnSettingBottonHandle);
 	}
 	if (Master::mpUIManager->ClickedUI(mnSettingBottonHandle, insideSettingButton))
@@ -76,10 +78,28 @@ void TitleScene::Update()
 		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_SETTING);
 	}
 
-	//ãƒãƒƒã‚¯ã‚¹ãƒšãƒ¼ã‚¹ã‚­ãƒ¼ã§ã‚¿ã‚¤ãƒˆãƒ«ã«æˆ»ã‚‹
+	bool insideReturnToDesktopButton = Master::mpUIManager->InsideUI(mnReturnToDesktop, mnMouseX, mnMouseY);
+	//ƒ}ƒEƒX‚ªƒ{ƒ^ƒ“‚Ì”ÍˆÍ“à‚¾‚Á‚½‚ç
+	if (insideReturnToDesktopButton)
+	{
+		//­‚µŠg‘å
+		Master::mpUIManager->ChangeUISize(mnReturnToDesktop, 1.1f);
+	}
+	else
+	{
+		//Œ³‚Ì‘å‚«‚³‚É–ß‚µ‚Ä‚¨‚­
+		Master::mpUIManager->ResetUISize(mnReturnToDesktop);
+	}
+	if (Master::mpUIManager->ClickedUI(mnReturnToDesktop, insideReturnToDesktopButton))
+	{
+		Master::mpSoundManager->PlaySE(SoundManager::SE_CUT);
+		Master::EndGame = true;
+	}
+
+	//ƒoƒbƒNƒXƒy[ƒXƒL[‚Åƒ^ƒCƒgƒ‹‚É–ß‚é
 	if (CheckHitKey(KEY_INPUT_SPACE))
 	{
-		//BGMã‚’æ­¢ã‚ã¦ã‚·ãƒ¼ãƒ³é·ç§»
+		//BGM‚ðŽ~‚ß‚ÄƒV[ƒ“‘JˆÚ
 		Master::mpSoundManager->StopBGM();
 		Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_RESULT);
 	}
@@ -90,6 +110,27 @@ void TitleScene::Update()
 void TitleScene::Draw()
 {
 	Master::mpUIManager->DrawUI();
+
+	/*for (size_t i = 0; i < 120; i++)
+	{
+		int T = 1;
+		if (!(i % 20))
+		{
+			T = 5;
+		}
+		else if (!(i % 10))
+		{
+			T = 3;
+		}
+		else if (!(i % 5))
+		{
+			T = 2;
+		}
+
+		DrawLine(Master::gridWidth * i, 0, Master::gridWidth * i, Master::Height, GetColor(0, 0, 0), T);
+		DrawLine(0, Master::gridHeight * i, Master::Width, Master::gridHeight * i, GetColor(0, 0, 0), T);
+	}*/
+
 	Scene::Draw();
 }
 

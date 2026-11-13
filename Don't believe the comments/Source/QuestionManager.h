@@ -76,6 +76,18 @@ public:
 	//現在のステージのセット
 	void SetStage(StageNumber _stage);
 
+	int GetCorrectAnswerCount();
+
+	void AddCorrectAnswer();
+	void ResetCorrectAnswer();
+
+	void SetMaxQuestionCount(int _count);
+	int GetMaxQuestionCount();
+
+	void SetIsAllClear(bool _flag);
+	bool IsAllClear();
+
+
 private:
 	// 読み込み
 	void Load(const std::string& _filePath);
@@ -101,6 +113,9 @@ private:
 	// @return 出題済みか
 	bool IsSpawnedQuestion(int _questionIndex, int _difficultIndex);
 
+	// @return そのバイトが大文字の頭文字か
+	bool IsCharactorLargeByte(char _charactor);
+
 private:
 	std::vector<std::pair<std::vector<QuestionData>, bool>> mQuestions{};	// クイズ
 
@@ -109,6 +124,11 @@ private:
 	StageNumber currentStage = STAGE_DAY1;//今のステージ
 
 	std::vector<std::pair<int, int>>mSpawnedQuestion{};		// 既に出した問題
+
+	int mnCorrectAnswerCount = 0;
+	int mnMaxQuestionCount = 0;
+
+	bool mbIsAllClear = false;
 
 private:
 	//ステージと、そのステージで出る問題の難易度と難易度の出る確率

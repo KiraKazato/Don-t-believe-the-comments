@@ -64,6 +64,11 @@ public:
 	//出すコメントの種類を指定
 	void SetCommentSpawnKind(int _kind);
 
+	//コメントのカウントをリセット
+	void ResetCommentCount();
+
+	void ResetCommenterReputation();
+
 private:
 	//コメンターの情報
 	std::vector<Commenter*>mCommenters;

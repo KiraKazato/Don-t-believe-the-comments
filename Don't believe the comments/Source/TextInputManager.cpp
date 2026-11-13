@@ -15,21 +15,12 @@ void TextInputManager::Initialize(int _fontHandle)
 {
 	mnFontHandle = _fontHandle;
 
-	//SetKeyInputStringFont(_fontHandle);
+	mbIsFinal = false;
 
-	//mnInputHandle = MakeKeyInput(sizeof(mInputString) - 1, TRUE, TRUE, FALSE);
+	ResetState();
+	ResetInput();
 
-	//SetKeyInputStringColor2(DX_KEYINPSTRCOLOR_IME_STR_BACK, KEYINPUT_BACK_COLOR);			// 不確定文字列の背景色変更
-	//SetKeyInputStringColor2(DX_KEYINPSTRCOLOR_IME_CONV_WIN_STR, KEYINPUT_BACK_COLOR);		// 変換中文字列の背景色変更
-
-	//SetKeyInputStringColor2(DX_KEYINPSTRCOLOR_NORMAL_STR, KEYINPUT_STRING_COLOR);	// 入力文字の色変更
-	//SetKeyInputStringColor2(DX_KEYINPSTRCOLOR_IME_STR, KEYINPUT_STRING_COLOR);		// 入力中文字列の色変更
-
-	//// 変換中文字列も文字数制限の中に入れる
-	//SetInputStringMaxLengthIMESync(TRUE);
-
-	//// 入力モードにする
-	//SetActiveKeyInput(mnInputHandle);
+	ClearInputCharBuf();
 }
 
 void TextInputManager::Draw()
@@ -58,6 +49,7 @@ void TextInputManager::Update()
 {
 	if (mbIsFinal)
 	{
+		ClearInputCharBuf();
 		return;
 	}
 
@@ -66,7 +58,12 @@ void TextInputManager::Update()
 	if (CheckHitKey(KEY_INPUT_RETURN))
 	{
 		mnKeyInputState = 1;
-		if (mInputString == "/p" || mInputString == "/ｐ" || mInputString == "・p" || mInputString == "・ｐ")
+		if (mOutputString.size() >= 2 && mOutputString.substr(mOutputString.size() - 2, 2) == "ｎ")
+		{
+			mOutputString = mOutputString.erase(mOutputString.size() - 2, 2);
+			mOutputString += "ん";
+		}
+		else if (mInputString == "/p" || mInputString == "/ｐ" || mInputString == "・p" || mInputString == "・ｐ")
 		{
 			mbIsPause = true;
 			mnKeyInputState = 2;
@@ -182,4 +179,9 @@ void TextInputManager::ControllInput(char _input)
 
 	mInputString = mTyping.GetRoma();
 	mOutputString = mTyping.GetKana();
+}
+
+void TextInputManager::SetNoInput()
+{
+	mnKeyInputState = -1;
 }

@@ -5,7 +5,7 @@ SoundManager::SoundManager()
 	, mnNowPlayingSe((SOUND_SE)-1)     //初期状態は何も再生されていない状態
 	, NowPlayingBgmHandle(-1)   //初期状態は何も再生されていない状態
 	, NowPlayingSeHandle(-1)     //初期状態は何も再生されていない状態
-	,NowBgmvolume(255)
+	,NowBgmvolume(255/2)
 	,NowSevolume(255)
 {
 	ChangeBGMVolume(50);
@@ -22,8 +22,12 @@ void SoundManager::Initialize()
 	LoadBGM(SOUND_BGM::BGM_TITLE, "Resource/TitleScene/Music.mp3");
 
 	LoadBGM(SOUND_BGM::BGM_SETTING, "Resource/SettingScene/audiostock_1570406.mp3");
-
-
+	LoadBGM(SOUND_BGM::BGM_TITLE, "Resource/TitleScene/Soda_soda.mp3");
+	LoadBGM(SOUND_BGM::BGM_RESULT, "Resource/ResultScene/melon_soda.mp3");
+	LoadBGM(SOUND_BGM::BGM_GAME, "Resource/GameScene/cherry_soda.mp3");
+	LoadSE(SOUND_SE::SE_CUT, "Resource/スイッチを押す.mp3");
+	LoadSE(SOUND_SE::SE_CORRECTED, "Resource/GameScene/クイズ正解5.mp3");
+	LoadSE(SOUND_SE::SE_FAILED, "Resource/GameScene/クイズ不正解1.mp3");
 }
 
 void SoundManager::Finalize()

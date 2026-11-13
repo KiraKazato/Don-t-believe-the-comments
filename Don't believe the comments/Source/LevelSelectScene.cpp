@@ -25,12 +25,12 @@ LevelSelectScene::~LevelSelectScene()
 
 void LevelSelectScene::Initialize()
 {
-	//”wŒi‰æ‘œ‚Ì“Ç‚İ‚İ
+	//èƒŒæ™¯ç”»åƒã®èª­ã¿è¾¼ã¿
 	mnSelectBackGroundGraphHandle = Master::mpResourceManager->LoadGraphics("Resource/LevelSelectScene/LevelSelectBackGround.png");
 
-	//ƒ{ƒ^ƒ“‚ÌƒXƒe[ƒgİ’è
+	//ãƒœã‚¿ãƒ³ã®ã‚¹ãƒ†ãƒ¼ãƒˆè¨­å®š
 	mStageButtonHandle.resize(ButtonType::MAX_BUTTON);
-	//day1ƒ{ƒ^ƒ“‚Ì“Ç‚İ‚İ
+	//day1ãƒœã‚¿ãƒ³ã®èª­ã¿è¾¼ã¿
 	mStageButtonHandle[STAGE_DAY1] = Master::mpResourceManager->LoadGraphics("Resource/LevelSelectScene/Day1Button.png");
 	mStageButtonHandle[STAGE_COMMINGSOON] = Master::mpResourceManager->LoadGraphics("Resource/LevelSelectScene/ComingSoon.png");
 	mnRightArrowGraph = Master::mpResourceManager->LoadGraphics("Resource/LevelSelectScene/RightArrow.png");
@@ -40,7 +40,7 @@ void LevelSelectScene::Initialize()
 	gameStartEffect = new EffekseerEffect("Resource/Effect/GameStartEffect.efk", 10.0f);
 	gameStartEffect->SetSpeed(2.0f);
 
-	//•K—v‚ÈUI
+	//å¿…è¦ãªUI
 	Master::mpUIManager->AddUI(mnSelectBackGroundGraphHandle, 0, 0, Master::Width, Master::Height);
 	Master::mpUIManager->AddUI(mnRightArrowGraph, Master::gridWidth * 78, Master::gridHeight * 57, Master::gridWidth * 84, Master::gridHeight * 68);;
 	Master::mpUIManager->AddUI(mnLeftArrowGraph, Master::gridWidth * 37, Master::gridHeight * 57, Master::gridWidth * 43, Master::gridHeight * 68, false);
@@ -73,21 +73,21 @@ void LevelSelectScene::Update()
 	}
 
 	Master::mpMouseManager->GetMousePosition(&mouseX, &mouseY);
-	//‰æ‘œ‚Ì’†‚ÉƒJ[ƒ\ƒ‹‚ª‚ ‚Á‚½‚ç
+	//ç”»åƒã®ä¸­ã«ã‚«ãƒ¼ã‚½ãƒ«ãŒã‚ã£ãŸã‚‰
 	Master::mpUIManager->GetUIData(mStageButtonHandle[currentStage])->insideObject = Master::mpUIManager->InsideUI(mnDay1ButtonGraphHandle, mouseX, mouseY);
 
 	if (isWaitingSceneChange)
 	{
-		waitFrameCounter++; // –ˆƒtƒŒ[ƒ€1‚¸‚Â‘‚â‚·
+		waitFrameCounter++; // æ¯ãƒ•ãƒ¬ãƒ¼ãƒ 1ãšã¤å¢—ã‚„ã™
 
-		// w’è‚µ‚½ƒtƒŒ[ƒ€‚É’B‚µ‚½‚ç
+		// æŒ‡å®šã—ãŸãƒ•ãƒ¬ãƒ¼ãƒ ã«é”ã—ãŸã‚‰
 		if (waitFrameCounter >= WAIT_TIME)
 		{
-			// ƒQ[ƒ€ƒV[ƒ“‚Ö‘JˆÚ
+			// ã‚²ãƒ¼ãƒ ã‚·ãƒ¼ãƒ³ã¸é·ç§»
 			Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_GAME);
 		}
 
-		// ‘Ò‹@’†‚Í‚±‚ê‚æ‚è‰º‚Ìƒ{ƒ^ƒ“‘€ì‚ğ‚³‚¹‚È‚¢‚½‚ß‚É‚±‚±‚ÅUpdate‚ğI‚¦‚é
+		// å¾…æ©Ÿä¸­ã¯ã“ã‚Œã‚ˆã‚Šä¸‹ã®ãƒœã‚¿ãƒ³æ“ä½œã‚’ã•ã›ãªã„ãŸã‚ã«ã“ã“ã§Updateã‚’çµ‚ãˆã‚‹
 		Scene::Update();
 		return;
 	}
@@ -96,54 +96,57 @@ void LevelSelectScene::Update()
 	{
 		Master::mpUIManager->GetUIData(mStageButtonHandle[currentStage])->insideObject = Master::mpUIManager->InsideUI(mStageButtonHandle[currentStage], mouseX, mouseY);
 
-		//ComingSoon‚Å‚Í‚È‚¢‚¾‚¯Aƒ}ƒEƒX‚ğd‚Ë‚½‚çŠg‘å‚·‚é
+		//ComingSoonã§ã¯ãªã„æ™‚ã ã‘ã€ãƒã‚¦ã‚¹ã‚’é‡ã­ãŸã‚‰æ‹¡å¤§ã™ã‚‹
 		if (currentStage != STAGE_COMMINGSOON)
 		{
 			if (Master::mpUIManager->GetUIData(mStageButtonHandle[currentStage])->insideObject)
 			{
-				//­‚µ‘å‚«‚­
+				//å°‘ã—å¤§ãã
 				Master::mpUIManager->ChangeUISize(mStageButtonHandle[currentStage], 1.1f);
 			}
 			else
 			{
-				//‚È‚©‚Á‚½‚çƒTƒCƒY‚ğ‚à‚Æ‚É–ß‚·
+				//ãªã‹ã£ãŸã‚‰ã‚µã‚¤ã‚ºã‚’ã‚‚ã¨ã«æˆ»ã™
 				Master::mpUIManager->ResetUISize(mStageButtonHandle[currentStage]);
 			}
 		}
 
-		//¶ƒNƒŠƒbƒN‚³‚ê‚½‚ç
+		//å·¦ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸã‚‰
 		if (Master::mpUIManager->ClickedUI(mStageButtonHandle[currentStage], Master::mpUIManager->GetUIData(mStageButtonHandle[currentStage])->insideObject))
 		{
 			if (currentStage != STAGE_COMMINGSOON)
 			{
 				isWaitingSceneChange = true;
-				waitFrameCounter = 0; //ƒJƒEƒ“ƒ^[‚ğ0‚ÉƒŠƒZƒbƒg
+				waitFrameCounter = 0; //ã‚«ã‚¦ãƒ³ã‚¿ãƒ¼ã‚’0ã«ãƒªã‚»ãƒƒãƒˆ
 				gameStartEffect->Play(Master::Width / 2.0f, Master::Height / 2.0f);
 			}
 			else
 			{
-				//ComingSoon‚ªƒNƒŠƒbƒN‚³‚ê‚½‚çk‚¦‚ğŠJn‚·‚é
+				//ComingSoonãŒã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸã‚‰éœ‡ãˆã‚’é–‹å§‹ã™ã‚‹
 				isShaking = true;
 				shakeFrameCounter = 0;
+				Master::mpSoundManager->PlaySE(SoundManager::SE_CUT);
+				//ã‚²ãƒ¼ãƒ ã‚·ãƒ¼ãƒ³ã¸
+				Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_GAME);
 			}
 		}
 
-		//k‚¦‚Ä‚¢‚éÅ’†‚Ìˆ—
+		//éœ‡ãˆã¦ã„ã‚‹æœ€ä¸­ã®å‡¦ç†
 		if (isShaking)
 		{
-			shakeFrameCounter++; //–ˆƒtƒŒ[ƒ€1‚¸‚Â‘‚â‚·
+			shakeFrameCounter++; //æ¯ãƒ•ãƒ¬ãƒ¼ãƒ 1ãšã¤å¢—ã‚„ã™
 
-			//‚Ü‚¾k‚¦‚éŠÔ“à‚Ìê‡
+			//ã¾ã éœ‡ãˆã‚‹æ™‚é–“å†…ã®å ´åˆ
 			if (shakeFrameCounter < SHAKE_TIME)
 			{
-				//c‚èŠÔ‚ÌŠ„‡‚ğŒvZ‚·
-				//¬”“_‚ÅŠ„‚èZ‚ğ‚·‚é‚½‚ß‚É‚ğ‚Â‚¯‚Ä‚¢‚Ü‚·
+				//æ®‹ã‚Šæ™‚é–“ã®å‰²åˆã‚’è¨ˆç®—ã™
+				//å°æ•°ç‚¹ã§å‰²ã‚Šç®—ã‚’ã™ã‚‹ãŸã‚ã«ã‚’ã¤ã‘ã¦ã„ã¾ã™
 				float remainingRate = (float)(SHAKE_TIME - shakeFrameCounter) / (float)SHAKE_TIME;
 
-				//¡‰ñ‚ÌƒtƒŒ[ƒ€‚Ì—h‚ê‚Ì‹­‚³‚ğŒˆ‚ß‚é
+				//ä»Šå›ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã®æºã‚Œã®å¼·ã•ã‚’æ±ºã‚ã‚‹
 				float currentShakePower = MAX_SHAKE_POWER * remainingRate;
 
-				//ƒtƒŒ[ƒ€”‚ª‹ô”‚È‚ç‰EAŠï”‚È‚ç¶‚É‚·‚é
+				//ãƒ•ãƒ¬ãƒ¼ãƒ æ•°ãŒå¶æ•°ãªã‚‰å³ã€å¥‡æ•°ãªã‚‰å·¦ã«ã™ã‚‹
 				float shakeOffset = 0.0f;
 				if (shakeFrameCounter % 2 == 0)
 				{
@@ -154,13 +157,13 @@ void LevelSelectScene::Update()
 					shakeOffset = -currentShakePower;
 				}
 
-				//ComingSoon‰æ‘œ‚Ì¶‰E‚ÌXÀ•W‚ğŠî€ˆÊ’u‚©‚ç‚¸‚ç‚·
+				//ComingSoonç”»åƒã®å·¦å³ã®Xåº§æ¨™ã‚’åŸºæº–ä½ç½®ã‹ã‚‰ãšã‚‰ã™
 				Master::mpUIManager->GetUIData(mStageButtonHandle[STAGE_COMMINGSOON])->drawX1 = stageButtonPositionX1 + shakeOffset;
 				Master::mpUIManager->GetUIData(mStageButtonHandle[STAGE_COMMINGSOON])->drawX2 = stageButtonPositionX2 + shakeOffset;
 			}
 			else
 			{
-				//ŠÔ‚ª—ˆ‚½‚çk‚¦‚ğ~‚ß‚ÄAŒ³‚ÌˆÊ’u‚Éƒsƒ^ƒb‚Æ–ß‚·
+				//æ™‚é–“ãŒæ¥ãŸã‚‰éœ‡ãˆã‚’æ­¢ã‚ã¦ã€å…ƒã®ä½ç½®ã«ãƒ”ã‚¿ãƒƒã¨æˆ»ã™
 				isShaking = false;
 				shakeFrameCounter = 0;
 				Master::mpUIManager->GetUIData(mStageButtonHandle[STAGE_COMMINGSOON])->drawX1 = stageButtonPositionX1;
@@ -178,20 +181,20 @@ void LevelSelectScene::Update()
 
 			if (Master::mpUIManager->GetUIData(mnRightArrowGraph)->insideObject)
 			{
-				//­‚µ‘å‚«‚­
+				//å°‘ã—å¤§ãã
 				Master::mpUIManager->ChangeUISize(mnRightArrowGraph, 1.07f);
 			}
 			else
 			{
-				//ƒTƒCƒY‚ğ‚à‚Æ‚É–ß‚·
+				//ã‚µã‚¤ã‚ºã‚’ã‚‚ã¨ã«æˆ»ã™
 				Master::mpUIManager->ResetUISize(mnRightArrowGraph);
 			}
 
 
-			//¶ƒNƒŠƒbƒN‚³‚ê‚½‚ç
+			//å·¦ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸã‚‰
 			if (Master::mpUIManager->ClickedUI(mnRightArrowGraph, Master::mpUIManager->GetUIData(mnRightArrowGraph)->insideObject))
 			{
-				//Œ»İ‚Ìlevel‚ğComingSoon‚É
+				//ç¾åœ¨ã®levelã‚’ComingSoonã«
 				if (currentStage + 1 < MAX_STAGE)
 				{
 					currentStage = static_cast<StageNumber>(currentStage + 1);
@@ -210,20 +213,20 @@ void LevelSelectScene::Update()
 
 			if (Master::mpUIManager->GetUIData(mnLeftArrowGraph)->insideObject)
 			{
-				//­‚µ‘å‚«‚­
+				//å°‘ã—å¤§ãã
 				Master::mpUIManager->ChangeUISize(mnLeftArrowGraph, 1.07f);
 			}
 			else
 			{
-				//ƒTƒCƒY‚ğ‚à‚Æ‚É–ß‚·
+				//ã‚µã‚¤ã‚ºã‚’ã‚‚ã¨ã«æˆ»ã™
 				Master::mpUIManager->ResetUISize(mnLeftArrowGraph);
 			}
 
 
-			//¶ƒNƒŠƒbƒN‚³‚ê‚½‚ç
+			//å·¦ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸã‚‰
 			if (Master::mpUIManager->ClickedUI(mnLeftArrowGraph, Master::mpUIManager->GetUIData(mnLeftArrowGraph)->insideObject))
 			{
-				//Œ»İ‚Ìlevel‚ğComingSoon‚É
+				//ç¾åœ¨ã®levelã‚’ComingSoonã«
 				if (currentStage - 1 >= STAGE_DAY1)
 				{
 					currentStage = static_cast<StageNumber>(currentStage - 1);
@@ -235,21 +238,22 @@ void LevelSelectScene::Update()
 	}
 
 	bool insideStartButton = Master::mpUIManager->InsideUI(mnBackToTitleScene, mouseX, mouseY);
-	//ƒ}ƒEƒX‚ªƒ{ƒ^ƒ“‚Ì”ÍˆÍ“à‚¾‚Á‚½‚ç
+	//ãƒã‚¦ã‚¹ãŒãƒœã‚¿ãƒ³ã®ç¯„å›²å†…ã ã£ãŸã‚‰
 	if (insideStartButton)
 	{
-		//­‚µŠg‘å
+		//å°‘ã—æ‹¡å¤§
 		Master::mpUIManager->ChangeUISize(mnBackToTitleScene, 1.1f);
 
 	}
 	else
 	{
-		//Œ³‚Ì‘å‚«‚³‚É–ß‚µ‚Ä‚¨‚­
+		//å…ƒã®å¤§ãã•ã«æˆ»ã—ã¦ãŠã
 		Master::mpUIManager->ResetUISize(mnBackToTitleScene);
 	}
-	//¶ƒNƒŠƒbƒN‰Ÿ‚³‚ê‚½‚Æ‚«
+	//å·¦ã‚¯ãƒªãƒƒã‚¯æŠ¼ã•ã‚ŒãŸã¨ã
 	if (Master::mpUIManager->ClickedUI(mnBackToTitleScene, insideStartButton))
 	{
+		Master::mpSoundManager->PlaySE(SoundManager::SE_CUT);
 		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
 	}
 
@@ -278,7 +282,7 @@ void LevelSelectScene::ChangeStage()
 	switch (currentStage)
 	{
 	case STAGE_DAY1:
-		//‚¢‚ç‚È‚¢–îˆó‚ğ”ñ•\¦‚É‚µAƒŒƒxƒ‹‚Ì•ÏX
+		//ã„ã‚‰ãªã„çŸ¢å°ã‚’éè¡¨ç¤ºã«ã—ã€ãƒ¬ãƒ™ãƒ«ã®å¤‰æ›´
 		Master::mpUIManager->GetUIData(mnLeftArrowGraph)->displayed = false;
 		Master::mpUIManager->GetUIData(mnRightArrowGraph)->displayed = true;
 		Master::mpUIManager->GetUIData(mStageButtonHandle[currentStage + 1])->displayed = false;
@@ -286,7 +290,7 @@ void LevelSelectScene::ChangeStage()
 		Master::mpQuestionManager->SetStage(currentStage);
 		break;
 	case STAGE_COMMINGSOON:
-		//‚¢‚ç‚È‚¢–îˆó‚ğ”ñ•\¦‚É‚µA•\¦ƒŒƒxƒ‹‚Ì•ÏX
+		//ã„ã‚‰ãªã„çŸ¢å°ã‚’éè¡¨ç¤ºã«ã—ã€è¡¨ç¤ºãƒ¬ãƒ™ãƒ«ã®å¤‰æ›´
 		Master::mpUIManager->GetUIData(mnRightArrowGraph)->displayed = false;
 		Master::mpUIManager->GetUIData(mnLeftArrowGraph)->displayed = true;
 		Master::mpUIManager->GetUIData(mStageButtonHandle[currentStage - 1])->displayed = false;

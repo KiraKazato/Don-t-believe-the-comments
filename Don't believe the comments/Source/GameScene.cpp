@@ -14,6 +14,7 @@ GameScene::~GameScene()
 
 void GameScene::Initialize()
 {
+	Master::mpSoundManager->StopBGM();
 	backGroundHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/BackGround/Stage1.png");
 	questionScreenHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/BackBoard.png");
 	inputFieldHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/InputPlace.png");
@@ -22,11 +23,19 @@ void GameScene::Initialize()
 	Master::mpUIManager->AddUI(commentFieldHandle, Master::gridWidth * 88, Master::gridHeight * 3, Master::gridWidth * 118, Master::gridHeight * 115);
 
 	mGameCycle.Initialize();
+	Master::mpPause->Initialize();
 	Master::mpQuestionManager->SetRandomNumber();
+	Master::mpSoundManager->PlayBGM(SoundManager::BGM_GAME);
 }
 
 void GameScene::Update()
 {
+	Master::mpPause->Update();
+	if (Master::mpPause->IsPause())
+	{
+		Scene::Update();
+		return;
+	}
 	mGameCycle.Update();
 	Scene::Update();
 }
@@ -36,11 +45,11 @@ void GameScene::Draw()
 	DrawBox(0, 0, Master::Width, Master::Height, GetColor(229, 242, 248), TRUE);
 
 	
-	//GameCycle ‚©‚çŒ»Ý‚Ì—h‚ê‚ÌƒYƒŒ—Ê‚ðŽó‚¯Žæ‚é
+	//GameCycle ï¿½ï¿½ï¿½çŒ»ï¿½Ý‚Ì—hï¿½ï¿½ÌƒYï¿½ï¿½ï¿½Ê‚ï¿½ï¿½ó‚¯Žï¿½ï¿½
 	int shakeX = mGameCycle.GetShakeX();
 	int shakeY = mGameCycle.GetShakeY();
 
-	//”zM”wŒiE–â‘èƒ{[ƒhE•¶Žš“ü—Í˜g‚ÌÀ•W‚É shakeX ‚Æ shakeY ‚ð‘«‚µ‚Ä•`‰æ‚·‚é
+	//ï¿½zï¿½Mï¿½wï¿½iï¿½Eï¿½ï¿½ï¿½{ï¿½[ï¿½hï¿½Eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í˜gï¿½Ìï¿½ï¿½Wï¿½ï¿½ shakeX ï¿½ï¿½ shakeY ï¿½ð‘«‚ï¿½ï¿½Ä•`ï¿½æ‚·ï¿½ï¿½
 
 	DrawExtendGraph(
 		Master::gridWidth * 4 + shakeX, Master::gridHeight * 6 + shakeY,
@@ -61,6 +70,10 @@ void GameScene::Draw()
 	Master::mpUIManager->DrawUI();
 	mGameCycle.Draw();
 	Scene::Draw();
+	if (Master::mpPause->IsPause())
+	{
+		Master::mpPause->Draw();
+	}
 }
 
 void GameScene::Finalize()

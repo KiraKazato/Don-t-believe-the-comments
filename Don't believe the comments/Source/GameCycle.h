@@ -7,11 +7,11 @@
 
 enum GameState
 {
-	STATE_BEFORE = 0,	// ŠJn‘O
-	STATE_BEGINNING,	// ˜”Õ
-	STATE_MID,			// ’†”Õ
-	STATE_FINAL,		// I”Õ
-	STATE_AFTER			// I—¹
+	STATE_BEFORE = 0,	// é–‹å§‹å‰
+	STATE_BEGINNING,	// åºç›¤
+	STATE_MID,			// ä¸­ç›¤
+	STATE_FINAL,		// çµ‚ç›¤
+	STATE_AFTER			// çµ‚äº†
 };
 
 class GameCycle
@@ -29,26 +29,30 @@ public:
 	int GetShakeY() const { return mnShakeY; }
 
 private:
-	void CommentDraw();//ƒRƒƒ“ƒg‚Ì•\¦
+	void CommentDraw();//ã‚³ãƒ¡ãƒ³ãƒˆã®è¡¨ç¤º
 	
-	void QuestionNumberDraw();//‰½–â–Ú‚©‚Ì•\¦
+	void QuestionNumberDraw();//ä½•å•ç›®ã‹ã®è¡¨ç¤º
 
-	void QuestionDraw();//–â‘è•¶‚Ì•\¦
+	void QuestionDraw();//å•é¡Œæ–‡ã®è¡¨ç¤º
 	
-	void InputAnswer();//‰ñ“š‚Ì“ü—Í
+	void InputAnswer();//å›ç­”ã®å…¥åŠ›
 	
-	bool AnswerJudge();//‰ñ“š‚Ì”»’è
+	bool AnswerJudge();//å›ç­”ã®åˆ¤å®š
+
+	void DrawNextButton();//æ¬¡ã¸ãƒœã‚¿ãƒ³ã®è¿½åŠ 
+
+	void GameOver();
 
 	void GameEnd();
 
 private:
-	//“ü—Í‚·‚é•¶š‚ÌƒtƒHƒ“ƒgƒnƒ“ƒhƒ‹‚ğ“ü‚ê‚é
+	//å…¥åŠ›ã™ã‚‹æ–‡å­—ã®ãƒ•ã‚©ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ«ã‚’å…¥ã‚Œã‚‹
 	int mnInputStringHandle = -1;
 	int mnQuestionNumberHandle = -1;
 private:
-	//¡‚Ì–â‘è‰æ‘œ‚ğ“ü‚ê‚é
+	//ä»Šã®å•é¡Œç”»åƒã‚’å…¥ã‚Œã‚‹
 	int mnNowQuestionImageHandle = -1;
-	//–â‘è‚Ì‰æ‘œ‚Ì•\¦ˆÊ’u
+	//å•é¡Œã®ç”»åƒã®è¡¨ç¤ºä½ç½®
 	int mnQuestionImageX1 = Master::gridWidth * 19;
 	int mnQuestionImageX2 = Master::gridWidth * 71;
 	int mnQuestionImageY1 = Master::gridHeight * 22;
@@ -56,11 +60,18 @@ private:
 
 	float mfQuestionDrawEasing = 0.0f;
 private:
-	//–â‘è”Ô†
-	//Å‰‚Íˆê–â–Ú‚È‚Ì‚Å1‚Éİ’è
+	//å•é¡Œç•ªå·
+	//æœ€åˆã¯ä¸€å•ç›®ãªã®ã§1ã«è¨­å®š
 	int mnQuestionNumber = 1;
-	//Å‘å–â‘è”
+	//æœ€å¤§å•é¡Œæ•°
 	int mnMaxQuestionNumber = 10;
+
+private:
+	float mnNextButtonX1 = Master::gridWidth * 35;
+	float mnNextButtonX2 = Master::gridWidth * 55;
+	float mnNextButtonY1 = Master::gridHeight * 101;
+	float mnNextButtonY2 = Master::gridHeight * 115;
+	int mnNextButtonHandle{};
 
 private:
 	bool mbQuestionNumberDrawn = false;
@@ -75,7 +86,7 @@ private:
 	EffekseerEffect* mnCorrectAnswer;
 	EffekseerEffect* mnFallingCrossMiss;
 
-	int mnShakeTime = 0;  // —h‚ê‚éc‚èŠÔiƒtƒŒ[ƒ€”j
-	int mnShakeX = 0;     // ‰¡•ûŒü‚ÌƒYƒŒ—Ê
-	int mnShakeY = 0;     // c•ûŒü‚ÌƒYƒŒ—Ê
+	int mnShakeTime = 0;  // æºã‚Œã‚‹æ®‹ã‚Šæ™‚é–“ï¼ˆãƒ•ãƒ¬ãƒ¼ãƒ æ•°ï¼‰
+	int mnShakeX = 0;     // æ¨ªæ–¹å‘ã®ã‚ºãƒ¬é‡
+	int mnShakeY = 0;     // ç¸¦æ–¹å‘ã®ã‚ºãƒ¬é‡
 };

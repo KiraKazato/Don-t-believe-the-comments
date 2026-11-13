@@ -9,17 +9,33 @@ public:
 	void Finalize();
 	void Update();
 	void Draw();
-	//����������
+	//正解した時
 	void ComeViewers();
-	//�s������������
+	//不正解だった時
 	void LeaveViewers();
-	//�ŏ��̎����Ґ����߂�
+	//最初の視聴者数決める
 	void DecideViewers();
+	//カウント
+	void ViewersCount(float _duration);
+	//視聴者数が変わったときの共通処理
+	void ChangeViewers(int _changeValue);
+
+
+	void SetStartViewers(int _count);
+
+	int GetStartViewersCount();
+	int GetViewersCount();
+
+	int GetTargetViewers();
+	int GetCurrentViewers();
+
+	void IdleFluctuation();
 private:
-	int mnCurrentViwers{};
-	int mnTargetViwers{};
+	int mnCurrentViewers{};			//今の視聴者数
+	int mnCountStartViewers{};		//カウントの開始値
+	int mnTargetViewers{};			//カウントの目標値
 	int mnMaxDefauktViewers = 500;
-	int mnMinDefauktViewers =300;
+	int mnMinDefauktViewers = 300;
 	int mnMaxAddValue = 600;
 	int mnMinAddValue = 200;
 	int mnMaxSubtractValue = 150;
@@ -27,6 +43,14 @@ private:
 	int mnStringHandle{};
 	int mnDrawX1{};
 	int mnDrawY1;
-	float mfScale = 1.0f; // 1.0f ���ʏ�̑傫��
+	float mfScale = 1.0f; // 1.0f が通常の大きさ
+	int mnDrawY1{};
+	int mnMaxFluctuation = 2501;
+	int mnMinFluctuation = 500;
 
+	bool mbIsCountFinish = false;		//カウントが終わったか
+	int mnStartViewersCount = 0;		//視聴者数初期値
+	int mnViewersCount = 0;				//視聴者数の増減値
+
+	float mfViewersCountTime = 0.0f;	//カウントの経過時間
 };

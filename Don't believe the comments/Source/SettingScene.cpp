@@ -204,7 +204,7 @@ void SettingScene::Update()
 	if (CheckHitKey(KEY_INPUT_BACK))
 	{
 		//BGM‚ðŽ~‚ß‚ÄƒV[ƒ“‘JˆÚ
-		Master::mpSoundManager->StopBGM();
+		Master::mpTransitor->AddTransitorAfterUpdate("SettingBGMStop", [&]() {Master::mpSoundManager->StopBGM(); });
 		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
 	}
 

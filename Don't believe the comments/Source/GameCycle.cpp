@@ -15,33 +15,45 @@ void GameCycle::Initialize()
 {
 	mnInputStringHandle = Master::mpFontManager->GetFontHandle(Master::mpFontManager->FONT_NONE, 48);
 	mnQuestionNumberHandle = Master::mpFontManager->GetFontHandle(Master::mpFontManager->FONT_TETUBINN, 26);
-	mTextInputManager.Initialize(mnInputStringHandle);
-	mTextInputManager.SetKeyInputDrawPosition(Master::gridWidth * 45, Master::gridHeight * 82);
+	Master::mpTextInputManager->Initialize(mnInputStringHandle);
+	Master::mpTextInputManager->SetKeyInputDrawPosition(Master::gridWidth * 45, Master::gridHeight * 82);
+	Master::mpQuestionManager->SetMaxQuestionCount(mnMaxQuestionNumber);
+	Master::mpQuestionManager->ResetCorrectAnswer();
+	Master::mpQuestionManager->SetIsAllClear(false);
 	Master::mpCommenterManager->SetCommentSpawnKind(STATE_BEFORE);
 
 	mnCorrectAnswer = new EffekseerEffect("Resource/Effect/CorrectAnswer.efk",300.0f);
 	mnFallingCrossMiss = new EffekseerEffect("Resource/Effect/FallingCrossMiss.efk", 95.0f);
 
+	Master::mpCommenterManager->ResetCommentCount();
+	mnNextButtonHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/Button/NextButton.png");
+	Master::mpUIManager->AddUI(mnNextButtonHandle,mnNextButtonX1, mnNextButtonY1, mnNextButtonX2, mnNextButtonY2, false);
+	
+	if (Master::mpViewers->GetCurrentViewers() <= 0)
+	{
+		Master::mpViewers->Initialize();
+	}
 }
 void GameCycle::Update()
 {
 	Master::mpCommenterManager->Update();
+	Master::mpViewers->Update();
 
-	//‰æ–ÊƒVƒFƒCƒN‚ÌXVˆ—
+	//ç”»é¢ã‚·ã‚§ã‚¤ã‚¯ã®æ›´æ–°å‡¦ç†
 	if (mnShakeTime > 0)
 	{
-		mnShakeTime--; // c‚èŠÔ‚ğ1Œ¸‚ç‚·
+		mnShakeTime--; // æ®‹ã‚Šæ™‚é–“ã‚’1æ¸›ã‚‰ã™
 
-		// —h‚ê‚Ì‹­‚³
+		// æºã‚Œã®å¼·ã•
 		int shakePower = 10;
 
-		//ƒ‰ƒ“ƒ_ƒ€‚ÈƒYƒŒ‚É‚·‚é
+		//ãƒ©ãƒ³ãƒ€ãƒ ãªã‚ºãƒ¬ã«ã™ã‚‹
 		mnShakeX = GetRand(shakePower * 2) - shakePower;
 		mnShakeY = GetRand(shakePower * 2) - shakePower;
 	}
 	else
 	{
-		// —h‚êI‚í‚Á‚½‚çƒYƒŒ‚ğ 0‚É–ß‚·
+		// æºã‚Œçµ‚ã‚ã£ãŸã‚‰ã‚ºãƒ¬ã‚’ 0ã«æˆ»ã™
 		mnShakeX = 0;
 		mnShakeY = 0;
 	}
@@ -94,7 +106,6 @@ void GameCycle::Update()
 	}
 
 	InputAnswer();
-	Master::mpViewers->Update();
 	if (mbInputAnswered && AnswerJudge())
 	{
 		mbQuestionSpawned = false;
@@ -104,6 +115,7 @@ void GameCycle::Update()
 		Master::mpCommenterManager->QuestionStarted(false);
 		if (mnQuestionNumber >= mnMaxQuestionNumber)
 		{
+
 			GameEnd();
 		}
 		else
@@ -111,6 +123,7 @@ void GameCycle::Update()
 			mnQuestionNumber++;
 		}
 	}
+	GameOver();
 }
 
 
@@ -120,8 +133,15 @@ void GameCycle::Draw()
 
 	QuestionNumberDraw();
 
+	Master::mpViewers->Draw();
+	if (mbQuestionNumberDrawn && mbQuestionDrawn)
+	{
+		Master::mpTextInputManager->Draw();
+	}
+
 	if (mbGameEnd)
 	{
+		DrawNextButton();
 		return;
 	}
 
@@ -140,9 +160,8 @@ void GameCycle::Draw()
 
 void GameCycle::Finalize()
 {
-	mTextInputManager.Finalize();
+	Master::mpTextInputManager->Finalize();
 	Master::mpCommenterManager->GameEnd();
-
 }
 
 void GameCycle::CommentDraw()
@@ -154,7 +173,7 @@ void GameCycle::CommentDraw()
 
 void GameCycle::QuestionNumberDraw()
 {
-	// Å‰‚Ífalse‚É‚·‚é
+	// æœ€åˆã¯falseã«ã™ã‚‹
 	int numberWidth,numberHeight;
 	GetDrawFormatStringSizeToHandle(&numberWidth, &numberHeight, NULL, mnQuestionNumberHandle, "Q: %d / %d", mnQuestionNumber, mnMaxQuestionNumber);
 
@@ -172,7 +191,7 @@ void GameCycle::QuestionNumberDraw()
 
 void GameCycle::QuestionDraw()
 {
-	// ƒC[ƒWƒ“ƒOŠÖ”
+	// ã‚¤ãƒ¼ã‚¸ãƒ³ã‚°é–¢æ•°
 	constexpr auto easing = [](float t) {return t < 0.5f ? 4.0f * t * t * t : 1.0f - powf(-2.0f * t + 2.0f, 3.0f) * 0.5f; };
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255 * easing(mfQuestionDrawEasing)));
@@ -187,33 +206,37 @@ void GameCycle::QuestionDraw()
 
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	// 1,0f / (60.0f * x) -> x •b‚©‚¯‚Ä‚Ì•\¦
+	// 1,0f / (60.0f * x) -> x ç§’ã‹ã‘ã¦ã®è¡¨ç¤º
 	constexpr float easingCount = 1.0f / (60.0f * 1.0f);
-	mfQuestionDrawEasing += easingCount;
+	mfQuestionDrawEasing += easingCount;	
+	if (mfQuestionDrawEasing >= 1.0f)
+	{
+		mfQuestionDrawEasing = 1.0f;
+	}
 
-	// I‚í‚Á‚½
+	// çµ‚ã‚ã£ãŸ
 	mbQuestionDrawn = true;
 }
 
 void GameCycle::InputAnswer()
 {
-	//Œ»İ‚Ì“ü—Íó‘Ô
-	int nowState = mTextInputManager.CheckInput();
-	mTextInputManager.ResetState();
+	//ç¾åœ¨ã®å…¥åŠ›çŠ¶æ…‹
+	int nowState = Master::mpTextInputManager->CheckInput();
+	Master::mpTextInputManager->ResetState();
 	if (nowState == 0)
 	{
-		mTextInputManager.Update();
+		Master::mpTextInputManager->Update();
 	}
 	else if (nowState == 1)
 	{
-		//•¶š“ü—Í
-		answer = mTextInputManager.GetInputString();
+		//æ–‡å­—å…¥åŠ›
+		answer = Master::mpTextInputManager->GetInputString();
 		
 		mbInputAnswered = true;
 	}
 	else if (nowState == 2)
 	{
-		
+		Master::mpPause->StartPause();
 	}
 }
 
@@ -223,7 +246,7 @@ bool GameCycle::AnswerJudge()
 	
 	if (answer == "")
 	{
-		mTextInputManager.ResetInput();
+		Master::mpTextInputManager->ResetInput();
 		answer = "";
 		Master::mpViewers->LeaveViewers();
 
@@ -234,31 +257,85 @@ bool GameCycle::AnswerJudge()
 	auto& data = Master::mpQuestionManager->GetQuestionData();
 	if (data.answer == answer)
 	{
-		mTextInputManager.ResetInput();
+		Master::mpTextInputManager->ResetInput();
 		answer = "";
 		Master::mpViewers->ComeViewers();
 
 		mnCorrectAnswer->Play(Master::gridWidth * 45, Master::gridHeight * 50);
 
+		Master::mpQuestionManager->AddCorrectAnswer();
+		Master::mpSoundManager->PlaySE(SoundManager::SE_CORRECTED);
 		return true;
 	}
 	else
 	{
-		mTextInputManager.ResetInput();
+		Master::mpTextInputManager->ResetInput();
 		answer = "";
 		Master::mpViewers->LeaveViewers();
 
 		mnFallingCrossMiss->Play(Master::gridWidth * 45, Master::gridHeight * 65);
 		mnShakeTime = 20;
 
+		Master::mpSoundManager->PlaySE(SoundManager::SE_FAILED);
 		return false;
 	}
+}
+
+void GameCycle::DrawNextButton()
+{
+	auto button = Master::mpUIManager->GetUIData(mnNextButtonHandle);
+	button->displayed = true;
+	int mouseX, mouseY;
+	Master::mpMouseManager->GetMousePosition(&mouseX, &mouseY);
+	bool inside = Master::mpUIManager->InsideUI(static_cast<int>(mnNextButtonX1), static_cast<int>(mnNextButtonY1), static_cast<int>(mnNextButtonX2), static_cast<int>(mnNextButtonY2), mouseX, mouseY);
+	if (inside)
+	{
+		Master::mpUIManager->ChangeUISize(mnNextButtonHandle, 1.1f);
+		if (Master::mpUIManager->ClickedUI(mnNextButtonHandle, inside))
+		{
+			Master::mpTransitor->AddTransitorProcessingUpdate("CycleViewerCount", [&]() {Master::mpViewers->Update(); });
+			Master::mpTransitor->XFadeInit(SceneManager::SCENE_RESULT);
+			button->displayed = false;
+		}
+	}
+	else
+	{
+		Master::mpUIManager->ResetUISize(mnNextButtonHandle);
+	}
+}
+
+void GameCycle::GameOver()
+{
+	constexpr float gameOverFadeTime = 4.0f;
+	if (Master::mpViewers->GetTargetViewers() > 0)
+	{
+		return;
+	}
+
+	Master::mpTextInputManager->SetNoInput();
+	Master::mpTextInputManager->Finalize();
+
+	// è©•ä¾¡ã‚’åˆæœŸåŒ–
+	Master::mpCommenterManager->ResetCommenterReputation();
+
+	// ãƒˆãƒ©ãƒ³ã‚¸ã‚·ãƒ§ãƒ³ä¸­ã«ã‚„ã‚ŠãŸã„å‡¦ç†
+	std::function<void()>transitorFunction = [&]() 
+		{
+			Master::mpViewers->Update(); 
+		};
+
+	// ãƒ©ãƒ ãƒ€å¼ã§ãƒˆãƒ©ãƒ³ã‚¸ã‚·ãƒ§ãƒ³ä¸­ã«ã‚„ã‚ŠãŸã„å‡¦ç†ã‚’ä¿å­˜
+	Master::mpTransitor->AddTransitorProcessingUpdate("GameOver", transitorFunction);
+	// ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆã€ãƒªã‚¶ãƒ«ãƒˆã‚·ãƒ¼ãƒ³ã¸å¤‰æ›´
+	Master::mpTransitor->XFadeInit(false, gameOverFadeTime, SceneManager::SCENE_TYPE::SCENE_RESULT);
 }
 
 void GameCycle::GameEnd()
 {
 	mbGameEnd = true;
-	mTextInputManager.Finalize();
+	Master::mpTextInputManager->Finalize();
+	Master::mpQuestionManager->ClearSpawnedQuestion();
+	Master::mpQuestionManager->SetIsAllClear(true);
 	Master::mpCommenterManager->QuestionStarted(false);
 	Master::mpCommenterManager->SetCommentSpawnKind(STATE_AFTER);
 }

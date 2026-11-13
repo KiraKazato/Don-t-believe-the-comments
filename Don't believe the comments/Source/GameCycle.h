@@ -62,7 +62,7 @@ private:
 private:
 	//問題番号
 	//最初は一問目なので1に設定
-	int mnQuestionNumber = 1;
+	int mnQuestionNumber = 10;
 	//最大問題数
 	int mnMaxQuestionNumber = 10;
 
@@ -72,6 +72,9 @@ private:
 	float mnNextButtonY1 = Master::gridHeight * 101;
 	float mnNextButtonY2 = Master::gridHeight * 115;
 	int mnNextButtonHandle{};
+	float mfNextButtonDrawEasing = 0.0f;
+	float mfNextButtonDrawTime = 1.0f;
+	bool mbClickButton = false;
 
 private:
 	bool mbQuestionNumberDrawn = false;

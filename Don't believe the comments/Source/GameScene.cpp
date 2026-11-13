@@ -14,6 +14,7 @@ GameScene::~GameScene()
 
 void GameScene::Initialize()
 {
+	Master::mpSoundManager->StopBGM();
 	backGroundHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/BackGround/Stage1.png");
 	questionScreenHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/BackBoard.png");
 	inputFieldHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/InputPlace.png");
@@ -26,6 +27,7 @@ void GameScene::Initialize()
 	mGameCycle.Initialize();
 	Master::mpPause->Initialize();
 	Master::mpQuestionManager->SetRandomNumber();
+	Master::mpSoundManager->PlayBGM(SoundManager::BGM_GAME);
 }
 
 void GameScene::Update()

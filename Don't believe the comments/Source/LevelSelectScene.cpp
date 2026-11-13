@@ -80,6 +80,7 @@ void LevelSelectScene::Update()
 		{
 			if (currentStage != STAGE_COMMINGSOON)
 			{
+				Master::mpSoundManager->PlaySE(SoundManager::SE_CUT);
 				//ゲームシーンへ
 				Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_GAME);
 			}
@@ -168,6 +169,7 @@ void LevelSelectScene::Update()
 	//左クリック押されたとき
 	if (Master::mpUIManager->ClickedUI(mnBackToTitleScene, insideStartButton))
 	{
+		Master::mpSoundManager->PlaySE(SoundManager::SE_CUT);
 		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
 	}
 

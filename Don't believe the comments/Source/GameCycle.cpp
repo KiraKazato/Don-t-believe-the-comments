@@ -174,7 +174,7 @@ void GameCycle::InputAnswer()
 	}
 	else if (nowState == 2)
 	{
-		
+		Master::mpPause->StartPause();
 	}
 }
 
@@ -196,6 +196,7 @@ bool GameCycle::AnswerJudge()
 		answer = "";
 		Master::mpViewers->ComeViewers();
 		Master::mpQuestionManager->AddCorrectAnswer();
+		Master::mpSoundManager->PlaySE(SoundManager::SE_CORRECTED);
 		return true;
 	}
 	else
@@ -203,22 +204,24 @@ bool GameCycle::AnswerJudge()
 		Master::mpTextInputManager->ResetInput();
 		answer = "";
 		Master::mpViewers->LeaveViewers();
+		Master::mpSoundManager->PlaySE(SoundManager::SE_FAILED);
 		return false;
 	}
 }
 
 void GameCycle::DrawNextButton()
 {
-	auto button=Master::mpUIManager->GetUIData(mnNextButtonHandle);
+	auto button = Master::mpUIManager->GetUIData(mnNextButtonHandle);
 	button->displayed = true;
 	int mouseX, mouseY;
 	Master::mpMouseManager->GetMousePosition(&mouseX, &mouseY);
 	bool inside = Master::mpUIManager->InsideUI(static_cast<int>(mnNextButtonX1), static_cast<int>(mnNextButtonY1), static_cast<int>(mnNextButtonX2), static_cast<int>(mnNextButtonY2), mouseX, mouseY);
-	if(inside)
+	if (inside)
 	{
 		Master::mpUIManager->ChangeUISize(mnNextButtonHandle, 1.1f);
 		if (Master::mpUIManager->ClickedUI(mnNextButtonHandle, inside))
 		{
+			Master::mpTransitor->AddTransitorProcessingUpdate("CycleViewerCount", [&]() {Master::mpViewers->Update(); });
 			Master::mpTransitor->XFadeInit(SceneManager::SCENE_RESULT);
 			button->displayed = false;
 		}
@@ -250,7 +253,7 @@ void GameCycle::GameOver()
 		};
 
 	// ラムダ式でトランジション中にやりたい処理を保存
-	Master::mpTransitor->AddTransitorUpdate(transitorFunction);
+	Master::mpTransitor->AddTransitorProcessingUpdate("GameOver", transitorFunction);
 	// フェードアウト、リザルトシーンへ変更
 	Master::mpTransitor->XFadeInit(false, gameOverFadeTime, SceneManager::SCENE_TYPE::SCENE_RESULT);
 }

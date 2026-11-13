@@ -26,6 +26,7 @@ void TitleScene::Initialize()
 	Master::mpTransitor->XFadeInit(true);
 	Master::mpViewers->Initialize();
 	Master::mpQuestionManager->ResetCorrectAnswer();
+	Master::mpSoundManager->PlayBGM(SoundManager::BGM_TITLE);
 }
 
 void TitleScene::Update()
@@ -49,6 +50,7 @@ void TitleScene::Update()
 	//¶ƒNƒŠƒbƒN‰Ÿ‚³‚ê‚½‚Æ‚«
 	if (Master::mpUIManager->ClickedUI(mnStartBottonHandle, insideStartButton))
 	{
+		Master::mpSoundManager->PlaySE(SoundManager::SE_CUT);
 		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_SELECT);
 	}
 
@@ -67,6 +69,7 @@ void TitleScene::Update()
 	}
 	if (Master::mpUIManager->ClickedUI(mnSettingBottonHandle, insideSettingButton))
 	{
+		Master::mpSoundManager->PlaySE(SoundManager::SE_CUT);
 		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_SETTING);
 	}
 

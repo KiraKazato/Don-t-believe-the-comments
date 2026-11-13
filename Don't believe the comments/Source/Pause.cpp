@@ -69,6 +69,7 @@ void Pause::Draw()
 	if (insideBackToGameButton)
 	{
 		// 構造化束縛と呼ばれる書き方
+		// 構造体を分解しながら代入という手法が可能である ※C++17からである
 		auto [x1, y1, x2, y2] = GetChangeSize(mBackToGame, 1.1f);
 		DrawExtendGraph(x1, y1, x2, y2, mnBackToGameHandle, TRUE);
 	}
@@ -109,7 +110,7 @@ void Pause::Draw()
 				Master::mpTextInputManager->Initialize();
 			};
 
-		Master::mpTransitor->AddAfterUpdate(afterFunction);
+		Master::mpTransitor->AddTransitorAfterUpdate("PauseAfter", afterFunction);
 
 		EndPause();
 
@@ -133,27 +134,6 @@ void Pause::Draw()
 		Master::EndGame = true;
 		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TITLE);
 	}
-
-	//ここでタイトルに戻れるようにしたり、操作説明。
-	/*for (size_t i = 0; i < 120; i++)
-	{
-		int T = 1;
-		if (i % 20 == 0)
-		{
-			T = 6;
-		}
-		else if (i % 10 == 0)
-		{
-			T = 4;
-		}
-		else if (i % 5 == 0)
-		{
-			T = 2;
-		}
-
-		DrawLine(0, Master::gridHeight * i, Master::Width, Master::gridHeight * i, GetColor(0, 200, 0), T);
-		DrawLine(Master::gridWidth * i, 0, Master::gridWidth * i, Master::Height, GetColor(0, 200, 0), T);
-	}*/
 }
 
 void Pause::StartPause()
@@ -174,14 +154,14 @@ bool Pause::IsPause()
 ButtonPosition Pause::GetChangeSize(ButtonPosition _position, float _ratio)
 {
 	constexpr float half = 0.5f;//半分
-	float centerX, centerY;//オリジナル座標での真ん中
-	float halfWidth, halfHeight;//比率を適用した座標の真ん中
+	int centerX, centerY;//オリジナル座標での真ん中
+	int halfWidth, halfHeight;//比率を適用した座標の真ん中
 	//X、Yの真ん中を求める
-	centerX = (_position.x1 + _position.x2) * half;
-	centerY = (_position.y1 + _position.y2) * half;
+	centerX = int(float(_position.x1 + _position.x2) * half);
+	centerY = int(float(_position.y1 + _position.y2) * half);
 	//元の幅を求めて、半分にし、比率をかける。
-	halfWidth = (_position.x2 - _position.x1) * half * _ratio;
-	halfHeight = (_position.y2 - _position.y1) * half * _ratio;
+	halfWidth = int(float(_position.x2 - _position.x1) * half * _ratio);
+	halfHeight = int(float(_position.y2 - _position.y1) * half * _ratio);
 	//元の真ん中から比率適用した真ん中からの長さを引く
 	_position.x1 = centerX - halfWidth;
 	_position.y1 = centerY - halfHeight;

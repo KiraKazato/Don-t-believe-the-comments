@@ -60,12 +60,6 @@ void GameCycle::Update()
 
 	mTextInputManager.SetKeyInputDrawPosition(Master::gridWidth * 45 + mnShakeX,Master::gridHeight * 82 + mnShakeY);
 
-
-	if (mbGameEnd)
-	{
-		return;
-	}
-
 	if (mnCorrectAnswer != nullptr)
 	{
 		mnCorrectAnswer->Update();
@@ -73,6 +67,11 @@ void GameCycle::Update()
 	if (mnFallingCrossMiss != nullptr)
 	{
 		mnFallingCrossMiss->Update();
+	}
+
+	if (mbGameEnd)
+	{
+		return;
 	}
 
 	if (!mbQuestionSpawned)

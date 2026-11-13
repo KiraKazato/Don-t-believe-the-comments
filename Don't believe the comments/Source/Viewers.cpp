@@ -30,7 +30,27 @@ void Viewers::Update()
 
 void Viewers::Draw()
 {
-	DrawFormatStringToHandle(Master::gridWidth*4, Master::gridHeight*96, GetColor(0, 0, 0), mnStringHandle, "è¦–è´è€…æ•°:%d", mnCurrentViewers);
+	//DrawFormatStringToHandle(Master::gridWidth * 4, Master::gridHeight * 96, GetColor(0, 0, 0), mnStringHandle, "‹’®Ò”:%d", mnCurrentViewers);
+
+	//‹’®Ò”‚Ì•”•ª‚Í•’Ê‚Ì‘å‚«‚³‚Å•`‚­
+	DrawStringToHandle(Master::gridWidth * 4, Master::gridHeight * 96, "‹’®Ò”:", GetColor(0, 0, 0), mnStringHandle);
+
+	// ‹’®Ò”‚Ì‰¡•‚ğ’²‚×‚é
+	int labelWidth = GetDrawStringWidthToHandle("‹’®Ò”:", static_cast<int>(strlen("‹’®Ò”:")), mnStringHandle);
+
+	//”š‚Ì•”•ª‚ÌƒTƒCƒY‚ğ’²‚×‚ÄA’†S‚©‚çŠg‘å‚·‚é
+	int numWidth, numHeight;
+	GetDrawFormatStringSizeToHandle(&numWidth, &numHeight, NULL, mnStringHandle, "%d", mnCurrentViewers);
+
+	int baseX = 10 + labelWidth; // ”š¶’[X
+	int baseY = 10;              // ”š‚ÌY
+
+	// Šg‘å‚µ‚½‚Æ‚«‚É’†S‚ªƒYƒŒ‚È‚¢‚æ‚¤‚Éˆø‚«Z‚·‚é
+	int drawX = baseX - static_cast<int>((numWidth * (mfScale - 1.0f)) / 2.0f) + Master::gridWidth * 4;
+	int drawY = static_cast<int>((numHeight * (mfScale - 1.0f)) / 2.0f) + Master::gridHeight * 96;
+
+	//”š‚¾‚¯‚ğŠg‘å‚µ‚Ä•`‚­
+	DrawExtendFormatStringToHandle(drawX, drawY, mfScale, mfScale, GetColor(0, 0, 0), mnStringHandle, "%d", mnCurrentViewers);
 }
 
 void Viewers::Finalize()
@@ -41,7 +61,8 @@ void Viewers::Finalize()
 void Viewers::ComeViewers()
 {
 	int changeValue = rand() % (mnMaxAddValue - mnMinAddValue + 1) + mnMinAddValue;
-	ChangeViewers(changeValue);
+	ChangeViewers(changeValue);	
+	mfScale = 1.4f;
 }
 
 void Viewers::LeaveViewers()
@@ -76,20 +97,20 @@ void Viewers::ViewersCount(float _duration)
 		return;
 	}
 
-	//1ãƒ•ãƒ¬ãƒ¼ãƒ ã®æ™‚é–“
+	//1ƒtƒŒ[ƒ€‚ÌŠÔ
 	constexpr float frameTime = 1.0f / 60.0f;
-	//çµŒéæ™‚é–“ã¨æ±‚ã‚ã‚‰ã‚Œã‚‹æ™‚é–“ã®å‰²åˆ
+	//Œo‰ßŠÔ‚Æ‹‚ß‚ç‚ê‚éŠÔ‚ÌŠ„‡
 	float t = mfViewersCountTime / _duration;
 	mfViewersCountTime += frameTime;
 	if (mbIsCountFinish = (mfViewersCountTime >= _duration))
 	{
-		//çµŒéã—ãŸï¼ˆè¨ˆæ¸¬çµ‚äº†ï¼‰
+		//Œo‰ß‚µ‚½iŒv‘ªI—¹j
 		mfViewersCountTime = _duration;
 		t = 1.0f;
 	}
-	//ç·šå½¢è£œå®Œ
+	//üŒ`•âŠ®
 	//@{ 
-	int subViewers = mnTargetViewers - mnCountStartViewers; //ç›®æ¨™å€¤ã¨é–‹å§‹å€¤ã®å·®
+	int subViewers = mnTargetViewers - mnCountStartViewers; //–Ú•W’l‚ÆŠJn’l‚Ì·
 	mnCurrentViewers = mnCountStartViewers + static_cast<int>(static_cast<float>(subViewers) * t);
 	//@}
 	if (mbIsCountFinish)
@@ -97,48 +118,29 @@ void Viewers::ViewersCount(float _duration)
 		mnCountStartViewers = mnCurrentViewers;
 	}
 
-	//è¿½åŠ ï¼šæ‹¡å¤§ã—ã¦ã„ãŸã‚‰ã€å°‘ã—ãšã¤å…ƒã®å¤§ãã•ï¼ˆ1.0fï¼‰ã«æˆ»ã™
+	//’Ç‰ÁFŠg‘å‚µ‚Ä‚¢‚½‚çA­‚µ‚¸‚ÂŒ³‚Ì‘å‚«‚³i1.0fj‚É–ß‚·
 	if (mfScale > 1.0f)
 	{
-		mfScale -= 0.03f; // æˆ»ã‚‹ã‚¹ãƒ”ãƒ¼ãƒ‰ï¼ˆå¤§ããã™ã‚‹ã¨ç´ æ—©ãæˆ»ã‚‹ï¼‰
+		mfScale -= 0.03f; // –ß‚éƒXƒs[ƒhi‘å‚«‚­‚·‚é‚Æ‘f‘‚­–ß‚éj
 		if (mfScale < 1.0f)
 		{
-			mfScale = 1.0f; // 1.0fæœªæº€ã«ãªã‚‰ãªã„ã‚ˆã†ã«ãƒ”ã‚¿ãƒƒã¨æ­¢ã‚ã‚‹
+			mfScale = 1.0f; // 1.0f–¢–‚É‚È‚ç‚È‚¢‚æ‚¤‚Éƒsƒ^ƒb‚Æ~‚ß‚é
 		}
 	}
 }
 
 void Viewers::ChangeViewers(int _changeValue)
 {
-	//è¦–è´è€…æ•°ã®éƒ¨åˆ†ã¯æ™®é€šã®å¤§ãã•ã§æã
-	DrawStringToHandle(10, 10, "è¦–è´è€…æ•°:", GetColor(0, 0, 0), mnStringHandle);
-
-	// è¦–è´è€…æ•°ã®æ¨ªå¹…ã‚’èª¿ã¹ã‚‹
-	int labelWidth = GetDrawStringWidthToHandle("è¦–è´è€…æ•°:", static_cast<int>(strlen("è¦–è´è€…æ•°:")), mnStringHandle);
-
-	//æ•°å­—ã®éƒ¨åˆ†ã®ã‚µã‚¤ã‚ºã‚’èª¿ã¹ã¦ã€ä¸­å¿ƒã‹ã‚‰æ‹¡å¤§ã™ã‚‹
-	int numWidth, numHeight;
-	GetDrawFormatStringSizeToHandle(&numWidth, &numHeight, NULL, mnStringHandle, "%d", mnCurrentViwers);
-
-	int baseX = 10 + labelWidth; // æ•°å­—å·¦ç«¯X
-	int baseY = 10;              // æ•°å­—ã®Y
-
-	// æ‹¡å¤§ã—ãŸã¨ãã«ä¸­å¿ƒãŒã‚ºãƒ¬ãªã„ã‚ˆã†ã«å¼•ãç®—ã™ã‚‹
-	int drawX = baseX - static_cast<int>((numWidth * (mfScale - 1.0f)) / 2.0f);
-	int drawY = baseY - static_cast<int>((numHeight * (mfScale - 1.0f)) / 2.0f);
-
-	//æ•°å­—ã ã‘ã‚’æ‹¡å¤§ã—ã¦æã
-	DrawExtendFormatStringToHandle(drawX, drawY,mfScale, mfScale,GetColor(0, 0, 0),mnStringHandle,"%d",mnCurrentViwers);
 	mnTargetViewers += _changeValue;
 	mfViewersCountTime = 0.0f;
-	//çµ‚ã‚ã£ã¦ã„ãªã‹ã£ãŸã‚‰ã€é–‹å§‹å€¤ã‚’å¢—ã‚„ã™
+	//I‚í‚Á‚Ä‚¢‚È‚©‚Á‚½‚çAŠJn’l‚ğ‘‚â‚·
 	if (!mbIsCountFinish)
 	{
 		mnCountStartViewers = mnCurrentViewers;
 	}
 	else
 	{
-		//è¨ˆæ¸¬é–‹å§‹
+		//Œv‘ªŠJn
 		mbIsCountFinish = false;
 	}
 }
@@ -155,8 +157,6 @@ int Viewers::GetStartViewersCount()
 
 int Viewers::GetViewersCount()
 {
-	mnTargetViwers += rand() % (mnMaxAddValue - mnMinAddValue + 1) + mnMinAddValue;
-	mfScale = 1.4f;
 	return mnViewersCount;
 }
 
@@ -177,7 +177,7 @@ void Viewers::IdleFluctuation()
 		return;
 	}
 
-	//åŸºæº–ã®æ™‚é–“
+	//Šî€‚ÌŠÔ
 	static int lastTime = GetNowCount();
 	static int targetTime = rand() % mnMaxFluctuation + mnMinFluctuation;
 	int currentTime = GetNowCount();

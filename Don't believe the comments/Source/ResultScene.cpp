@@ -36,10 +36,10 @@ void ResultScene::Initialize()
 	mnConmmentsCountFont = Master::mpFontManager->GetFontHandle(FontManager::FONT_TETUBINN, 90);
 	mbAnimationFlag.reset();
 	
-	mfAnimationDuration[0] = 1.0f;		// ã‚«ã‚¦ãƒ³ãƒˆæ™‚é–“
-	mfAnimationDuration[1] = 0.0f;		// ã‚«ã‚¦ãƒ³ãƒˆå¾Œã«è¦‹ã›ã‚‹æ™‚é–“
-	mfAnimationDuration[2] = 1.5f;		// ã‚«ã‚¦ãƒ³ãƒˆã‚’åˆæˆã™ã‚‹æ™‚é–“
-	mfAnimationDuration[3] = 100.0f;	// å®Ÿè³ªçš„ãªæ¼”å‡ºçµ‚ã‚ã‚Š
+	mfAnimationDuration[0] = 1.0f;		// ƒJƒEƒ“ƒgŠÔ
+	mfAnimationDuration[1] = 0.0f;		// ƒJƒEƒ“ƒgŒã‚ÉŒ©‚¹‚éŠÔ
+	mfAnimationDuration[2] = 1.5f;		// ƒJƒEƒ“ƒg‚ğ‡¬‚·‚éŠÔ
+	mfAnimationDuration[3] = 100.0f;	// À¿“I‚È‰‰oI‚í‚è
 
 	Master::mpUIManager->AddUI(mnSceneBackGroundHandle, 0, 0, Master::Width, Master::Height);
 	Master::mpUIManager->AddUI(mnShowResultHandle, Master::gridWidth*24, Master::gridHeight*23, Master::gridWidth*97, Master::gridHeight*93);
@@ -58,10 +58,12 @@ void ResultScene::Initialize()
 	}
 	Master::mpUIManager->AddUI(mnBackToTitle, Master::gridWidth * 47, Master::gridHeight * 95, Master::gridWidth * 74, Master::gridHeight * 112);
 
-	mnResultEffect = new EffekseerEffect("Resource/Effect/ResultEffect.efk", 35.0f);
+	if (Master::mpViewers->GetCurrentViewers() > 0)
+	{
+		mnResultEffect = new EffekseerEffect("Resource/Effect/ResultEffect.efk", 35.0f);
 
-	mnResultEffect->Play(Master::gridWidth*60,Master::gridHeight*70);
-
+		mnResultEffect->Play(Master::gridWidth * 60, Master::gridHeight * 70);
+	}
 
 
 	Master::mpSoundManager->PlayBGM(SoundManager::BGM_RESULT);
@@ -74,7 +76,7 @@ void ResultScene::Update()
 		mnResultEffect->Update();
 	}
 
-	//ãƒã‚¦ã‚¹åº§æ¨™å—ã‘å–ã‚Š
+	//ƒ}ƒEƒXÀ•Wó‚¯æ‚è
 	Master::mpMouseManager->GetMousePosition(&mnMouseX, &mnMouseY);
 
 	ProcessButton();
@@ -89,7 +91,7 @@ void ResultScene::Draw()
 	Scene::Draw();	
 	if (CheckHitKey(KEY_INPUT_BACK))
 	{
-		//BGMã‚’æ­¢ã‚ã¦ã‚·ãƒ¼ãƒ³é·ç§»
+		//BGM‚ğ~‚ß‚ÄƒV[ƒ“‘JˆÚ
 		Master::mpSoundManager->StopBGM();
 		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
 	}
@@ -169,7 +171,7 @@ void ResultScene::DrawCorrectAnswerCount(int _count, int _maxCount)
 
 int ResultScene::ViewersCount(float _duration, int _count)
 {
-	// 0.ã‚«ã‚¦ãƒ³ãƒˆ
+	// 0.ƒJƒEƒ“ƒg
 	if (mbAnimationFlag.test(0))
 	{
 		return abs(_count);
@@ -200,10 +202,10 @@ void ResultScene::ViewersAnimation(int _count, int _startCount, char _sign, unsi
 	int startCountWidth, startCountHeight;
 	int countWidth, countHeight;
 
-	// æƒ…å ±å–å¾—
+	// î•ñæ“¾
 	GetDrawFormatStringSizeToHandle(&signWidth, &signHeight, NULL, mnViewersCountFont, "%c", _sign);
-	GetDrawFormatStringSizeToHandle(&startCountWidth, &startCountHeight, NULL, mnViewersStartCountFont, "%däºº", _startCount);
-	GetDrawFormatStringSizeToHandle(&countWidth, &countHeight, NULL, mnViewersCountFont, "%däºº", _count);
+	GetDrawFormatStringSizeToHandle(&startCountWidth, &startCountHeight, NULL, mnViewersStartCountFont, "%dl", _startCount);
+	GetDrawFormatStringSizeToHandle(&countWidth, &countHeight, NULL, mnViewersCountFont, "%dl", _count);
 
 	constexpr int tmp = Master::gridHeight * 45;
 
@@ -241,7 +243,7 @@ void ResultScene::ViewersAnimation(int _count, int _startCount, char _sign, unsi
 		}
 	}
 
-	// è¡¨ç¤º
+	// •\¦
 	if (mnAnimationIndex <= 2)
 	{
 		int tmp = countDrawPosX;
@@ -257,8 +259,8 @@ void ResultScene::ViewersAnimation(int _count, int _startCount, char _sign, unsi
 
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255.0f * (1.0f - easingVal)));
 		DrawFormatStringToHandle(signDrawPosX, signDrawPosY + Master::gridHeight, _color, mnViewersCountFont, "%c", _sign);
-		DrawFormatStringToHandle(startCountDrawPosX - Master::gridWidth, startCountDrawPosY + Master::gridHeight, GetColor(0, 0, 0), mnViewersStartCountFont, "%däºº", _startCount);
-		DrawFormatStringToHandle(countDrawPosX + Master::gridHeight * 2, countDrawPosY, _color, mnViewersCountFont, "%däºº", _count);
+		DrawFormatStringToHandle(startCountDrawPosX - Master::gridWidth, startCountDrawPosY + Master::gridHeight, GetColor(0, 0, 0), mnViewersStartCountFont, "%dl", _startCount);
+		DrawFormatStringToHandle(countDrawPosX + Master::gridHeight * 2, countDrawPosY, _color, mnViewersCountFont, "%dl", _count);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		return;
 	}
@@ -281,25 +283,29 @@ void ResultScene::ProcessButton()
 {
 	bool isClear = (Master::mpViewers->GetCurrentViewers() > 0);
 
-	// ã‚‚ã—ã‚³ãƒ¡ãƒ³ãƒˆãŒ0ã‚ˆã‚Šå¤§ãã„ã®ãªã‚‰æ¬¡ã¸ã®ãƒœã‚¿ãƒ³ã‚’è¡¨ç¤º
+	// ‚à‚µƒRƒƒ“ƒg‚ª0‚æ‚è‘å‚«‚¢‚Ì‚È‚çŸ‚Ö‚Ìƒ{ƒ^ƒ“‚ğ•\¦
 	int handle =  mnBackToTitle;
 
 	bool insideStartButton = Master::mpUIManager->InsideUI(handle, mnMouseX, mnMouseY);
-	//ãƒã‚¦ã‚¹ãŒãƒœã‚¿ãƒ³ã®ç¯„å›²å†…ã ã£ãŸã‚‰
+	//ƒ}ƒEƒX‚ªƒ{ƒ^ƒ“‚Ì”ÍˆÍ“à‚¾‚Á‚½‚ç
 	if (insideStartButton)
 	{
-		//å°‘ã—æ‹¡å¤§
+		//­‚µŠg‘å
 		Master::mpUIManager->ChangeUISize(handle, 1.1f);
 
 	}
 	else
 	{
-		//å…ƒã®å¤§ãã•ã«æˆ»ã—ã¦ãŠã
+		//Œ³‚Ì‘å‚«‚³‚É–ß‚µ‚Ä‚¨‚­
 		Master::mpUIManager->ResetUISize(handle);
 	}
-	//å·¦ã‚¯ãƒªãƒƒã‚¯æŠ¼ã•ã‚ŒãŸã¨ã
+	//¶ƒNƒŠƒbƒN‰Ÿ‚³‚ê‚½‚Æ‚«
 	if (Master::mpUIManager->ClickedUI(handle, insideStartButton))
 	{
+		if (mnResultEffect != nullptr)
+		{
+			mnResultEffect->Stop();
+		}
 		Master::mpSoundManager->StopBGM();
 		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
 	}

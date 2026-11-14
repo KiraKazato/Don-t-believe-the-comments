@@ -9,13 +9,16 @@ public:    // enum, struct などの定義
 	enum SOUND_BGM
 	{
 		BGM_TITLE = 0, //タイトル画面
-		BGM_SETTING
-
+		BGM_SETTING,
+		BGM_GAME,
+		BGM_RESULT,
 	};
 	//SEの種類
 	enum SOUND_SE
 	{
 		SE_CUT = 0,  //決定音
+		SE_CORRECTED,
+		SE_FAILED
 	};
 public:
 

@@ -2,6 +2,8 @@
 #include "Scene.h"
 #include "SoundManager.h"
 
+class SelectionManager;
+
 class TitleScene :public Scene
 {
 public:
@@ -17,9 +19,12 @@ private:
 	int mnTitleBackGroundHandle;
 	int mnStartBottonHandle;
 	int mnSettingBottonHandle;
+	int mnReturnToDesktop;
 
 	//マウスの座標を受け取る
 	int mnMouseX{};
 	int mnMouseY{};
+
+	int mnDemoMusic;
 };
 

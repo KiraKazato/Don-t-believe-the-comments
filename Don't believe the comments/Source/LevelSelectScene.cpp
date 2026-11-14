@@ -7,9 +7,13 @@ LevelSelectScene::LevelSelectScene()
 	: mnSelectBackGroundGraphHandle(0)
 	, mnDay1ButtonGraphHandle(0)
 	, mnComingSoonGraphHandle(0)
-	,mnRightArrowGraph(0)
-	,mnLeftArrowGraph(0)
-	,currentStage(StageNumber::STAGE_DAY1)
+	, mnRightArrowGraph(0)
+	, mnLeftArrowGraph(0)
+	, currentStage(StageNumber::STAGE_DAY1)
+	, mnBackToTitleScene(0)
+	, isWaitingSceneChange(false)
+	, waitFrameCounter(0)
+	,gameStartEffect(0)
 {
 
 }
@@ -32,6 +36,9 @@ void LevelSelectScene::Initialize()
 	mnRightArrowGraph = Master::mpResourceManager->LoadGraphics("Resource/LevelSelectScene/RightArrow.png");
 	mnLeftArrowGraph = Master::mpResourceManager->LoadGraphics("Resource/LevelSelectScene/LeftArrow.png");
 	mnBackToTitleScene = Master::mpResourceManager->LoadGraphics("Resource/LevelSelectScene/BackToTitle.png");
+
+	gameStartEffect = new EffekseerEffect("Resource/Effect/GameStartEffect.efk", 10.0f);
+	gameStartEffect->SetSpeed(2.0f);
 
 	//必要なUI
 	Master::mpUIManager->AddUI(mnSelectBackGroundGraphHandle, 0, 0, Master::Width, Master::Height);
@@ -59,31 +66,109 @@ void LevelSelectScene::Update()
 	{
 		return;
 	}
+
+	if (gameStartEffect != nullptr)
+	{
+		gameStartEffect->Update();
+	}
+
 	Master::mpMouseManager->GetMousePosition(&mouseX, &mouseY);
 	//画像の中にカーソルがあったら
 	Master::mpUIManager->GetUIData(mStageButtonHandle[currentStage])->insideObject = Master::mpUIManager->InsideUI(mnDay1ButtonGraphHandle, mouseX, mouseY);
+
+	if (isWaitingSceneChange)
+	{
+		waitFrameCounter++; // 毎フレーム1ずつ増やす
+
+		// 指定したフレームに達したら
+		if (waitFrameCounter >= WAIT_TIME)
+		{
+			// ゲームシーンへ遷移
+			Master::mpSceneManager->SetNextScene(SceneManager::SCENE_TYPE::SCENE_GAME);
+		}
+
+		// 待機中はこれより下のボタン操作をさせないためにここでUpdateを終える
+		Scene::Update();
+		return;
+	}
+
 	if (Master::mpUIManager->GetUIData(mStageButtonHandle[currentStage]) != nullptr)
 	{
 		Master::mpUIManager->GetUIData(mStageButtonHandle[currentStage])->insideObject = Master::mpUIManager->InsideUI(mStageButtonHandle[currentStage], mouseX, mouseY);
-		if (Master::mpUIManager->GetUIData(mStageButtonHandle[currentStage])->insideObject)
+
+		//ComingSoonではない時だけ、マウスを重ねたら拡大する
+		if (currentStage != STAGE_COMMINGSOON)
 		{
-			//少し大きく
-			Master::mpUIManager->ChangeUISize(mStageButtonHandle[currentStage], 1.1f);
+			if (Master::mpUIManager->GetUIData(mStageButtonHandle[currentStage])->insideObject)
+			{
+				//少し大きく
+				Master::mpUIManager->ChangeUISize(mStageButtonHandle[currentStage], 1.1f);
+			}
+			else
+			{
+				//なかったらサイズをもとに戻す
+				Master::mpUIManager->ResetUISize(mStageButtonHandle[currentStage]);
+			}
 		}
-		else
-		{
-			//なかったらサイズをもとに戻す
-			Master::mpUIManager->ResetUISize(mStageButtonHandle[currentStage]);
-		}
+
 		//左クリックされたら
 		if (Master::mpUIManager->ClickedUI(mStageButtonHandle[currentStage], Master::mpUIManager->GetUIData(mStageButtonHandle[currentStage])->insideObject))
 		{
 			if (currentStage != STAGE_COMMINGSOON)
 			{
+				isWaitingSceneChange = true;
+				waitFrameCounter = 0; //カウンターを0にリセット
+				gameStartEffect->Play(Master::Width / 2.0f, Master::Height / 2.0f);
+			}
+			else
+			{
+				//ComingSoonがクリックされたら震えを開始する
+				isShaking = true;
+				shakeFrameCounter = 0;
+				Master::mpSoundManager->PlaySE(SoundManager::SE_CUT);
 				//ゲームシーンへ
 				Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_GAME);
 			}
+		}
 
+		//震えている最中の処理
+		if (isShaking)
+		{
+			shakeFrameCounter++; //毎フレーム1ずつ増やす
+
+			//まだ震える時間内の場合
+			if (shakeFrameCounter < SHAKE_TIME)
+			{
+				//残り時間の割合を計算す
+				//小数点で割り算をするためにをつけています
+				float remainingRate = (float)(SHAKE_TIME - shakeFrameCounter) / (float)SHAKE_TIME;
+
+				//今回のフレームの揺れの強さを決める
+				float currentShakePower = MAX_SHAKE_POWER * remainingRate;
+
+				//フレーム数が偶数なら右、奇数なら左にする
+				float shakeOffset = 0.0f;
+				if (shakeFrameCounter % 2 == 0)
+				{
+					shakeOffset = currentShakePower;
+				}
+				else
+				{
+					shakeOffset = -currentShakePower;
+				}
+
+				//ComingSoon画像の左右のX座標を基準位置からずらす
+				Master::mpUIManager->GetUIData(mStageButtonHandle[STAGE_COMMINGSOON])->drawX1 = stageButtonPositionX1 + shakeOffset;
+				Master::mpUIManager->GetUIData(mStageButtonHandle[STAGE_COMMINGSOON])->drawX2 = stageButtonPositionX2 + shakeOffset;
+			}
+			else
+			{
+				//時間が来たら震えを止めて、元の位置にピタッと戻す
+				isShaking = false;
+				shakeFrameCounter = 0;
+				Master::mpUIManager->GetUIData(mStageButtonHandle[STAGE_COMMINGSOON])->drawX1 = stageButtonPositionX1;
+				Master::mpUIManager->GetUIData(mStageButtonHandle[STAGE_COMMINGSOON])->drawX2 = stageButtonPositionX2;
+			}
 		}
 	}
 
@@ -168,10 +253,13 @@ void LevelSelectScene::Update()
 	//左クリック押されたとき
 	if (Master::mpUIManager->ClickedUI(mnBackToTitleScene, insideStartButton))
 	{
+		Master::mpSoundManager->PlaySE(SoundManager::SE_CUT);
 		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
 	}
 
 	Scene::Update();
+
+
 }
 
 void LevelSelectScene::Draw()
@@ -180,6 +268,7 @@ void LevelSelectScene::Draw()
 
 	Scene::Draw();
 
+	DrawEffekseer2D();
 }
 
 void LevelSelectScene::Finalize()

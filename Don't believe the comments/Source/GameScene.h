@@ -21,4 +21,5 @@ private:
 	int commentFieldHandle = -1;
 private:
 	GameCycle mGameCycle;
+	int mnBackGround;
 };

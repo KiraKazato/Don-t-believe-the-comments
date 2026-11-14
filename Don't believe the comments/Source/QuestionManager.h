@@ -84,6 +84,10 @@ public:
 	void SetMaxQuestionCount(int _count);
 	int GetMaxQuestionCount();
 
+	void SetIsAllClear(bool _flag);
+	bool IsAllClear();
+
+
 private:
 	// 読み込み
 	void Load(const std::string& _filePath);
@@ -123,6 +127,8 @@ private:
 
 	int mnCorrectAnswerCount = 0;
 	int mnMaxQuestionCount = 0;
+
+	bool mbIsAllClear = false;
 
 private:
 	//ステージと、そのステージで出る問題の難易度と難易度の出る確率

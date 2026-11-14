@@ -9,6 +9,7 @@ ResultScene::ResultScene()
 	,mnNumberOfCorrectAnswers(0)
 	,mnNumberOfViewers(0)
 	,mnStreamEnded(0)
+	,mnResultEffect(0)
 {
 
 }
@@ -50,17 +51,31 @@ void ResultScene::Initialize()
 	if(Master::mpViewers->GetCurrentViewers() > 0)
 	{
 		Master::mpUIManager->AddUI(mnStreamEnded, Master::gridWidth * 43, Master::gridHeight * 8, Master::gridWidth * 82, Master::gridHeight * 20);
-		Master::mpUIManager->AddUI(mnNextButtonHandle, Master::gridWidth * 47, Master::gridHeight * 95, Master::gridWidth * 74, Master::gridHeight * 112);
 	}
 	else
 	{
 		Master::mpUIManager->AddUI(mnStreamFailed, Master::gridWidth * 44, Master::gridHeight * 8, Master::gridWidth * 83, Master::gridHeight * 20);
-		Master::mpUIManager->AddUI(mnBackToTitle, Master::gridWidth * 47, Master::gridHeight * 95, Master::gridWidth * 74, Master::gridHeight * 112);
 	}
+	Master::mpUIManager->AddUI(mnBackToTitle, Master::gridWidth * 47, Master::gridHeight * 95, Master::gridWidth * 74, Master::gridHeight * 112);
+
+	if (Master::mpViewers->GetCurrentViewers() > 0)
+	{
+		mnResultEffect = new EffekseerEffect("Resource/Effect/ResultEffect.efk", 35.0f);
+
+		mnResultEffect->Play(Master::gridWidth * 60, Master::gridHeight * 70);
+	}
+
+
+	Master::mpSoundManager->PlayBGM(SoundManager::BGM_RESULT);
 }
 
 void ResultScene::Update()
 {
+	if (mnResultEffect != nullptr)
+	{
+		mnResultEffect->Update();
+	}
+
 	//マウス座標受け取り
 	Master::mpMouseManager->GetMousePosition(&mnMouseX, &mnMouseY);
 
@@ -73,6 +88,13 @@ void ResultScene::Update()
 void ResultScene::Draw()
 {
 	Master::mpUIManager->DrawUI();
+	Scene::Draw();	
+	if (CheckHitKey(KEY_INPUT_BACK))
+	{
+		//BGMを止めてシーン遷移
+		Master::mpSoundManager->StopBGM();
+		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
+	}
 
 	DrawViewersCount(mfAnimationDuration[0], Master::mpViewers->GetViewersCount(), Master::mpViewers->GetStartViewersCount());
 
@@ -262,7 +284,7 @@ void ResultScene::ProcessButton()
 	bool isClear = (Master::mpViewers->GetCurrentViewers() > 0);
 
 	// もしコメントが0より大きいのなら次へのボタンを表示
-	int handle = isClear ? mnNextButtonHandle : mnBackToTitle;
+	int handle =  mnBackToTitle;
 
 	bool insideStartButton = Master::mpUIManager->InsideUI(handle, mnMouseX, mnMouseY);
 	//マウスがボタンの範囲内だったら
@@ -280,13 +302,11 @@ void ResultScene::ProcessButton()
 	//左クリック押されたとき
 	if (Master::mpUIManager->ClickedUI(handle, insideStartButton))
 	{
-		if(isClear)
+		if (mnResultEffect != nullptr)
 		{
-			Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_SELECT);
+			mnResultEffect->Stop();
 		}
-		else
-		{
-			Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
-		}
+		Master::mpSoundManager->StopBGM();
+		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
 	}
 }

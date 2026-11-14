@@ -1,4 +1,11 @@
 #pragma once
+#include <vector>
+
+struct ButtonPosition
+{
+	int x1, y1;
+	int x2, y2;
+};
 
 class Pause
 {
@@ -13,6 +20,8 @@ public:
 	void EndPause();
 	bool IsPause();
 
+	ButtonPosition GetChangeSize(ButtonPosition _position, float _ratio);
+
 private:
 	bool mbPause = false;
 
@@ -20,43 +29,22 @@ private:
 	int mnPauseBackGroundHandle = -1;
 	int mnBackToTitleHandle = -1;
 	int mnBackToGameHandle = -1;
-	int mnEndToGameHandle = -1;
+	int mnReturnToDesktopHandle = -1;
 
 private:
-	int mnX1BackToTitle = 0;
-	int mnY1BackToTitle = 0;
-	int mnX2BackToTitle = 0;
-	int mnY2BackToTitle = 0;
-	int mnDrawX1BackToTitle = 0;
-	int mnDrawY1BackToTitle = 0;
-	int mnDrawX2BackToTitle = 0;
-	int mnDrawY2BackToTitle = 0;
+	ButtonPosition mBackToTitle{};
 	
 	bool mbIsBackToTitleButtonClicked = false;
 
 private:
-	int mnX1BackToGame = 0;
-	int mnY1BackToGame = 0;
-	int mnX2BackToGame = 0;
-	int mnY2BackToGame = 0;
-	int mnDrawX1BackToGame = 0;
-	int mnDrawY1BackToGame = 0;
-	int mnDrawX2BackToGame = 0;
-	int mnDrawY2BackToGame = 0;
+	ButtonPosition mBackToGame{};
 	
 	bool mbIsBackToGameButtonClicked = false;
 
 private:
-	int mnX1EndToGame = 0;
-	int mnY1EndToGame = 0;
-	int mnX2EndToGame = 0;
-	int mnY2EndToGame = 0;
-	int mnDrawX1EndToGame = 0;
-	int mnDrawY1EndToGame = 0;
-	int mnDrawX2EndToGame = 0;
-	int mnDrawY2EndToGame = 0;
-	
-	bool mbIsEndToGameButtonClicked = false;
+	ButtonPosition mReturnToDesktop{};
+
+	bool mbIsReturnToDesktopButtonClicked = false;
 
 private:
 	int mnMouseX{};

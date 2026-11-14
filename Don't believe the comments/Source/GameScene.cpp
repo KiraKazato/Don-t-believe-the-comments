@@ -14,18 +14,19 @@ GameScene::~GameScene()
 
 void GameScene::Initialize()
 {
+	Master::mpSoundManager->StopBGM();
 	backGroundHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/BackGround/Stage1.png");
 	questionScreenHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/BackBoard.png");
 	inputFieldHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/InputPlace.png");
 	commentFieldHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/CommentField.png");
-	Master::mpUIManager->AddUI(backGroundHandle, Master::gridWidth * 4, Master::gridHeight * 6, Master::gridWidth * 86, Master::gridHeight * 95);
-	Master::mpUIManager->AddUI(questionScreenHandle, Master::gridWidth * 18, Master::gridHeight * 12, Master::gridWidth * 72, Master::gridHeight * 73);
-	Master::mpUIManager->AddUI(inputFieldHandle, Master::gridWidth * 22, Master::gridHeight * 80, Master::gridWidth * 68, Master::gridHeight * 90);
+	mnBackGround = Master::mpResourceManager->LoadGraphics("Resource/GameScene/GameBackGround.png");
+
 	Master::mpUIManager->AddUI(commentFieldHandle, Master::gridWidth * 88, Master::gridHeight * 3, Master::gridWidth * 118, Master::gridHeight * 115);
 
 	mGameCycle.Initialize();
 	Master::mpPause->Initialize();
 	Master::mpQuestionManager->SetRandomNumber();
+	Master::mpSoundManager->PlayBGM(SoundManager::BGM_GAME);
 }
 
 void GameScene::Update()
@@ -42,7 +43,31 @@ void GameScene::Update()
 
 void GameScene::Draw()
 {
-	DrawBox(0, 0, Master::Width, Master::Height, GetColor(229, 242, 248), TRUE);
+	DrawExtendGraph(0, 0, Master::Width, Master::Height, mnBackGround, TRUE);
+
+	
+	//GameCycle ???????h???Y??????????
+	int shakeX = mGameCycle.GetShakeX();
+	int shakeY = mGameCycle.GetShakeY();
+
+	//?z?M?w?i?E???{?[?h?E????????g????W?? shakeX ?? shakeY ??????`????
+
+	DrawExtendGraph(
+		Master::gridWidth * 4 + shakeX, Master::gridHeight * 6 + shakeY,
+		Master::gridWidth * 86 + shakeX, Master::gridHeight * 95 + shakeY,
+		backGroundHandle, TRUE
+	);
+	DrawExtendGraph(
+		Master::gridWidth * 18 + shakeX, Master::gridHeight * 12 + shakeY,
+		Master::gridWidth * 72 + shakeX, Master::gridHeight * 73 + shakeY,
+		questionScreenHandle, TRUE
+	);
+	DrawExtendGraph(
+		Master::gridWidth * 22 + shakeX, Master::gridHeight * 80 + shakeY,
+		Master::gridWidth * 68 + shakeX, Master::gridHeight * 90 + shakeY,
+		inputFieldHandle, TRUE
+	);
+	
 	Master::mpUIManager->DrawUI();
 	mGameCycle.Draw();
 	Scene::Draw();

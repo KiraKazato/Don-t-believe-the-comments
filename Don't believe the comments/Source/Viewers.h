@@ -42,7 +42,8 @@ private:
 	int mnMinSubtractValue = 50;
 	int mnStringHandle{};
 	int mnDrawX1{};
-	int mnDrawY1{};
+	int mnDrawY1;
+	float mfScale = 1.0f; // 1.0f ‚ª’Êí‚Ì‘å‚«‚³
 	int mnMaxFluctuation = 2501;
 	int mnMinFluctuation = 500;
 

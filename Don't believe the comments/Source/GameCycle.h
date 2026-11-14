@@ -3,6 +3,7 @@
 #include "Master.h"
 #include "QuestionManager.h"
 #include "TextInputManager.h"
+#include "EffekseerEffect.h"
 
 enum GameState
 {
@@ -23,6 +24,10 @@ public:
 	void Draw();
 	void Finalize();
 	void SetStage(StageNumber _stageNumeber);
+
+	int GetShakeX() const { return mnShakeX; }
+	int GetShakeY() const { return mnShakeY; }
+
 private:
 	void CommentDraw();//コメントの表示
 	
@@ -39,6 +44,7 @@ private:
 	void GameOver();
 
 	void GameEnd();
+
 private:
 	//入力する文字のフォントハンドルを入れる
 	int mnInputStringHandle = -1;
@@ -56,7 +62,7 @@ private:
 private:
 	//問題番号
 	//最初は一問目なので1に設定
-	int mnQuestionNumber = 1;
+	int mnQuestionNumber = 10;
 	//最大問題数
 	int mnMaxQuestionNumber = 10;
 
@@ -66,6 +72,9 @@ private:
 	float mnNextButtonY1 = Master::gridHeight * 101;
 	float mnNextButtonY2 = Master::gridHeight * 115;
 	int mnNextButtonHandle{};
+	float mfNextButtonDrawEasing = 0.0f;
+	float mfNextButtonDrawTime = 1.0f;
+	bool mbClickButton = false;
 
 private:
 	bool mbQuestionNumberDrawn = false;
@@ -75,4 +84,12 @@ private:
 	bool mbGameEnd = false;
 private:
 	std::string answer{};
+private:
+	TextInputManager mTextInputManager;
+	EffekseerEffect* mnCorrectAnswer;
+	EffekseerEffect* mnFallingCrossMiss;
+
+	int mnShakeTime = 0;  // 揺れる残り時間（フレーム数）
+	int mnShakeX = 0;     // 横方向のズレ量
+	int mnShakeY = 0;     // 縦方向のズレ量
 };

@@ -70,7 +70,7 @@ void SceneManager::ChageSceneIfNeeded()
 		delete mpCurrentScene;
 		mpCurrentScene = nullptr;
 	}
-
+	
 	// 次シーンにするためシーンタイプを更新
 	mnSceneType = mnNextSceneType;
 
@@ -112,6 +112,7 @@ void SceneManager::SetNextSceneFade(SCENE_TYPE next, bool isFade)
 	{
 		return;
 	}
+	Master::mpTransitor->TransitorAfter();
 	mnNextSceneType = Master::mpTransitor->GetNextScene();
 }
 

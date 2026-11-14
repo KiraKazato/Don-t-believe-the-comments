@@ -1,5 +1,7 @@
 #pragma once
 #include"Scene.h"
+#include "EffekseerEffect.h"
+
 #include <bitset>
 
 class ResultScene : public Scene
@@ -45,6 +47,8 @@ private:
 	//マウスの座標を受け取る
 	int mnMouseX{};
 	int mnMouseY{};
+
+	EffekseerEffect* mnResultEffect;
 
 	//視聴者数カウント
 	float mfViwersCountTime = 0.0f;

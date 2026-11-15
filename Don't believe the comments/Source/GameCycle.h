@@ -62,7 +62,7 @@ private:
 private:
 	//–â‘è”Ô†
 	//Å‰‚Íˆê–â–Ú‚È‚Ì‚Å1‚Éİ’è
-	int mnQuestionNumber = 10;
+	int mnQuestionNumber = 1;
 	//Å‘å–â‘è”
 	int mnMaxQuestionNumber = 10;
 

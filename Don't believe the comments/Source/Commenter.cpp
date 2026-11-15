@@ -93,7 +93,6 @@ void Commenter::DrawReputatoionGraph()
 {
 	DrawExtendGraphF(Master::gridWidth * mGoodButton.currentPosition.currentX1, Master::gridHeight * mGoodButton.currentPosition.currentY1, Master::gridWidth * mGoodButton.currentPosition.currentX2, Master::gridHeight * mGoodButton.currentPosition.currentY2, mGoodButton.pressed ? mGoodButton.pressedHandle : mGoodButton.handle, TRUE);
 	DrawExtendGraphF(Master::gridWidth * mBadButton.currentPosition.currentX1, Master::gridHeight * mBadButton.currentPosition.currentY1, Master::gridWidth * mBadButton.currentPosition.currentX2, Master::gridHeight * mBadButton.currentPosition.currentY2, mBadButton.pressed ? mBadButton.pressedHandle : mBadButton.handle, TRUE);
-	DrawFormatStringF(Master::gridWidth * mGoodButton.currentPosition.currentX1, Master::gridHeight*mGoodButton.currentPosition.currentY2, GetColor(0, 255, 0), "%f", mfCommenterReputation);
 }
 
 void Commenter::updateReputation(int _currentHeight)

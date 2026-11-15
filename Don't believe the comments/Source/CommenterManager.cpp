@@ -298,7 +298,7 @@ void CommenterManager::SetCommenter(Commenter* _commenter)
 
 void CommenterManager::SetDisplayCommenter(Commenter* _commenter)
 {
-	if(mDisplayCommenters.size() > 100)
+	if(mDisplayCommenters.size() > 15)
 	{
 		mDisplayCommenters.erase(mDisplayCommenters.begin());
 	}

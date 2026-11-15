@@ -116,6 +116,7 @@ void LevelSelectScene::Update()
 		{
 			if (currentStage != STAGE_COMMINGSOON)
 			{
+				Master::mpSoundManager->PlaySE(SoundManager::SE_CUT);
 				isWaitingSceneChange = true;
 				waitFrameCounter = 0; //カウンターを0にリセット
 				gameStartEffect->Play(Master::Width / 2.0f, Master::Height / 2.0f);
@@ -194,6 +195,7 @@ void LevelSelectScene::Update()
 			//左クリックされたら
 			if (Master::mpUIManager->ClickedUI(mnRightArrowGraph, Master::mpUIManager->GetUIData(mnRightArrowGraph)->insideObject))
 			{
+				Master::mpSoundManager->PlaySE(SoundManager::SE_CUT);
 				//現在のlevelをComingSoonに
 				if (currentStage + 1 < MAX_STAGE)
 				{
@@ -226,6 +228,7 @@ void LevelSelectScene::Update()
 			//左クリックされたら
 			if (Master::mpUIManager->ClickedUI(mnLeftArrowGraph, Master::mpUIManager->GetUIData(mnLeftArrowGraph)->insideObject))
 			{
+				Master::mpSoundManager->PlaySE(SoundManager::SE_CUT);
 				//現在のlevelをComingSoonに
 				if (currentStage - 1 >= STAGE_DAY1)
 				{
@@ -253,6 +256,7 @@ void LevelSelectScene::Update()
 	//左クリック押されたとき
 	if (Master::mpUIManager->ClickedUI(mnBackToTitleScene, insideStartButton))
 	{
+
 		Master::mpSoundManager->PlaySE(SoundManager::SE_CUT);
 		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
 	}

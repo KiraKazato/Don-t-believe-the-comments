@@ -23,8 +23,8 @@ void TitleScene::Initialize()
 	mnReturnToDesktop = Master::mpResourceManager->LoadGraphics("Resource/TitleScene/ReturnToDesktop.png");
 	Master::mpUIManager->AddUI(mnTitleBackGroundHandle, 0, 0, Master::Width, Master::Height);
 	Master::mpUIManager->AddUI(mnStartBottonHandle, Master::gridWidth * 48, Master::gridHeight * 80, Master::gridWidth * 72, Master::gridHeight * 95);
-	Master::mpUIManager->AddUI(mnSettingBottonHandle, Master::gridWidth * 68, Master::gridHeight * 100, Master::gridWidth * 92, Master::gridHeight * 115);
-	Master::mpUIManager->AddUI(mnReturnToDesktop, Master::gridWidth * 28, Master::gridHeight * 100, Master::gridWidth * 52, Master::gridHeight * 115);
+	Master::mpUIManager->AddUI(mnSettingBottonHandle, Master::gridWidth * 68, Master::gridHeight * 97, Master::gridWidth * 92, Master::gridHeight * 112);
+	Master::mpUIManager->AddUI(mnReturnToDesktop, Master::gridWidth * 28, Master::gridHeight * 97, Master::gridWidth * 52, Master::gridHeight * 112);
 	Master::mpTransitor->XFadeInit(true);
 
 	Master::mpSoundManager->PlayBGM(SoundManager::BGM_TITLE);

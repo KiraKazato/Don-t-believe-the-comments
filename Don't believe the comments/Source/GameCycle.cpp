@@ -309,6 +309,7 @@ void GameCycle::DrawNextButton()
 
 		if (Master::mpUIManager->ClickedUI(&mbClickButton, inside))
 		{
+			Master::mpSoundManager->PlaySE(SoundManager::SE_CUT);
 			Master::mpTransitor->AddTransitorProcessingUpdate("CycleViewerCount", [&]() {Master::mpViewers->Update(); });
 			Master::mpTransitor->XFadeInit(SceneManager::SCENE_RESULT);
 		}

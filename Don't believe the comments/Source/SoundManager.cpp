@@ -19,15 +19,13 @@ SoundManager::~SoundManager()
 
 void SoundManager::Initialize()
 {
-	LoadBGM(SOUND_BGM::BGM_TITLE, "Resource/TitleScene/Music.mp3");
-
-	LoadBGM(SOUND_BGM::BGM_SETTING, "Resource/SettingScene/audiostock_1570406.mp3");
-	LoadBGM(SOUND_BGM::BGM_TITLE, "Resource/TitleScene/Soda_soda.mp3");
-	LoadBGM(SOUND_BGM::BGM_RESULT, "Resource/ResultScene/melon_soda.mp3");
-	LoadBGM(SOUND_BGM::BGM_GAME, "Resource/GameScene/cherry_soda.mp3");
-	LoadSE(SOUND_SE::SE_CUT, "Resource/スイッチを押す.mp3");
-	LoadSE(SOUND_SE::SE_CORRECTED, "Resource/GameScene/クイズ正解5.mp3");
-	LoadSE(SOUND_SE::SE_FAILED, "Resource/GameScene/クイズ不正解1.mp3");
+	LoadBGM(SOUND_BGM::BGM_SETTING, "Resource/Sound/audiostock_1570406.ogg");
+	LoadBGM(SOUND_BGM::BGM_TITLE, "Resource/Sound/Music.ogg");
+	LoadBGM(SOUND_BGM::BGM_RESULT, "Resource/Sound/melon_soda.ogg");
+	LoadBGM(SOUND_BGM::BGM_GAME, "Resource/Sound/cherry_soda.ogg");
+	LoadSE(SOUND_SE::SE_CUT, "Resource/Sound/スイッチを押す.ogg");
+	LoadSE(SOUND_SE::SE_CORRECTED, "Resource/Sound/QuizCorrect.ogg");
+	LoadSE(SOUND_SE::SE_FAILED, "Resource/Sound/クイズ不正解1.ogg");
 }
 
 void SoundManager::Finalize()

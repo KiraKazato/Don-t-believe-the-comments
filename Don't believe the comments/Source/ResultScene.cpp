@@ -200,7 +200,7 @@ void ResultScene::ViewersAnimation(int _count, int _startCount, char _sign, unsi
 
 	int signWidth, signHeight;
 	int startCountWidth, startCountHeight;
-	int countWidth, countHeight;
+	int countWidth, countHeight;		Master::mpSoundManager->PlaySE(SoundManager::SE_CUT);
 
 	// î•ñŽæ“¾
 	GetDrawFormatStringSizeToHandle(&signWidth, &signHeight, NULL, mnViewersCountFont, "%c", _sign);
@@ -307,6 +307,7 @@ void ResultScene::ProcessButton()
 			mnResultEffect->Stop();
 		}
 		Master::mpSoundManager->StopBGM();
+		Master::mpSoundManager->PlaySE(SoundManager::SE_CUT);
 		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
 	}
 }

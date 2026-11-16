@@ -302,7 +302,6 @@ void CommenterManager::SetDisplayCommenter(Commenter* _commenter)
 
 	/**/if(mDisplayCommenters.size() > saveComments)
 	{
-		mnTotalHeight = (*mDisplayCommenters.begin())->GetTotalHeight();
 		mDisplayCommenters.erase(mDisplayCommenters.begin());
 	}
 	mDisplayCommenters.emplace_back(_commenter);

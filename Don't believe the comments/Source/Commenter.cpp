@@ -44,14 +44,6 @@ void Commenter::Draw()
 	Master::mpCommenterManager->GetCurrentPosition(&currentGridPositionX, &currentGridPositionY);
 	DrawFormatStringToHandle(Master::gridWidth * currentGridPositionX, Master::gridHeight * (currentGridPositionY + (mnCurrentCommentHeight)), GetColor(0, 0, 0), mnNameFontHandle, "%s", msCommenterName.c_str());
 	DrawFormatStringToHandle(Master::gridWidth * currentGridPositionX, Master::gridHeight * (currentGridPositionY + mnNameHeight + (mnCurrentCommentHeight)), GetColor(0, 0, 0), mnCommentFontHandle, "%s", msComment.c_str());
-
-	DrawBox(
-		Master::gridWidth * currentGridPositionX,
-		Master::gridHeight * (currentGridPositionY + (mnCurrentCommentHeight)),
-		Master::gridWidth * currentGridPositionX + GetDrawFormatStringWidthToHandle(mnNameFontHandle, "%s", msCommenterName.c_str()),
-		Master::gridHeight * (currentGridPositionY + totalHeightSpace+ (mnCurrentCommentHeight)),
-		GetColor(0,0,0),FALSE
-	);
 	DrawReputatoionGraph();
 }
 

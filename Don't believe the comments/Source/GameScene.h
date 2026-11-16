@@ -14,11 +14,15 @@ public:
 	virtual void Draw()override;
 	virtual void Finalize()override;
 
+	void DrawDecoration();
+
 private:
 	int questionScreenHandle = -1;
 	int inputFieldHandle = -1;
 	int backGroundHandle = -1;
 	int commentFieldHandle = -1;
+
+	int commentCountFontHandle = -1;
 private:
 	GameCycle mGameCycle;
 	int mnBackGround;

@@ -222,7 +222,7 @@ std::string CommenterManager::GetDisplayComment(int _state)
 			continue;
 		}
 
-		mUsedComments.push_back(comments[index]);
+		mUsedComments.emplace_back(comments[index]);
 
 		return comments[index];
 
@@ -272,13 +272,12 @@ void CommenterManager::Update()
 {
 	ChooseDisplayCommenter();
 	if (mDisplayCommenters.empty())return;
-	int totalHeight{};
-	for (const auto commenter : mDisplayCommenters)
+	int drawTotalHeight = mnTotalHeight;
+	for (const auto& commenter : mDisplayCommenters)
 	{
-		commenter->updateReputation(totalHeight);
-		totalHeight += commenter->GetTotalHeight();
+		commenter->updateReputation(drawTotalHeight);
+		drawTotalHeight += commenter->GetTotalHeight();
 	}
-	
 }
 
 void CommenterManager::Draw()
@@ -298,8 +297,12 @@ void CommenterManager::SetCommenter(Commenter* _commenter)
 
 void CommenterManager::SetDisplayCommenter(Commenter* _commenter)
 {
-	if(mDisplayCommenters.size() > 15)
+	// データ上に残すコメントの数
+	constexpr int saveComments = 15;
+
+	/**/if(mDisplayCommenters.size() > saveComments)
 	{
+		mnTotalHeight = (*mDisplayCommenters.begin())->GetTotalHeight();
 		mDisplayCommenters.erase(mDisplayCommenters.begin());
 	}
 	mDisplayCommenters.emplace_back(_commenter);
@@ -361,7 +364,7 @@ bool CommenterManager::IsOneSecond()
 
 	int diffTime = currentTime - lastTime;
 
-	if (diffTime >= 2000)
+	if (diffTime >= 20)
 	{
 		lastTime = currentTime;
 		return true;
@@ -374,7 +377,7 @@ void CommenterManager::GameEnd()
 {
 	if (!mDisplayCommenters.empty())
 	{
-		for (auto commenter : mDisplayCommenters)
+		for (auto& commenter : mDisplayCommenters)
 		{
 			delete commenter;
 		}

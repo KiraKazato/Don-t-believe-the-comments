@@ -96,7 +96,7 @@ void ResultScene::Draw()
 		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
 	}
 
-	DrawViewersCount(mfAnimationDuration[0], Master::mpViewers->GetViewersCount(), Master::mpViewers->GetStartViewersCount());
+	DrawViewersCount(mfAnimationDuration[0], Master::mpViewers->GetGameEndViewersCount(), Master::mpViewers->GetGameStartViewersCount());
 
 	DrawCommentCount(Master::mpCommenterManager->GetCommentsCount());
 
@@ -108,7 +108,7 @@ void ResultScene::Draw()
 void ResultScene::Finalize()
 {
 	Master::mpUIManager->ClearUI();
-	Master::mpViewers->SetStartViewers(Master::mpViewers->GetCurrentViewers());
+	Master::mpViewers->SetGameStartViewers(Master::mpViewers->GetCurrentViewers());
 }
 
 auto Easing = [](float x)
@@ -131,7 +131,7 @@ void ResultScene::DrawViewersCount(float _viwersCountTime, int _count, int _star
 		color = GetColor(255, 50, 50);
 	}
 
-	int drawCount = ViewersCount(_viwersCountTime, _count);
+	int drawCount = ViewersCount(_viwersCountTime, _count - _startCount);
 
 	ViewersAnimation(drawCount, _startCount, sign, color);
 }
@@ -269,7 +269,8 @@ void ResultScene::ViewersAnimation(int _count, int _startCount, char _sign, unsi
 	{
 		_count *= -1;
 	}
-	int allCount  = _count + _startCount;
+
+	int allCount  = Master::mpViewers->GetGameEndViewersCount();
 	int allCountWidth, allCountHeight;
 	GetDrawFormatStringSizeToHandle(&allCountWidth, &allCountHeight, NULL, mnViewersCountFont, "%d", allCount);
 

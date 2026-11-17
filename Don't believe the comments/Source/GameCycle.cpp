@@ -28,7 +28,9 @@ void GameCycle::Initialize()
 	Master::mpCommenterManager->ResetCommentCount();
 	mnNextButtonHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/Button/NextButton.png");
 	//Master::mpUIManager->AddUI(mnNextButtonHandle,mnNextButtonX1, mnNextButtonY1, mnNextButtonX2, mnNextButtonY2, false);
-	
+
+	Master::mpViewers->SetGameStartViewers(Master::mpViewers->GetCurrentViewers());
+	Master::mpViewers->SetIsGameEnd(false);
 
 	mfNextButtonDrawTime = 1.0f;
 	if (Master::mpViewers->GetCurrentViewers() <= 0)
@@ -81,6 +83,7 @@ void GameCycle::Update()
 		Master::mpCommenterManager->ChangeQuestion();
 		Master::mpQuestionManager->SpawnQuestion(mnQuestionNumber);
 		mnNowQuestionImageHandle = Master::mpQuestionManager->GetQuestionData().questionGraphHandle;
+		Master::mpTextInputManager->SetIsAlphabet(Master::mpQuestionManager->GetQuestionData().isAnswerAlphabet);
 		mbQuestionSpawned = true;
 		switch (mnQuestionNumber)
 		{
@@ -116,7 +119,6 @@ void GameCycle::Update()
 		Master::mpCommenterManager->QuestionStarted(false);
 		if (mnQuestionNumber >= mnMaxQuestionNumber)
 		{
-
 			GameEnd();
 		}
 		else
@@ -142,14 +144,14 @@ void GameCycle::Draw()
 
 	if (mbGameEnd)
 	{
-		DrawNextButton();
+	//	DrawNextButton();
 		return;
 	}
 
 	QuestionDraw();
 
 	Master::mpViewers->Draw();
-	if (mbQuestionNumberDrawn &&mbQuestionDrawn)
+	if (mbQuestionNumberDrawn && mbQuestionDrawn)
 	{
 		mTextInputManager.Draw();
 	}
@@ -227,8 +229,18 @@ void GameCycle::InputAnswer()
 	}
 	else if (nowState == 1)
 	{
+		// ‚È‚º‚©false‚ªtrue‚É‚È‚é‚±‚Æ‚ª‚ ‚é‚Ì‚Å‚à‚¤ˆê“x
+		Master::mpTextInputManager->SetIsAlphabet(Master::mpQuestionManager->GetQuestionData().isAnswerAlphabet);
+
 		//•¶Žš“ü—Í
-		answer = Master::mpTextInputManager->GetInputString();
+		if(!Master::mpTextInputManager->IsAlphabet())
+		{
+			answer = Master::mpTextInputManager->GetInputString();
+		}
+		else
+		{
+			answer = Master::mpTextInputManager->GetInputStringAlphabet();
+		}
 		
 		mbInputAnswered = true;
 	}
@@ -247,8 +259,6 @@ bool GameCycle::AnswerJudge()
 		Master::mpTextInputManager->ResetInput();
 		answer = "";
 		Master::mpViewers->LeaveViewers();
-
-
 		return false;
 	}
 
@@ -334,6 +344,8 @@ void GameCycle::GameOver()
 	Master::mpTextInputManager->SetNoInput();
 	Master::mpTextInputManager->Finalize();
 
+	Master::mpViewers->SetGameEndViewers(0);
+
 	// •]‰¿‚ð‰Šú‰»
 	Master::mpCommenterManager->ResetCommenterReputation();
 
@@ -352,9 +364,19 @@ void GameCycle::GameOver()
 void GameCycle::GameEnd()
 {
 	mbGameEnd = true;
+	Master::mpViewers->SetGameEndViewers(Master::mpViewers->GetTargetViewers());
 	Master::mpTextInputManager->Finalize();
 	Master::mpQuestionManager->ClearSpawnedQuestion();
 	Master::mpQuestionManager->SetIsAllClear(true);
 	Master::mpCommenterManager->QuestionStarted(false);
 	Master::mpCommenterManager->SetCommentSpawnKind(STATE_AFTER);
+
+	Master::mpViewers->SetIsGameEnd(true);
+	std::function<void()> viewers = []()
+		{
+			Master::mpViewers->Update();
+		};
+
+	Master::mpTransitor->AddTransitorProcessingUpdate("GameCycleViewers", viewers);
+	Master::mpTransitor->XFadeInit(false, 3.0f, SceneManager::SCENE_RESULT);/**/
 }

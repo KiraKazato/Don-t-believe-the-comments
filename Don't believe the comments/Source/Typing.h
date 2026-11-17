@@ -64,6 +64,8 @@ public:
 	// @return 実質的な正規化
 	const std::string RomaDictionary(const std::string& _kana);
 
+	const std::string Alphabet(const std::string& _alphabetString);
+
 	// 派生形の入力が多いため、一意にする
 	// 拗音は分割し、「ん」は「nn」にし、「っ」はxtuに変換
 	// 正規化に近い
@@ -94,7 +96,6 @@ public:
 
 	// 全角数字を半角数字に変換
 	char NumberFullToHalf(const std::string& _fullCharactor);
-
 
 	// 判定関係
 public:
@@ -148,8 +149,9 @@ public:
 	int GetCurrentKanaByte()const;	// かな文字のバイトカウント取得
 	int GetCurrentDraw()	const;	// 描画の文字単位カウント取得
 
-	const std::string& GetRoma() const;	// ローマ字取得
-	const std::string& GetKana() const;	// かな文字取得
+	const std::string& GetRoma() const;		// ローマ字取得
+	const std::string& GetKana() const;		// かな文字取得
+	const std::string& GetAlphabet() const;	// かな文字取得
 
 	void ClearString();	// 文字列削除
 
@@ -168,4 +170,5 @@ private:
 private:
 	std::string mRoma{};
 	std::string mKana{};
+	std::string mAlphabet{};
 };

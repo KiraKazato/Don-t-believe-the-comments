@@ -45,7 +45,7 @@ void QuestionManager::SetQuestionRate(StageNumber _stage, std::vector<GroupRate>
 	mStageData.push_back({ _stage,_group });
 }
 
-void QuestionManager::SpawnQuestion( int _questionNumber)
+void QuestionManager::SpawnQuestion(int _questionNumber)
 {
 	int setQuestionIndex = 0;
 	int setDifficultIndex = 0;
@@ -95,9 +95,9 @@ void QuestionManager::Load(const std::string& _filePath)
 		size_t pos = 0;
 
 		// çsÇÃç≈å„ÇÕ\n\rÇ∆Ç»ÇÈÇΩÇﬂÅA\rÇè¡Ç∑
-		while ((pos = line.find("\r")) != std::string::npos)
+		while (!line.empty() && line.back() == '\r')
 		{
-			line.replace(pos, 2, "");
+			line.pop_back();
 		}
 
 		std::stringstream ss(line);
@@ -123,7 +123,20 @@ void QuestionManager::Load(const std::string& _filePath)
 		}
 
 		// ìöÇ¶
-		if (getline(ss, cell, ',')) inData.answer = cell;
+		if (getline(ss, cell, ',')) 
+		{
+			inData.answer = cell;
+			
+			if (!inData.answer.empty() && IsAlphabet(inData.answer.front()))
+			{
+				inData.isAnswerAlphabet = true;
+				ConvertAlphabetString(inData.answer);
+			}
+			else
+			{
+				inData.isAnswerAlphabet = false;
+			}
+		}
 		
 		// ìÔà’ìx
 		if (getline(ss, cell, ',')) 
@@ -213,6 +226,17 @@ const std::vector<std::string> QuestionManager::LoadComment(std::stringstream& _
 		i += loadLength;
 	}
 	return ret;
+}
+
+void QuestionManager::ConvertAlphabetString(std::string& _alphabetString)
+{
+	for (size_t i = 0; i < _alphabetString.size(); i++)
+	{
+		if(IsAlphabet(_alphabetString[i]))
+		{
+			_alphabetString[i] = tolower(_alphabetString[i]);
+		}
+	}
 }
 
 bool QuestionManager::RateDecision(std::pair<StageNumber, std::vector<GroupRate>>& _data, StageNumber _stageNumber)
@@ -421,6 +445,17 @@ bool QuestionManager::IsCharactorLargeByte(char _charactor)
 		}
 	}
 	return false;
+}
+
+bool QuestionManager::IsAlphabet(char _charactor)
+{
+	constexpr char minAlphabetSmallCharactor = 'a';	// a
+	constexpr char maxAlphabetSmallCharactor = 'z';	// z
+	constexpr char minAlphabetLargeCharactor = 'A';	// A
+	constexpr char maxAlphabetLargeCharactor = 'Z';	// Z
+
+	return (_charactor >= minAlphabetSmallCharactor && _charactor <= maxAlphabetSmallCharactor)
+		|| (_charactor >= minAlphabetLargeCharactor && _charactor <= maxAlphabetLargeCharactor);
 }
 
 int QuestionManager::GetCorrectAnswerCount()

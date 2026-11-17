@@ -162,8 +162,6 @@ const std::string Typing::KanaDictionary(const std::string& _roma, bool _isNorma
 		mnCurrentRomaByte = 0;
 	}
 
-
-
 	if (_roma.empty())
 	{
 		return _roma;
@@ -306,6 +304,30 @@ const std::string Typing::RomaDictionary(const std::string& _kana)
 	}
 
 	return ret;
+}
+
+const std::string Typing::Alphabet(const std::string& _alphabetString)
+{
+	// 変換情報があるのなら余計な情報になるため一度クリア
+	if (!mConvertionUnits.empty() || mInConvertion != ConversionUnit())
+	{
+		mInConvertion = ConversionUnit();
+		mConvertionUnits.clear();
+		mnCurrentDraw = 0;
+		mnCurrentKanaByte = 0;
+		mnCurrentRomaByte = 0;
+	}
+
+	for (size_t i = 0; i < _alphabetString.size(); i++)
+	{
+		if (IsAlphabet(_alphabetString[i]) || IsNumber(_alphabetString[i]) || _alphabetString[i] == '-')
+		{
+			mAlphabet += _alphabetString[i];
+			AddConvertion(1, 1, 1, 1, 1);
+		}
+	}
+
+	return mAlphabet;
 }
 
 const std::string Typing::KanaNormalize(const std::string& _kana)
@@ -528,8 +550,17 @@ char Typing::NumberFullToHalf(const std::string& _fullCharactor)
 	// 2バイト未満の場合は、全角数字ではないため、そのまま返す
 	if (_fullCharactor.size() < 2)
 	{
-		// 全角数字は2バイトなので、2バイト以外はそのまま返す
-		return _fullCharactor[0];
+		// 全角数字は2バイトなので、2バイト以外は数字の時は返す
+		if (IsNumber(_fullCharactor.front()))
+		{
+			return _fullCharactor.front();
+		}
+		else
+		{
+			return '\0';
+		}
+
+		
 	}
 
 	// 数字の 全角 -> 半角
@@ -671,20 +702,6 @@ void Typing::DeleteChar()
 
 	mConvertionUnits.erase(mConvertionUnits.begin() + deletePosition);
 
-	clsDx();
-	// 消した分の情報を修正
-	// 消した文字の右側にある数は全て修正
-	for (size_t i = deletePosition; i < mConvertionUnits.size(); i++)
-	{
-		decltype(auto) modify = mConvertionUnits[i];
-		
-		modify.romaBegin -= deleteUnit.romaLength;
-		modify.kanaBegin -= deleteUnit.kanaLength;
-		modify.kanaCharBegin--;
-
-		printfDx("romaBegin:%d romaLength:%d kanaLength:%d kanaBegin:%d %d文字目\n", modify.romaBegin, modify.romaLength, modify.kanaBegin, modify.kanaLength, modify.kanaCharBegin);
-	}
-
 	// 各変数を変更
 	mnCurrentRomaByte -= deleteUnit.romaLength;
 	mnCurrentKanaByte -= deleteUnit.kanaLength;
@@ -779,6 +796,11 @@ const std::string& Typing::GetKana() const
 	return mKana;
 }
 
+const std::string& Typing::GetAlphabet() const
+{
+	return mAlphabet;
+}
+
 void Typing::ClearString()
 {
 	mRoma.clear();
@@ -788,5 +810,4 @@ void Typing::ClearString()
 	mnCurrentKanaByte = 0;
 	mnCurrentRomaByte = 0;
 	mInConvertion = ConversionUnit();
-\
 }

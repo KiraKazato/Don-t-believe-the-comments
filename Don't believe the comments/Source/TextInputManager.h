@@ -30,7 +30,11 @@ public:
 	// @return 2:入力キャンセル（/p）と入力した時
 	int CheckInput() const;
 
+	// ローマ字入力のとき
 	const std::string& GetInputString() const;
+
+	// 英語入力の時
+	const std::string& GetInputStringAlphabet() const;
 
 	// 入力状態リセット
 	void ResetState();
@@ -40,6 +44,9 @@ public:
 
 	// 削除やカーソル移動等
 	void ControllInput(char _input);
+
+	void SetIsAlphabet(bool _flag);
+	bool IsAlphabet() const;
 
 	void SetNoInput();
 
@@ -51,13 +58,16 @@ private:
 	int mnKeyInputDrawX = 0;	// 入力表示座標X
 	int mnKeyInputDrawY = 0;	// 入力表示座標Y
 
+	bool mbIsAlphabet = false;	// 入力をアルファベットにするか
+
 	bool mbIsPause = false;		// ポーズしているかどうか
 
 	bool mbIsFinal = false;		// ゲームが終わったか
 
 private:
-	std::string mInputString{};		// ローマ字入力
-	std::string mOutputString{};	// かな文字入力
+	std::string mInputString{};				// ローマ字入力
+	std::string mOutputString{};			// かな文字入力
+	std::string mOutputAlphabetString{};	// アルファベット入力
 
 	int mnKanaCursorPosition = 0;	// （かな文字）カーソル位置
 	int mnRomaCursorPosition = 0;	// （ローマ字）カーソル位置

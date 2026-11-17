@@ -17,15 +17,20 @@ void Viewers::Initialize()
 	DecideViewers();
 	mfScale = 1.0f;
 
-	mnStartViewersCount = mnCurrentViewers;
+	mnGameStartViewers = mnCurrentViewers;
 	mnCountStartViewers = mnCurrentViewers;
 }
 
 void Viewers::Update()
 {
-	ViewersCount(2.0f);
-	mnViewersCount = mnCurrentViewers - mnStartViewersCount;
+	ViewersCount(mbIsGameEnd ? 0.5f : 2.0f);
+	mnViewersCount = mnCurrentViewers - mnGameStartViewers;
 	IdleFluctuation();
+
+	if (mbIsGameEnd)
+	{
+		GameEndLeave(1, 20, 1.0f);
+	}
 }
 
 void Viewers::Draw()
@@ -145,14 +150,53 @@ void Viewers::ChangeViewers(int _changeValue)
 	}
 }
 
-void Viewers::SetStartViewers(int _count)
+void Viewers::GameEndLeave(int _min, int _max, float _base)
 {
-	mnStartViewersCount = _count;
+	int changeValue = 0;
+
+	float frameTime = 1.0f / (60.0f * (_base * mfRandLeaveMul));
+	if (mfViwersGameEndLeaveTime > 0.0f)
+	{
+		mfViwersGameEndLeaveTime -= frameTime;
+		return;
+	}
+	else
+	{
+		mfRandLeaveMul = std::max(float(rand()) / float(INT_MAX), 0.0000001f);
+		while (mfViwersGameEndLeaveTime < 0.0f)
+		{
+			mfViwersGameEndLeaveTime += frameTime;
+			changeValue += (rand() % (_max - _min)) + _min;
+		}
+		mfViwersGameEndLeaveTime = 1.0f;
+	}
+
+	mnCurrentViewers -= changeValue;
 }
 
-int Viewers::GetStartViewersCount()
+void Viewers::SetGameStartViewers(int _count)
 {
-	return mnStartViewersCount;
+	mnGameStartViewers = _count;
+}
+
+void Viewers::SetGameEndViewers(int _count)
+{
+	mnGameEndViewers = _count;
+}
+
+void Viewers::SetIsGameEnd(bool _flag)
+{
+	mbIsGameEnd = _flag;
+}
+
+int Viewers::GetGameStartViewersCount()
+{
+	return mnGameStartViewers;
+}
+
+int Viewers::GetGameEndViewersCount()
+{
+	return mnGameEndViewers;
 }
 
 int Viewers::GetViewersCount()

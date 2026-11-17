@@ -19,11 +19,18 @@ public:
 	void ViewersCount(float _duration);
 	//視聴者数が変わったときの共通処理
 	void ChangeViewers(int _changeValue);
+	
+	//ゲーム終了後の視聴者数の減少（演出面）
+	void GameEndLeave(int _min, int _max, float _base);
 
+	void SetGameStartViewers(int _count);
+	void SetGameEndViewers(int _count);
 
-	void SetStartViewers(int _count);
+	void SetIsGameEnd(bool _flag);
 
-	int GetStartViewersCount();
+	int GetGameStartViewersCount();
+	int GetGameEndViewersCount();
+
 	int GetViewersCount();
 
 	int GetTargetViewers();
@@ -48,8 +55,14 @@ private:
 	int mnMinFluctuation = 500;
 
 	bool mbIsCountFinish = false;		//カウントが終わったか
-	int mnStartViewersCount = 0;		//視聴者数初期値
 	int mnViewersCount = 0;				//視聴者数の増減値
 
+	int mnGameStartViewers = 0;			//ゲーム開始時点の視聴者数
+	int mnGameEndViewers = 0;			//ゲーム終了時点の視聴者数
+
 	float mfViewersCountTime = 0.0f;	//カウントの経過時間
+
+	float mfViwersGameEndLeaveTime = 0.0f;	//ゲーム終了後の視聴者数減少間隔
+	float mfRandLeaveMul = 0.7f;
+	bool mbIsGameEnd = false;
 };

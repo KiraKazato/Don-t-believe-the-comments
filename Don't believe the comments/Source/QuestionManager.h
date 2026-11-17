@@ -21,17 +21,20 @@ struct GroupRate
 
 struct QuestionData
 {
-	int questionID = -1;	// 問題番号
-	int questionGraphHandle = -1;	// 問題画像ハンドル
-	std::string answer{};	// 答え
-	int difficulty = 0;		// 難易度
+	int questionID = -1;				// 問題番号
+	int questionGraphHandle = -1;		// 問題画像ハンドル
+	std::string answer{};				// 答え
+	int difficulty = 0;					// 難易度
+
 	std::vector<std::string> trueComment{};		// 真コメント
 	std::vector<std::string> falseComment{};	// 偽コメント
+	
+	bool isAnswerAlphabet = false;				// その答えがアルファベットか
 
 	// コンストラクタ
 	// データを作る際、明示的に作ることができる
-	QuestionData(int questionID, int questionGraphHandle, const std::string& answer, int difficulty, const std::vector<std::string>& trueComment, const std::vector<std::string>& falseComment)
-		: questionID(questionID), questionGraphHandle(questionGraphHandle), answer(answer), difficulty(difficulty), trueComment(trueComment), falseComment(falseComment)
+	QuestionData(int questionID, int questionGraphHandle, const std::string& answer, int difficulty, const std::vector<std::string>& trueComment, const std::vector<std::string>& falseComment, bool isAnswerAlphabet)
+		: questionID(questionID), questionGraphHandle(questionGraphHandle), answer(answer), difficulty(difficulty), trueComment(trueComment), falseComment(falseComment), isAnswerAlphabet(isAnswerAlphabet)
 	{
 	}
 	// 空データを作成可能
@@ -96,6 +99,10 @@ private:
 	// 特殊なため分ける
 	const std::vector<std::string> LoadComment(std::stringstream&, std::string&);
 
+	// 問題に使えるようにする
+	// 大文字アルファベット -> 小文字アルファベット
+	void ConvertAlphabetString(std::string& _alphabetString);
+
 	// 確率の確定
 	// @return 出題に進んで行けないか
 	bool RateDecision(std::pair<StageNumber, std::vector<GroupRate>>& _data, StageNumber _stageNumber);
@@ -115,6 +122,9 @@ private:
 
 	// @return そのバイトが大文字の頭文字か
 	bool IsCharactorLargeByte(char _charactor);
+
+	// @return a-zA-Zかどうか
+	bool IsAlphabet(char _charactor);
 
 private:
 	std::vector<std::pair<std::vector<QuestionData>, bool>> mQuestions{};	// クイズ

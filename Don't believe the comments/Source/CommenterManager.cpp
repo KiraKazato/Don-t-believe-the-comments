@@ -300,10 +300,14 @@ void CommenterManager::SetDisplayCommenter(Commenter* _commenter)
 {
 	if (mDisplayCommenters.size() > 15)
 	{
-		int deleteHeight = (*mDisplayCommenters.begin())->GetTotalHeight();
+		auto itr = mDisplayCommenters.begin();
+		
+		int deleteHeight = (*itr)->GetTotalHeight();
 		mnCurrentCommentGridPositionY += deleteHeight;
-		delete (*mDisplayCommenters.begin());
-		mDisplayCommenters.erase(mDisplayCommenters.begin());
+
+		delete (*itr);
+		mDisplayCommenters.erase(itr);
+		
 	}
 	mDisplayCommenters.emplace_back(_commenter);
 	mnCountComments++;
@@ -364,7 +368,7 @@ bool CommenterManager::IsOneSecond()
 
 	int diffTime = currentTime - lastTime;
 
-	if (diffTime >= 20)
+	if (diffTime >= 2000)
 	{
 		lastTime = currentTime;
 		return true;

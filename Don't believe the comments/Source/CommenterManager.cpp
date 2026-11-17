@@ -298,8 +298,11 @@ void CommenterManager::SetCommenter(Commenter* _commenter)
 
 void CommenterManager::SetDisplayCommenter(Commenter* _commenter)
 {
-	if(mDisplayCommenters.size() > 15)
+	if (mDisplayCommenters.size() > 15)
 	{
+		int deleteHeight = (*mDisplayCommenters.begin())->GetTotalHeight();
+		mnCurrentCommentGridPositionY += deleteHeight;
+		delete (*mDisplayCommenters.begin());
 		mDisplayCommenters.erase(mDisplayCommenters.begin());
 	}
 	mDisplayCommenters.emplace_back(_commenter);
@@ -361,7 +364,7 @@ bool CommenterManager::IsOneSecond()
 
 	int diffTime = currentTime - lastTime;
 
-	if (diffTime >= 2000)
+	if (diffTime >= 20)
 	{
 		lastTime = currentTime;
 		return true;

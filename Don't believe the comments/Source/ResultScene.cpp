@@ -200,7 +200,7 @@ void ResultScene::ViewersAnimation(int _count, int _startCount, char _sign, unsi
 
 	int signWidth, signHeight;
 	int startCountWidth, startCountHeight;
-	int countWidth, countHeight;		Master::mpSoundManager->PlaySE(SoundManager::SE_CUT);
+	int countWidth, countHeight;
 
 	// î•ñæ“¾
 	GetDrawFormatStringSizeToHandle(&signWidth, &signHeight, NULL, mnViewersCountFont, "%c", _sign);

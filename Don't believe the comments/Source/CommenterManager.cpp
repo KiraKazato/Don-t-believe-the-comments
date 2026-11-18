@@ -237,30 +237,30 @@ std::vector<std::string> CommenterManager::ChooseTemplateCommentKind(int _kind)
 
 	if (_kind == 0)
 	{
-		// ŠJn‚Í 0 ”Ô–Ú‚¾‚¯
+		// é–‹å§‹æ™‚ã¯ 0 ç•ªç›®ã ã‘
 		ret = mTemplateComments.at(0);
 		return ret;
 	}
 	else if (_kind == 4)
 	{
-		// I—¹‚Í 4 ”Ô–Ú
+		// çµ‚äº†æ™‚ã¯ 4 ç•ªç›®
 		ret = mTemplateComments.at(_kind);
 		return ret;
 	}
 
 
-	// ÄŠm•Ûˆ—‚ğ‚È‚­‚·‚½‚ß
+	// å†ç¢ºä¿å‡¦ç†ã‚’ãªãã™ãŸã‚
 	size_t capacity = 0;
 	for (size_t i = inIndexMax; i >= 1; i--)
 	{
 		capacity += mTemplateComments.at(i).size();
 	}
 
-	// ©•ªˆÈ‰º‚Ì”Ô†‚ğW‚ß‚é
+	// è‡ªåˆ†ä»¥ä¸‹ã®ç•ªå·ã‚’é›†ã‚ã‚‹
 	ret.reserve(capacity);
 	for (size_t i = inIndexMax; i >= 1; i--)
 	{
-		// ––”ö‚ÉˆêŠ‡’Ç‰Á
+		// æœ«å°¾ã«ä¸€æ‹¬è¿½åŠ 
 		ret.insert(ret.end(), mTemplateComments.at(i).begin(), mTemplateComments.at(i).end());
 	}
 
@@ -297,11 +297,14 @@ void CommenterManager::SetCommenter(Commenter* _commenter)
 
 void CommenterManager::SetDisplayCommenter(Commenter* _commenter)
 {
-	// ƒf[ƒ^ã‚Éc‚·ƒRƒƒ“ƒg‚Ì”
+	// ãƒ‡ãƒ¼ã‚¿ä¸Šã«æ®‹ã™ã‚³ãƒ¡ãƒ³ãƒˆã®æ•°
 	constexpr int saveComments = 15;
 
 	/**/if(mDisplayCommenters.size() > saveComments)
 	{
+		int deleteHeight = (*mDisplayCommenters.begin())->GetTotalHeight();
+		mnCurrentCommentGridPositionY += deleteHeight;
+		delete (*mDisplayCommenters.begin());
 		mDisplayCommenters.erase(mDisplayCommenters.begin());
 	}
 	mDisplayCommenters.emplace_back(_commenter);
@@ -357,7 +360,7 @@ void CommenterManager::ChangeQuestion()
 
 bool CommenterManager::IsOneSecond()
 {
-	//Šî€‚ÌŠÔ
+	//åŸºæº–ã®æ™‚é–“
 	static int lastTime = GetNowCount();
 	int currentTime = GetNowCount();
 

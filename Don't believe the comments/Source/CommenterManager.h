@@ -105,4 +105,6 @@ private:
 	int mnCountComments = 0;
 
 	const int mnMaxCommentKind = 5;
+
+	int mnTotalHeight = 0;
 };

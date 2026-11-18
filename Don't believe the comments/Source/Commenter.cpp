@@ -72,7 +72,8 @@ std::string Commenter::CheckLineBreak(std::string _text, int _fontHandle)
 		std::string nextText = _text.substr(number, charBytes);
 		int nextWidth;
 		int nextHeight;
-		GetDrawStringSizeToHandle(&nextWidth, &nextHeight, 0, (currentText + nextText).c_str(), static_cast<int>((currentText + nextText).length()), _fontHandle);
+		int nextLine;
+		GetDrawStringSizeToHandle(&nextWidth, &nextHeight, &nextLine, (currentText + nextText).c_str(), static_cast<int>((currentText + nextText).length()), _fontHandle);
 		if (startCommentPotision + nextWidth > endCommentPosition)
 		{
 			resultText += currentText + "\n";
@@ -85,6 +86,7 @@ std::string Commenter::CheckLineBreak(std::string _text, int _fontHandle)
 		}
 		number += charBytes;
 	}
+
 	resultText += currentText;
 	return resultText;
 }

@@ -23,6 +23,8 @@ void GameScene::Initialize()
 
 	Master::mpUIManager->AddUI(commentFieldHandle, Master::gridWidth * 88, Master::gridHeight * 3, Master::gridWidth * 118, Master::gridHeight * 115);
 
+	commentCountFontHandle = Master::mpFontManager->GetFontHandle(FontManager::FONT_TETUBINN, 50);
+
 	mGameCycle.Initialize();
 	Master::mpPause->Initialize();
 	Master::mpQuestionManager->SetRandomNumber();
@@ -67,10 +69,13 @@ void GameScene::Draw()
 		Master::gridWidth * 68 + shakeX, Master::gridHeight * 90 + shakeY,
 		inputFieldHandle, TRUE
 	);
-	
+
 	Master::mpUIManager->DrawUI();
 	mGameCycle.Draw();
 	Scene::Draw();
+
+	DrawDecoration();
+
 	if (Master::mpPause->IsPause())
 	{
 		Master::mpPause->Draw();
@@ -81,5 +86,20 @@ void GameScene::Finalize()
 {
 	Master::mpUIManager->ClearUI();
 	mGameCycle.Finalize();
+}
+
+void GameScene::DrawDecoration()
+{
+	const int baseX1 = Master::gridWidth * 4;
+	const int baseX2 = Master::gridWidth * 86;
+	const int baseY1 = Master::gridHeight * 95;
+	const int baseY2 = Master::gridHeight * 115;
+
+	int width = GetDrawFormatStringWidthToHandle(commentCountFontHandle, "コメント数: ");
+	int countWidth = GetDrawFormatStringWidthToHandle(commentCountFontHandle, "%d", Master::mpCommenterManager->GetCommentsCount());
+
+	int drawX = baseX2 - width - (Master::gridWidth * 10);
+	DrawFormatStringToHandle(drawX, baseY1 + (Master::gridHeight * 2), GetColor(0, 0, 0), commentCountFontHandle, "コメント数: ");
+	DrawFormatStringToHandle(baseX2 - countWidth, baseY1 + (Master::gridHeight * 2), GetColor(0, 0, 0), commentCountFontHandle, "%d", Master::mpCommenterManager->GetCommentsCount());
 }
 

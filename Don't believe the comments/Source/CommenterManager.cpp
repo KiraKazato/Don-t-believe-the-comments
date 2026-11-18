@@ -222,7 +222,7 @@ std::string CommenterManager::GetDisplayComment(int _state)
 			continue;
 		}
 
-		mUsedComments.push_back(comments[index]);
+		mUsedComments.emplace_back(comments[index]);
 
 		return comments[index];
 
@@ -237,30 +237,30 @@ std::vector<std::string> CommenterManager::ChooseTemplateCommentKind(int _kind)
 
 	if (_kind == 0)
 	{
-		// ŠJn‚Í 0 ”Ô–Ú‚¾‚¯
+		// é–‹å§‹æ™‚ã¯ 0 ç•ªç›®ã ã‘
 		ret = mTemplateComments.at(0);
 		return ret;
 	}
 	else if (_kind == 4)
 	{
-		// I—¹‚Í 4 ”Ô–Ú
+		// çµ‚äº†æ™‚ã¯ 4 ç•ªç›®
 		ret = mTemplateComments.at(_kind);
 		return ret;
 	}
 
 
-	// ÄŠm•Ûˆ—‚ğ‚È‚­‚·‚½‚ß
+	// å†ç¢ºä¿å‡¦ç†ã‚’ãªãã™ãŸã‚
 	size_t capacity = 0;
 	for (size_t i = inIndexMax; i >= 1; i--)
 	{
 		capacity += mTemplateComments.at(i).size();
 	}
 
-	// ©•ªˆÈ‰º‚Ì”Ô†‚ğW‚ß‚é
+	// è‡ªåˆ†ä»¥ä¸‹ã®ç•ªå·ã‚’é›†ã‚ã‚‹
 	ret.reserve(capacity);
 	for (size_t i = inIndexMax; i >= 1; i--)
 	{
-		// ––”ö‚ÉˆêŠ‡’Ç‰Á
+		// æœ«å°¾ã«ä¸€æ‹¬è¿½åŠ 
 		ret.insert(ret.end(), mTemplateComments.at(i).begin(), mTemplateComments.at(i).end());
 	}
 
@@ -272,13 +272,12 @@ void CommenterManager::Update()
 {
 	ChooseDisplayCommenter();
 	if (mDisplayCommenters.empty())return;
-	int totalHeight{};
-	for (const auto commenter : mDisplayCommenters)
+	int drawTotalHeight = mnTotalHeight;
+	for (const auto& commenter : mDisplayCommenters)
 	{
-		commenter->updateReputation(totalHeight);
-		totalHeight += commenter->GetTotalHeight();
+		commenter->updateReputation(drawTotalHeight);
+		drawTotalHeight += commenter->GetTotalHeight();
 	}
-	
 }
 
 void CommenterManager::Draw()
@@ -298,7 +297,10 @@ void CommenterManager::SetCommenter(Commenter* _commenter)
 
 void CommenterManager::SetDisplayCommenter(Commenter* _commenter)
 {
-	if (mDisplayCommenters.size() > 15)
+	// ãƒ‡ãƒ¼ã‚¿ä¸Šã«æ®‹ã™ã‚³ãƒ¡ãƒ³ãƒˆã®æ•°
+	constexpr int saveComments = 15;
+
+	/**/if(mDisplayCommenters.size() > saveComments)
 	{
 		int deleteHeight = (*mDisplayCommenters.begin())->GetTotalHeight();
 		mnCurrentCommentGridPositionY += deleteHeight;
@@ -358,7 +360,7 @@ void CommenterManager::ChangeQuestion()
 
 bool CommenterManager::IsOneSecond()
 {
-	//Šî€‚ÌŠÔ
+	//åŸºæº–ã®æ™‚é–“
 	static int lastTime = GetNowCount();
 	int currentTime = GetNowCount();
 
@@ -377,7 +379,7 @@ void CommenterManager::GameEnd()
 {
 	if (!mDisplayCommenters.empty())
 	{
-		for (auto commenter : mDisplayCommenters)
+		for (auto& commenter : mDisplayCommenters)
 		{
 			delete commenter;
 		}

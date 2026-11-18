@@ -41,6 +41,7 @@ private:
 	int mnMaxSubtractValue = 150;
 	int mnMinSubtractValue = 50;
 	int mnStringHandle{};
+	int mnStringEdgeHandle{};
 	int mnDrawX1{};
 	int mnDrawY1;
 	float mfScale = 1.0f; // 1.0f ‚ª’Êí‚Ì‘å‚«‚³

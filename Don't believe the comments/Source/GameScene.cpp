@@ -95,51 +95,11 @@ void GameScene::DrawDecoration()
 	const int baseY1 = Master::gridHeight * 95;
 	const int baseY2 = Master::gridHeight * 115;
 
-	{
-		for (int i = 4; i < 86; i++)
-		{
-			int T = 1;
-			if (!((i - 4) % 20))
-			{
-				T = 5;
-			}
-			else if (!((i - 4) % 5))
-			{
-				T = 3;
-			}
-			DrawLine(
-				Master::gridWidth * i,
-				baseY1,
-				Master::gridWidth * i,
-				baseY2,
-				0, T);
-		}
+	int width = GetDrawFormatStringWidthToHandle(commentCountFontHandle, "コメント数: ");
+	int countWidth = GetDrawFormatStringWidthToHandle(commentCountFontHandle, "%d", Master::mpCommenterManager->GetCommentsCount());
 
-		for (int i = 95; i < 115; i++)
-		{
-			int T = 1;
-			if (!((i + 95) % 20))
-			{
-				T = 5;
-			}
-			else if (!((i + 95) % 5))
-			{
-				T = 3;
-			}
-			DrawLine(
-				baseX1,
-				Master::gridHeight * i,
-				baseX2,
-				Master::gridHeight * i,
-				0, T);
-		}
-		DrawBox(baseX1, baseY1, baseX2, baseY2, GetColor(255, 0, 0), FALSE, 5);
-	}
-
-	int countWidth = GetDrawFormatStringWidthToHandle(commentCountFontHandle, "コメント数：%d", Master::mpCommenterManager->GetCommentsCount());
-
-	DrawFormatStringToHandle(baseX2 - (Master::gridWidth * 5) - countWidth, baseY1 + Master::gridHeight * 11, GetColor(0, 0, 0), commentCountFontHandle, "コメント数：%d", Master::mpCommenterManager->GetCommentsCount());
-
-
+	int drawX = baseX2 - width - (Master::gridWidth * 10);
+	DrawFormatStringToHandle(drawX, baseY1 + (Master::gridHeight * 2), GetColor(0, 0, 0), commentCountFontHandle, "コメント数: ");
+	DrawFormatStringToHandle(baseX2 - countWidth, baseY1 + (Master::gridHeight * 2), GetColor(0, 0, 0), commentCountFontHandle, "%d", Master::mpCommenterManager->GetCommentsCount());
 }
 

@@ -30,24 +30,25 @@ void Viewers::Update()
 
 void Viewers::Draw()
 {
-	//DrawFormatStringToHandle(Master::gridWidth * 4, Master::gridHeight * 96, GetColor(0, 0, 0), mnStringHandle, "‹’®Ò”:%d", mnCurrentViewers);
-
-	//‹’®Ò”‚Ì•”•ª‚Í•’Ê‚Ì‘å‚«‚³‚Å•`‚­
-	DrawStringToHandle(Master::gridWidth * 9, Master::gridHeight * 106, "‹’®Ò”:", GetColor(0, 0, 0), mnStringHandle);
+	int drawBaseX = Master::gridWidth * 58;
+	int drawBaseY = Master::gridHeight * 110;
+	const int baseX2 = Master::gridWidth * 86;
 
 	// ‹’®Ò”‚Ì‰¡•‚ğ’²‚×‚é
 	int labelWidth = GetDrawStringWidthToHandle("‹’®Ò”:", static_cast<int>(strlen("‹’®Ò”:")), mnStringHandle);
 
 	//”š‚Ì•”•ª‚ÌƒTƒCƒY‚ğ’²‚×‚ÄA’†S‚©‚çŠg‘å‚·‚é
 	int numWidth, numHeight;
-	GetDrawFormatStringSizeToHandle(&numWidth, &numHeight, NULL, mnStringHandle, "%d", mnCurrentViewers);
+	GetDrawExtendFormatStringSizeToHandle(&numWidth, &numHeight, NULL, mfScale, mfScale, mnStringHandle, "%d", mnCurrentViewers);
 
 	int baseX = 10 + labelWidth; // ”š¶’[X
-	int baseY = 10;              // ”š‚ÌY
 
 	// Šg‘å‚µ‚½‚Æ‚«‚É’†S‚ªƒYƒŒ‚È‚¢‚æ‚¤‚Éˆø‚«Z‚·‚é
-	int drawX = baseX - static_cast<int>((numWidth * (mfScale - 1.0f)) / 2.0f) + Master::gridWidth * 9;
-	int drawY = static_cast<int>((numHeight * (mfScale - 1.0f)) / 2.0f) + Master::gridHeight * 106;
+	int drawX = baseX + drawBaseX - static_cast<int>((numWidth * (mfScale - 1.0f)) / 2.0f) + int(float(Master::gridWidth) * 13.8f) - numWidth;
+	int drawY = drawBaseY + static_cast<int>((numHeight * (mfScale - 1.0f)) / 2.0f);
+	
+	//‹’®Ò”‚Ì•”•ª‚Í•’Ê‚Ì‘å‚«‚³‚Å•`‚­
+	DrawStringToHandle(drawBaseX + int(Master::gridWidth * 2.9f), drawBaseY, "‹’®Ò”:", GetColor(0, 0, 0), mnStringHandle);
 
 	//”š‚¾‚¯‚ğŠg‘å‚µ‚Ä•`‚­
 	DrawExtendFormatStringToHandle(drawX, drawY, mfScale, mfScale, GetColor(0, 0, 0), mnStringHandle, "%d", mnCurrentViewers);

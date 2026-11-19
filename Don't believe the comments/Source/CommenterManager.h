@@ -69,6 +69,8 @@ public:
 
 	void ResetCommenterReputation();
 
+	void ScrollComments();
+
 private:
 	//コメンターの情報
 	std::vector<Commenter*>mCommenters;
@@ -91,6 +93,12 @@ private:
 	int mnCurrentCommentGridPositionX = 89;
 	int mnCurrentCommentGridPositionY = 12;
 
+	//コメントの枠内
+	int mnCommentFrameInX1 =  89;
+	int mnCommentFrameInY1 =  12;
+	int mnCommentFrameInX2 = 117;
+	int mnCommentFrameInY2 =113;
+	 
 	//コメント表示の最大場所
 	int mnMaxCommentGridPositionX = 110;
 	int mnMaxCommentGridPositionY = 113;
@@ -105,6 +113,8 @@ private:
 	int mnCountComments = 0;
 
 	const int mnMaxCommentKind = 5;
-
-	int mnTotalHeight = 0;
+	
+	//マウスのホイール量
+	int mnMouseWheelValue;
+	bool mbIsScrolled;
 };

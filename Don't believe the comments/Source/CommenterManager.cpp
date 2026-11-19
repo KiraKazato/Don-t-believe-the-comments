@@ -181,7 +181,11 @@ void CommenterManager::ChooseDisplayCommenter()
 		if (mnMaxCommentGridPositionY <= commentY)
 		{
 			int diff = commentY - mnMaxCommentGridPositionY;
-			mnCurrentCommentGridPositionY -= diff;
+			
+			if (!mbIsScrolled)
+			{
+				mnCurrentCommentGridPositionY -= diff;
+			}
 		}
 		mnID++;
 
@@ -270,9 +274,11 @@ std::vector<std::string> CommenterManager::ChooseTemplateCommentKind(int _kind)
 
 void CommenterManager::Update()
 {
+	ScrollComments();
 	ChooseDisplayCommenter();
+	
 	if (mDisplayCommenters.empty())return;
-	int drawTotalHeight = mnTotalHeight;
+	int drawTotalHeight{};
 	for (const auto& commenter : mDisplayCommenters)
 	{
 		commenter->updateReputation(drawTotalHeight);
@@ -298,7 +304,7 @@ void CommenterManager::SetCommenter(Commenter* _commenter)
 void CommenterManager::SetDisplayCommenter(Commenter* _commenter)
 {
 	// データ上に残すコメントの数
-	constexpr int saveComments = 15;
+	constexpr int saveComments = 1000;
 
 	/**/if(mDisplayCommenters.size() > saveComments)
 	{
@@ -366,7 +372,7 @@ bool CommenterManager::IsOneSecond()
 
 	int diffTime = currentTime - lastTime;
 
-	if (diffTime >= 20)
+	if (diffTime >= 1500)
 	{
 		lastTime = currentTime;
 		return true;
@@ -412,5 +418,52 @@ void CommenterManager::ResetCommenterReputation()
 	for (auto& commenter : mCommenters)
 	{
 		commenter->SetReputation(1.0f);
+	}
+}
+
+void CommenterManager::ScrollComments()
+{
+
+	int totalHeight{};
+	for (auto comment : mDisplayCommenters)
+	{
+		totalHeight += comment->GetTotalHeight();
+	/*	if (totalHeight > (mnCommentFrameInY2 - mnCommentFrameInY1))
+		{
+			break;
+		}*/
+	}
+	
+	if (totalHeight < (mnCommentFrameInY2 - mnCommentFrameInY1))
+	{
+		return;
+	}
+	
+	Master::mpMouseManager->GetMouseWheelVolume(&mnMouseWheelValue);
+	if (mnMouseWheelValue > 0)
+	{
+		mnMouseWheelValue += 4;
+	}
+	else if(mnMouseWheelValue < 0)
+	{
+		mnMouseWheelValue -= 4;
+	}
+	
+	mnCurrentCommentGridPositionY += mnMouseWheelValue;
+	if (mnCurrentCommentGridPositionY > mnBaseCommentGridPositionY)
+	{
+		mnCurrentCommentGridPositionY = mnBaseCommentGridPositionY;
+	}
+	if (mnCurrentCommentGridPositionY < mnCommentFrameInY2 - totalHeight)
+	{
+		mnCurrentCommentGridPositionY = mnCommentFrameInY2 - totalHeight;
+	}
+	if (mnCurrentCommentGridPositionY > mnCommentFrameInY2 - totalHeight)
+	{
+		mbIsScrolled = true;
+	}
+	else
+	{
+		mbIsScrolled = false;
 	}
 }

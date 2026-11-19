@@ -31,7 +31,7 @@ private:
 
 	MousePoint mMousePoint;
 
-	int leftClick;
-	int oldLeftClick;
-	int mouseWheelVolume;
+	int leftClick{};
+	int oldLeftClick{};
+	int mnMouseWheelVolume{};
 };

@@ -20,6 +20,8 @@ public:
 	//マウスの場所
 	void GetMousePosition(int* X, int* Y);
 
+	void GetMouseWheelVolume(int* Volume);
+
 	//左クリックしたか
 	bool PressLeftClick();
 	//左クリックを離したか
@@ -31,4 +33,5 @@ private:
 
 	int leftClick;
 	int oldLeftClick;
+	int mouseWheelVolume;
 };

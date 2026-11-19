@@ -14,6 +14,7 @@ void MouseManager::Update()
 {
 	GetMousePoint(&mMousePoint.mouseX, &mMousePoint.mouseY);
 	oldLeftClick = leftClick;
+	mouseWheelVolume = GetMouseWheelRotVol();
 	leftClick = (GetMouseInput() & MOUSE_INPUT_LEFT);
 }
 
@@ -27,6 +28,12 @@ void MouseManager::GetMousePosition(int* _x, int* _y)
 	if (!_x || !_y)return;
 	*_x = mMousePoint.mouseX;
 	*_y = mMousePoint.mouseY;
+}
+
+void MouseManager::GetMouseWheelVolume(int* _volume)
+{
+	if (!_volume)return;
+	*_volume = mouseWheelVolume;
 }
 
 bool MouseManager::PressLeftClick()

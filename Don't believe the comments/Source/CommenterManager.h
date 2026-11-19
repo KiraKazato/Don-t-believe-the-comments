@@ -54,6 +54,8 @@ public:
 	//–â‘è‚ªo‚Ä‚¢‚é‚©‚ğ’m‚é
 	void QuestionStarted(bool _start);
 
+	void SetIsSuperHintDraw(bool _flag);
+
 	//–â‘è‚ª•Ï‚í‚Á‚½‚Ìˆ—
 	void ChangeQuestion();
 
@@ -107,4 +109,6 @@ private:
 	const int mnMaxCommentKind = 5;
 
 	int mnTotalHeight = 0;
+
+	bool mbIsSuperCommentDraw = false;
 };

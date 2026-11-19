@@ -41,6 +41,8 @@ private:
 
 	void DrawNextButton();//次へボタンの追加
 
+	void QuestionTimer();
+
 	void GameOver();
 
 	void GameEnd();
@@ -92,4 +94,11 @@ private:
 	int mnShakeTime = 0;  // 揺れる残り時間（フレーム数）
 	int mnShakeX = 0;     // 横方向のズレ量
 	int mnShakeY = 0;     // 縦方向のズレ量
+
+private:
+	int mnQuestionTimer = 0;
+	const int mnLimitQuestionTimer = int(1000.0f * 30.0f);
+	bool mbIsDrawSuperHint = false;
+	//理由：static intを使った際、タイトルやリザルトに行ってもカウントし続けてしまうため
+	int lastTime = 0;
 };

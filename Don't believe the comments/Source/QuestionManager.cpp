@@ -158,6 +158,14 @@ void QuestionManager::Load(const std::string& _filePath)
 			inData.falseComment = LoadComment(ssComent, cellComment);
 		}
 
+		if (getline(ss, cell, ','))
+		{
+			std::stringstream ssComent(cell);
+			std::string cellComment;
+
+			inData.superHintComment = LoadComment(ssComent, cellComment);
+		}
+
 		// 入れる
 		mQuestions[static_cast<size_t>(inData.difficulty - 1)].first.emplace_back(inData);
 	}
@@ -466,7 +474,6 @@ void QuestionManager::SetQuestion(int _index, int _difficulty)
 
 const QuestionData& QuestionManager::GetQuestionData()
 {
-	// mnCurrentIndexがエラー部分を参照したらエラーデータを返す
 	return mQuestions.at(mnCurrentDifficulty).first.at(mnCurrentIndex);
 }
 

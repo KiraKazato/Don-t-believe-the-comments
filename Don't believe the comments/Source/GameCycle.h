@@ -97,7 +97,7 @@ private:
 
 private:
 	int mnQuestionTimer = 0;
-	const int mnLimitQuestionTimer = int(1000.0f * 30.0f);
+	const int mnLimitQuestionTimer = int(1000.0f * 10.0f);
 	bool mbIsDrawSuperHint = false;
 	//理由：static intを使った際、タイトルやリザルトに行ってもカウントし続けてしまうため
 	int lastTime = 0;

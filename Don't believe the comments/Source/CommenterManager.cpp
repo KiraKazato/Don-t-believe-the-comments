@@ -171,7 +171,11 @@ void CommenterManager::ChooseDisplayCommenter()
 			continue;
 		}
 		comment = GetDisplayComment(commenter->GetState());
-		new Commenter(commenter,commenter->GetName(), commenter->GetState(), comment, mnID);
+		new Commenter(commenter, commenter->GetName(), commenter->GetState(), comment, mnID, mbIsSuperCommentDraw);
+		if (mbIsSuperCommentDraw)
+		{
+			mbIsSuperCommentDraw = false;	// 一回出したら次を指示されるまでもう出さない
+		}
 
 		for (const auto& displayCommenter : mDisplayCommenters)
 		{
@@ -203,7 +207,6 @@ std::string CommenterManager::GetDisplayComment(int _state)
 			//複数存在する場合は選ぶ
 			const std::vector<std::string>& chooseSuperHintComment = Master::mpQuestionManager->GetQuestionData().superHintComment;
 			index = GetRand(static_cast<int>(chooseSuperHintComment.size()) - 1);
-			mbIsSuperCommentDraw = false;	// 一回出したら次を指示されるまでもう出さない
 			return chooseSuperHintComment.at(index);
 		}
 

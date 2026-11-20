@@ -37,10 +37,12 @@ public:
 	//名前と評価とステータスだけ
 	Commenter(std::string _name, int _state);
 	//コメントが決まったら
-	Commenter(Commenter* _parent, std::string _name, int _state, std::string _comment, int _number);
+	Commenter(Commenter* _parent, std::string _name, int _state, std::string _comment, int _number, bool _isSuperChat = false);
 	~Commenter();
 
 	void Draw();
+
+	void SuperChatFrameDraw();
 
 	//ステートをとる
 	int GetState() const { return mnCommenterState; }
@@ -67,6 +69,8 @@ public:
 	//ボタンのベース変更
 	void ChangeReputationButtonPosition();
 private:
+	std::string AmountSeparate(int _amount);
+
 	//コメンターの名前
 	std::string msCommenterName{};
 
@@ -92,6 +96,11 @@ private:
 	int mnCommentFontHandle{};
 	//名前のフォント
 	int mnNameFontHandle{};
+	
+	//
+	int mnSuperChatCommentFontHandle{};
+	//
+	int mnSuperChatAmountFontHandle{};
 
 	//名前文の空白
 	int mnNameHeight = 3;
@@ -102,4 +111,6 @@ private:
 	Commenter* mParentCommenter = nullptr;
 
 	int mnCurrentCommentHeight{};
+
+	bool mbIsSuperChat = false;
 };

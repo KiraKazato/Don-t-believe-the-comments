@@ -29,6 +29,8 @@ struct QuestionData
 	std::vector<std::string> falseComment{};	// 偽コメント
 	std::vector<std::string> superHintComment{};// 大ヒントコメント
 
+	bool isInputEnglish = false;	// 英語入力を行う問題
+
 	// コンストラクタ
 	// データを作る際、明示的に作ることができる
 	QuestionData(int questionID, int questionGraphHandle, const std::string& answer, int difficulty, const std::vector<std::string>& trueComment, const std::vector<std::string>& falseComment,const std::vector<std::string>& superHintComment)

@@ -5,13 +5,23 @@ Commenter::Commenter(std::string _name, int _state) :msCommenterName(_name), mnC
 	Master::mpCommenterManager->SetCommenter(this);
 }
 
-Commenter::Commenter(Commenter* _parent,std::string _name, int _state, std::string _comment, int _number) :mParentCommenter(_parent), msCommenterName(_name), mnCommenterState(_state), msComment(_comment), mnCommentNumber(_number)
+Commenter::Commenter(Commenter* _parent, std::string _name, int _state, std::string _comment, int _number, bool _isSuperChat) :mParentCommenter(_parent), msCommenterName(_name), mnCommenterState(_state), msComment(_comment), mnCommentNumber(_number), mbIsSuperChat(_isSuperChat)
 {
 	Master::mpCommenterManager->SetDisplayCommenter(this);
 	mnNameFontHandle = Master::mpFontManager->GetFontHandle(FontManager::FONT_TETUBINN, 21);
 	mnCommentFontHandle = Master::mpFontManager->GetFontHandle(FontManager::FONT_TETUBINN, 24);
-	msCommenterName=CheckLineBreak(msCommenterName, mnNameFontHandle);
-	msComment = CheckLineBreak(msComment, mnCommentFontHandle);
+	mnSuperChatCommentFontHandle = Master::mpFontManager->GetFontHandle(FontManager::FONT_TETUBINN, 25);
+	mnSuperChatAmountFontHandle = Master::mpFontManager->GetFontHandle(FontManager::FONT_TETUBINN, 23);
+
+	msCommenterName = CheckLineBreak(msCommenterName, mnNameFontHandle);
+	if (!mbIsSuperChat)
+	{	
+		msComment = CheckLineBreak(msComment, mnCommentFontHandle);
+	}
+	else
+	{
+		msComment = CheckLineBreak(msComment, mnSuperChatCommentFontHandle);
+	}
 	mfCommenterReputation = mParentCommenter->GetReputation();
 	mGoodButton.handle = Master::mpResourceManager->LoadGraphics("Resource/NeedCommenter/GoodButton.png");
 	mGoodButton = {
@@ -42,9 +52,53 @@ void Commenter::Draw()
 	int currentGridPositionX{};
 	int currentGridPositionY{};
 	Master::mpCommenterManager->GetCurrentPosition(&currentGridPositionX, &currentGridPositionY);
-	DrawFormatStringToHandle(Master::gridWidth * currentGridPositionX, Master::gridHeight * (currentGridPositionY + (mnCurrentCommentHeight)), GetColor(0, 0, 0), mnNameFontHandle, "%s", msCommenterName.c_str());
-	DrawFormatStringToHandle(Master::gridWidth * currentGridPositionX, Master::gridHeight * (currentGridPositionY + mnNameHeight + (mnCurrentCommentHeight)), GetColor(0, 0, 0), mnCommentFontHandle, "%s", msComment.c_str());
+	int drawX = Master::gridWidth * currentGridPositionX;
+	int nameDrawY = Master::gridHeight * (currentGridPositionY + (mnCurrentCommentHeight));
+	int commentDrawY = Master::gridHeight * (currentGridPositionY + mnNameHeight + (mnCurrentCommentHeight));
+	unsigned int color = GetColor(0, 0, 0);
+	
+	int commentFont = mnCommentFontHandle;
+	if (mbIsSuperChat)
+	{
+		drawX += Master::gridWidth / 2;
+		nameDrawY += Master::gridHeight * 2 - Master::gridHeight / 3;
+		commentDrawY += Master::gridHeight * 2 - Master::gridHeight / 3;
+		commentFont = mnSuperChatCommentFontHandle;
+
+		color = GetColor(255, 255, 255);
+	}
+	
+	SuperChatFrameDraw();
+
+	DrawFormatStringToHandle(drawX, nameDrawY, color, mnNameFontHandle, "%s", msCommenterName.c_str());
+	DrawFormatStringToHandle(drawX, commentDrawY, color, commentFont, "%s", msComment.c_str());
 	DrawReputatoionGraph();
+}
+
+void Commenter::SuperChatFrameDraw()
+{
+	if (!mbIsSuperChat)
+	{
+		return;
+	}
+
+	int currentGridPositionX{};
+	int currentGridPositionY{};
+	Master::mpCommenterManager->GetCurrentPosition(&currentGridPositionX, &currentGridPositionY);
+	int drawX1 = Master::gridWidth * currentGridPositionX - Master::gridWidth / 2;
+	int drawY1 = Master::gridHeight * (currentGridPositionY + (mnCurrentCommentHeight)) + Master::gridHeight - (Master::gridHeight / 2);
+	int drawX2 = Master::gridWidth * 117;
+	int drawY2 = drawY1 + (Master::gridHeight * (totalHeightSpace - 4)) + (Master::gridHeight / 2);
+
+	DrawBox(drawX1, drawY1, drawX2, drawY2 + Master::gridHeight, GetColor(178, 70, 70), TRUE);
+	DrawBox(drawX1, drawY1, drawX2, drawY2, GetColor(255, 100, 100), TRUE);
+
+	std::string amountStr = AmountSeparate(10000);
+
+	int width, height;
+	GetDrawFormatStringSizeToHandle(&width, &height, NULL, mnSuperChatAmountFontHandle, "%s", amountStr.c_str());
+
+	DrawFormatStringToHandle(drawX2 - width - Master::gridWidth, drawY2 - height, GetColor(255, 255, 255), mnSuperChatAmountFontHandle, "%s", amountStr.c_str());
 }
 
 void Commenter::SetReputation(float  _reputation)
@@ -59,7 +113,15 @@ std::string Commenter::CheckLineBreak(std::string _text, int _fontHandle)
 	int startCommentPotision{};
 	Master::mpCommenterManager->GetBasePosition(&startCommentPotision, nullptr);
 	startCommentPotision = Master::gridWidth * startCommentPotision;
-	int endCommentPosition = Master::gridWidth * Master::mpCommenterManager->GetMaxWidthPosition();
+	int endCommentPosition{};
+	if (mbIsSuperChat)
+	{
+		endCommentPosition = Master::gridWidth * 117;
+	}
+	else
+	{
+		endCommentPosition = Master::gridWidth* Master::mpCommenterManager->GetMaxWidthPosition();
+	}
 
 	for (int number = 0; number < _text.size();)
 	{
@@ -87,12 +149,22 @@ std::string Commenter::CheckLineBreak(std::string _text, int _fontHandle)
 		number += charBytes;
 	}
 
+	if (mbIsSuperChat)
+	{
+		totalHeightSpace += 3;
+	}
+
 	resultText += currentText;
 	return resultText;
 }
 
 void Commenter::DrawReputatoionGraph()
 {
+	if (mbIsSuperChat)
+	{
+		return;
+	}
+
 	DrawExtendGraphF(Master::gridWidth * mGoodButton.currentPosition.currentX1, Master::gridHeight * mGoodButton.currentPosition.currentY1, Master::gridWidth * mGoodButton.currentPosition.currentX2, Master::gridHeight * mGoodButton.currentPosition.currentY2, mGoodButton.pressed ? mGoodButton.pressedHandle : mGoodButton.handle, TRUE);
 	DrawExtendGraphF(Master::gridWidth * mBadButton.currentPosition.currentX1, Master::gridHeight * mBadButton.currentPosition.currentY1, Master::gridWidth * mBadButton.currentPosition.currentX2, Master::gridHeight * mBadButton.currentPosition.currentY2, mBadButton.pressed ? mBadButton.pressedHandle : mBadButton.handle, TRUE);
 }
@@ -197,4 +269,18 @@ void Commenter::ChangeReputationButtonPosition()
 	mBadButton.currentPosition.currentY1 = currentGridPositionY - (baseGridPositionY - mBadButton.basePosition.baseY1)+mnCurrentCommentHeight;
 	mBadButton.currentPosition.currentY2 = currentGridPositionY - (baseGridPositionY - mBadButton.basePosition.baseY2)+mnCurrentCommentHeight;
 
+}
+
+std::string Commenter::AmountSeparate(int _amount)
+{
+	std::string ret = "";
+	std::string amountStr = std::to_string(_amount);
+
+	ret = amountStr;
+	for (int i = static_cast<int>(amountStr.size()) - 3; i > 0; i -= 3) 
+	{
+		ret.insert(static_cast<size_t>(i), ",");
+	}
+
+	return ret;
 }

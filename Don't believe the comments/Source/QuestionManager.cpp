@@ -123,7 +123,14 @@ void QuestionManager::Load(const std::string& _filePath)
 		}
 
 		// “š‚¦
-		if (getline(ss, cell, ',')) inData.answer = cell;
+		if (getline(ss, cell, ',')) 
+		{
+			inData.answer = cell;
+			if (!cell.empty() && isalpha(cell.front()))
+			{
+				inData.isInputEnglish = true;
+			}
+		}
 		
 		// “ïˆÕ“x
 		if (getline(ss, cell, ',')) 

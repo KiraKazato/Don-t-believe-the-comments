@@ -1,6 +1,7 @@
 ﻿#include "TextInputManager.h"
 #include "Typing.h"
 #include "DxLib.h"
+#include "Master.h"
 
 TextInputManager::TextInputManager()
 {
@@ -32,16 +33,32 @@ void TextInputManager::Draw()
 
 	if (mnKeyInputState == 0)
 	{
-		// サイズ計測
-		int width = 0, height = 0;
-		int cursorLineX = 0;
-		GetDrawFormatStringSizeToHandle(&width, &height, NULL, mnFontHandle, "%s", mOutputString.c_str());
-		int centerX = (mnKeyInputDrawX - (width / 2));
-		cursorLineX = centerX + GetDrawFormatStringWidthToHandle(mnFontHandle, "%s",mOutputString.c_str()); // カーソル位置を計算
-		
-		// サイズに合わせて中央表示
-		DrawFormatStringToHandle(centerX, mnKeyInputDrawY, KEYINPUT_STRING_COLOR, mnFontHandle, "%s", mOutputString.c_str());
-		DrawLine(cursorLineX, mnKeyInputDrawY, cursorLineX, mnKeyInputDrawY + height, GetColor(128, 128, 128), 2);
+		if (!mbIsAlphabet)
+		{
+			// サイズ計測
+			int width = 0, height = 0;
+			int cursorLineX = 0;
+			GetDrawFormatStringSizeToHandle(&width, &height, NULL, mnFontHandle, "%s", mOutputString.c_str());
+			int centerX = (mnKeyInputDrawX - (width / 2));
+			cursorLineX = centerX + GetDrawFormatStringWidthToHandle(mnFontHandle, "%s", mOutputString.c_str()); // カーソル位置を計算
+
+			// サイズに合わせて中央表示
+			DrawFormatStringToHandle(centerX, mnKeyInputDrawY, KEYINPUT_STRING_COLOR, mnFontHandle, "%s", mOutputString.c_str());
+			DrawLine(cursorLineX, mnKeyInputDrawY, cursorLineX, mnKeyInputDrawY + height, GetColor(128, 128, 128), 2);
+		}
+		else
+		{
+			// サイズ計測
+			int width = 0, height = 0;
+			int cursorLineX = 0;
+			GetDrawFormatStringSizeToHandle(&width, &height, NULL, mnFontHandle, "%s", mOutputAlphabetString.c_str());
+			int centerX = (mnKeyInputDrawX - (width / 2));
+			cursorLineX = centerX + GetDrawFormatStringWidthToHandle(mnFontHandle, "%s", mOutputAlphabetString.c_str()); // カーソル位置を計算
+
+			// サイズに合わせて中央表示
+			DrawFormatStringToHandle(centerX, mnKeyInputDrawY, KEYINPUT_STRING_COLOR, mnFontHandle, "%s", mOutputAlphabetString.c_str());
+			DrawLine(cursorLineX, mnKeyInputDrawY, cursorLineX, mnKeyInputDrawY + height, GetColor(128, 128, 128), 2);
+		}
 	}
 }
 
@@ -70,7 +87,7 @@ void TextInputManager::Update()
 		}
 	}
 
-	if(mnKeyInputState == 0)
+	if (mnKeyInputState == 0)
 	{
 		// 押したボタン（入力した文字）を得る
 		char inputChar = GetInputChar(TRUE);
@@ -125,6 +142,11 @@ const std::string& TextInputManager::GetInputString() const
 	return mOutputString;
 }
 
+const std::string& TextInputManager::GetInputStringAlphabet() const
+{
+	return mOutputAlphabetString;
+}
+
 void TextInputManager::ResetState()
 {
 	mnKeyInputState = 0;
@@ -134,6 +156,7 @@ void TextInputManager::ResetInput()
 {
 	mInputString = "";
 	mOutputString = "";
+	mOutputAlphabetString = "";
 	mTyping.ClearString();
 }
 
@@ -147,13 +170,19 @@ void TextInputManager::ControllInput(char _input)
 		{
 			return;
 		}
-		// 入力を加えるただし、スペース、数字、記号は無視する
- 		if ((_input != ' ' && (mTyping.IsAlphabet(_input) || mTyping.IsNumber(_input))) || _input == '-')
+		// 入力を加えるただし、スペース、記号は無視する
+		if ((_input != ' ' && (mTyping.IsAlphabet(_input) || mTyping.IsNumber(_input))) || _input == '-')
 			mInputString += _input;
 		// 入力を変換
-		mOutputString = mTyping.KanaDictionary(mInputString);
-
-		mTyping.KanaNormalize(mOutputString);
+		if (mbIsAlphabet)
+		{
+			mOutputAlphabetString = mTyping.Alphabet(mInputString);
+		}
+		else
+		{
+			mOutputString = mTyping.KanaDictionary(mInputString);
+			mTyping.KanaNormalize(mOutputString);
+		}
 
 		if (!mTyping.GetConvertionUnits().empty())
 			mnDrawCursorPosition = mTyping.GetConvertionUnits().back().GetKanaCharEnd();
@@ -179,6 +208,17 @@ void TextInputManager::ControllInput(char _input)
 
 	mInputString = mTyping.GetRoma();
 	mOutputString = mTyping.GetKana();
+	mOutputAlphabetString = mTyping.GetAlphabet();
+}
+
+void TextInputManager::SetIsAlphabet(bool _flag)
+{
+	mbIsAlphabet = _flag;
+}
+
+bool TextInputManager::IsAlphabet() const
+{
+	return mbIsAlphabet;
 }
 
 void TextInputManager::SetNoInput()

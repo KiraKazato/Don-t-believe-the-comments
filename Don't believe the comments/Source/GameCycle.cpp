@@ -25,6 +25,9 @@ void GameCycle::Initialize()
 
 	mnCorrectAnswer = new EffekseerEffect("Resource/Effect/CorrectAnswer.efk",300.0f);
 	mnFallingCrossMiss = new EffekseerEffect("Resource/Effect/FallingCrossMiss.efk", 95.0f);
+	mnSuperChatEffect = new EffekseerEffect("Resource/Effect/SuperChatEffect.efk", 50.0f);
+	mnSuperChatEffect->SetManualDraw(true); //このエフェクトだけ手動で描く
+
 
 	Master::mpCommenterManager->ResetCommentCount();
 	mnNextButtonHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/Button/NextButton.png");
@@ -72,6 +75,10 @@ void GameCycle::Update()
 	if (mnFallingCrossMiss != nullptr)
 	{
 		mnFallingCrossMiss->Update();
+	}
+	if (mnSuperChatEffect != nullptr)
+	{
+		mnSuperChatEffect->Update();
 	}
 
 	if (mbGameEnd)
@@ -130,6 +137,13 @@ void GameCycle::Update()
 		}
 	}
 	GameOver();
+
+	//バックスペースキーでタイトルに戻る
+	if (CheckHitKey(KEY_INPUT_BACK))
+	{
+		mnSuperChatEffect->Play(Master::gridWidth * 103, Master::gridHeight * 53);
+
+	}
 }
 
 
@@ -170,6 +184,13 @@ void GameCycle::Finalize()
 
 void GameCycle::CommentDraw()
 {
+	//コメントの裏側にスパチャエフェクトを描画する
+	if (mnSuperChatEffect != nullptr)
+	{
+		mnSuperChatEffect->Draw();
+	}
+
+	//その上からコメントを描画する
 	SetDrawArea(Master::gridWidth * 89, Master::gridHeight * 12, Master::gridWidth * 117, Master::gridHeight * 113);
 	Master::mpCommenterManager->Draw();
 	SetDrawAreaFull();
@@ -347,6 +368,7 @@ void GameCycle::QuestionTimer()
 		mnQuestionTimer = 0;
 		Master::mpCommenterManager->SetIsSuperHintDraw(true);
 		mbIsDrawSuperHint = true;	//大ヒントを出した
+		mnSuperChatEffect->Play(Master::gridWidth * 103, Master::gridHeight * 53);
 	}
 }
 

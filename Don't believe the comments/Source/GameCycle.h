@@ -90,6 +90,8 @@ private:
 	TextInputManager mTextInputManager;
 	EffekseerEffect* mnCorrectAnswer;
 	EffekseerEffect* mnFallingCrossMiss;
+	EffekseerEffect* mnSuperChatEffect;
+
 
 	int mnShakeTime = 0;  // 揺れる残り時間（フレーム数）
 	int mnShakeX = 0;     // 横方向のズレ量

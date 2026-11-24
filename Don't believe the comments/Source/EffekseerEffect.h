@@ -46,6 +46,8 @@ public:
 	//再生速度を設定する関数
 	void SetSpeed(float speed) { effectSpeed = speed; }
 
+	void SetManualDraw(bool flag) { mbManualDraw = flag; }
+
 private:
 	VECTOR PlayPos;		// 再生したい座標
 	VECTOR mvRotation;  // 回転させたい角度
@@ -64,4 +66,6 @@ private:
 	bool LoopFlag;//ループするかのフラグ
 
 	float effectSpeed = 1.0f;
+
+	bool mbManualDraw = false;
 };

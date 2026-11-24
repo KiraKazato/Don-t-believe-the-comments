@@ -171,7 +171,11 @@ void CommenterManager::ChooseDisplayCommenter()
 			continue;
 		}
 		comment = GetDisplayComment(commenter->GetState());
-		new Commenter(commenter,commenter->GetName(), commenter->GetState(), comment, mnID);
+		new Commenter(commenter, commenter->GetName(), commenter->GetState(), comment, mnID, mbIsSuperCommentDraw);
+		if (mbIsSuperCommentDraw)
+		{
+			mbIsSuperCommentDraw = false;	// 一回出したら次を指示されるまでもう出さない
+		}
 
 		for (const auto& displayCommenter : mDisplayCommenters)
 		{
@@ -201,6 +205,16 @@ std::string CommenterManager::GetDisplayComment(int _state)
 	float rate = GetRand(10000) / 10000.0f;
 	do
 	{
+		//大ヒント
+		if (mbIsSuperCommentDraw)
+		{
+			//複数存在する場合は選ぶ
+			const std::vector<std::string>& chooseSuperHintComment = Master::mpQuestionManager->GetQuestionData().superHintComment;
+			index = GetRand(static_cast<int>(chooseSuperHintComment.size()) - 1);
+			return chooseSuperHintComment.at(index);
+		}
+
+		//テンプレート
 		if (!mbQuestionStarted || (rate < 0.6f && !mTemplateComments.empty())|| continued > 5)
 		{
 			std::vector<std::string>&& chooseTemplateComment = ChooseTemplateCommentKind(mnCommentKind);
@@ -208,7 +222,9 @@ std::string CommenterManager::GetDisplayComment(int _state)
 			return chooseTemplateComment.at(index);
 		}
 
-		const auto comments = (_state == 0) ? Master::mpQuestionManager->GetQuestionData().trueComment : Master::mpQuestionManager->GetQuestionData().falseComment;
+		//↓以後ヒント
+
+		const auto& comments = (_state == 0) ? Master::mpQuestionManager->GetQuestionData().trueComment : Master::mpQuestionManager->GetQuestionData().falseComment;
 
 		if (comments.empty())
 		{
@@ -310,10 +326,11 @@ void CommenterManager::SetDisplayCommenter(Commenter* _commenter)
 
 	/**/if(mDisplayCommenters.size() > saveComments)
 	{
-		int deleteHeight = (*mDisplayCommenters.begin())->GetTotalHeight();
+		auto itr = mDisplayCommenters.begin();
+		int deleteHeight = (*itr)->GetTotalHeight();
 		mnCurrentCommentGridPositionY += deleteHeight;
-		delete (*mDisplayCommenters.begin());
-		mDisplayCommenters.erase(mDisplayCommenters.begin());
+		delete *itr;
+		mDisplayCommenters.erase(itr);
 	}
 	mDisplayCommenters.emplace_back(_commenter);
 	mnCountComments++;
@@ -361,6 +378,11 @@ void CommenterManager::QuestionStarted(bool _start)
 	mbQuestionStarted = _start;
 }
 
+void CommenterManager::SetIsSuperHintDraw(bool _flag)
+{
+	mbIsSuperCommentDraw = _flag;
+}
+
 void CommenterManager::ChangeQuestion()
 {
 	mUsedComments.clear();
@@ -374,7 +396,7 @@ bool CommenterManager::IsOneSecond()
 
 	int diffTime = currentTime - lastTime;
 
-	if (diffTime >= 800)
+	if (diffTime >= 2000)
 	{
 		lastTime = currentTime;
 		return true;

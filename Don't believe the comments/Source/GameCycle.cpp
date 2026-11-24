@@ -17,10 +17,12 @@ void GameCycle::Initialize()
 	mnQuestionNumberHandle = Master::mpFontManager->GetFontHandle(Master::mpFontManager->FONT_TETUBINN, 26);
 	Master::mpTextInputManager->Initialize(mnInputStringHandle);
 	Master::mpTextInputManager->SetKeyInputDrawPosition(Master::gridWidth * 45, Master::gridHeight * 82);
+	Master::mpTextInputManager->SetIsAlphabet(false);
 	Master::mpQuestionManager->SetMaxQuestionCount(mnMaxQuestionNumber);
 	Master::mpQuestionManager->ResetCorrectAnswer();
 	Master::mpQuestionManager->SetIsAllClear(false);
 	Master::mpCommenterManager->SetCommentSpawnKind(STATE_BEFORE);
+	Master::mpCommenterManager->SetIsSuperHintDraw(false);
 
 	mnCorrectAnswer = new EffekseerEffect("Resource/Effect/CorrectAnswer.efk",300.0f);
 	mnFallingCrossMiss = new EffekseerEffect("Resource/Effect/FallingCrossMiss.efk", 95.0f);
@@ -29,6 +31,8 @@ void GameCycle::Initialize()
 	mnNextButtonHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/Button/NextButton.png");
 	//Master::mpUIManager->AddUI(mnNextButtonHandle,mnNextButtonX1, mnNextButtonY1, mnNextButtonX2, mnNextButtonY2, false);
 	
+	//ここで時間の初期化
+	lastTime = GetNowCount();
 
 	mfNextButtonDrawTime = 1.0f;
 	if (Master::mpViewers->GetCurrentViewers() <= 0)
@@ -82,6 +86,9 @@ void GameCycle::Update()
 		Master::mpQuestionManager->SpawnQuestion(mnQuestionNumber);
 		mnNowQuestionImageHandle = Master::mpQuestionManager->GetQuestionData().questionGraphHandle;
 		mbQuestionSpawned = true;
+		mbIsDrawSuperHint = false;
+		Master::mpTextInputManager->SetIsAlphabet(Master::mpQuestionManager->GetQuestionData().isInputEnglish);
+		mnQuestionTimer = 0;
 		switch (mnQuestionNumber)
 		{
 		case 1:
@@ -114,9 +121,9 @@ void GameCycle::Update()
 		mbQuestionDrawn = false;
 		mfQuestionDrawEasing = 0.0f;
 		Master::mpCommenterManager->QuestionStarted(false);
+		mnQuestionTimer = 0;
 		if (mnQuestionNumber >= mnMaxQuestionNumber)
 		{
-
 			GameEnd();
 		}
 		else
@@ -137,6 +144,7 @@ void GameCycle::Draw()
 	Master::mpViewers->Draw();
 	if (mbQuestionNumberDrawn && mbQuestionDrawn)
 	{
+		QuestionTimer();
 		Master::mpTextInputManager->Draw();
 	}
 
@@ -228,7 +236,15 @@ void GameCycle::InputAnswer()
 	else if (nowState == 1)
 	{
 		//文字入力
-		answer = Master::mpTextInputManager->GetInputString();
+		if (Master::mpTextInputManager->IsAlphabet())
+		{
+			answer = Master::mpTextInputManager->GetInputString();
+		}
+		else
+		{
+			answer = Master::mpTextInputManager->GetInputStringAlphabet();
+		}
+
 		
 		mbInputAnswered = true;
 	}
@@ -321,6 +337,27 @@ void GameCycle::DrawNextButton()
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	mfNextButtonDrawEasing += 1.0f / (60.0f * 1.5f);
+}
+
+void GameCycle::QuestionTimer()
+{
+	int currentTime = GetNowCount();
+	//ポーズ中でないかつ既に大ヒントを出していないとき
+	if (!Master::mpPause->IsPause() && !mbIsDrawSuperHint)
+	{
+		//カウント
+		mnQuestionTimer += currentTime - lastTime;
+	}
+	lastTime = currentTime;
+
+	//大ヒントを出す時間になったとき大ヒントフラグをtrueにする
+	if (mnQuestionTimer >= mnLimitQuestionTimer)
+	{
+		//時間リセット
+		mnQuestionTimer = 0;
+		Master::mpCommenterManager->SetIsSuperHintDraw(true);
+		mbIsDrawSuperHint = true;	//大ヒントを出した
+	}
 }
 
 void GameCycle::GameOver()

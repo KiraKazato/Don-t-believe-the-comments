@@ -123,7 +123,14 @@ void QuestionManager::Load(const std::string& _filePath)
 		}
 
 		// 答え
-		if (getline(ss, cell, ',')) inData.answer = cell;
+		if (getline(ss, cell, ',')) 
+		{
+			inData.answer = cell;
+			if (!cell.empty() && isalpha(cell.front()))
+			{
+				inData.isInputEnglish = true;
+			}
+		}
 		
 		// 難易度
 		if (getline(ss, cell, ',')) 
@@ -156,6 +163,14 @@ void QuestionManager::Load(const std::string& _filePath)
 			std::string cellComment;
 
 			inData.falseComment = LoadComment(ssComent, cellComment);
+		}
+
+		if (getline(ss, cell, ','))
+		{
+			std::stringstream ssComent(cell);
+			std::string cellComment;
+
+			inData.superHintComment = LoadComment(ssComent, cellComment);
 		}
 
 		// 入れる
@@ -466,7 +481,6 @@ void QuestionManager::SetQuestion(int _index, int _difficulty)
 
 const QuestionData& QuestionManager::GetQuestionData()
 {
-	// mnCurrentIndexがエラー部分を参照したらエラーデータを返す
 	return mQuestions.at(mnCurrentDifficulty).first.at(mnCurrentIndex);
 }
 

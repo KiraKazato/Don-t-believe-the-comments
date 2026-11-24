@@ -21,16 +21,19 @@ struct GroupRate
 
 struct QuestionData
 {
-	int questionID = -1;	// 問題番号
+	int questionID = -1;			// 問題番号
 	int questionGraphHandle = -1;	// 問題画像ハンドル
-	std::string answer{};	// 答え
-	int difficulty = 0;		// 難易度
+	std::string answer{};			// 答え
+	int difficulty = 0;				// 難易度
 	std::vector<std::string> trueComment{};		// 真コメント
 	std::vector<std::string> falseComment{};	// 偽コメント
+	std::vector<std::string> superHintComment{};// 大ヒントコメント
+
+	bool isInputEnglish = false;	// 英語入力を行う問題
 
 	// コンストラクタ
 	// データを作る際、明示的に作ることができる
-	QuestionData(int questionID, int questionGraphHandle, const std::string& answer, int difficulty, const std::vector<std::string>& trueComment, const std::vector<std::string>& falseComment)
+	QuestionData(int questionID, int questionGraphHandle, const std::string& answer, int difficulty, const std::vector<std::string>& trueComment, const std::vector<std::string>& falseComment,const std::vector<std::string>& superHintComment)
 		: questionID(questionID), questionGraphHandle(questionGraphHandle), answer(answer), difficulty(difficulty), trueComment(trueComment), falseComment(falseComment)
 	{
 	}

@@ -71,6 +71,8 @@ public:
 
 	void ScrollComments();
 
+	void DrawBackScrollButton();
+	
 private:
 	//コメンターの情報
 	std::vector<Commenter*>mCommenters;
@@ -116,5 +118,11 @@ private:
 	
 	//マウスのホイール量
 	int mnMouseWheelValue;
+	//スクロールされたか
 	bool mbIsScrolled;
+
+	int mnCommentBackHandle{};
+
+	//表示されてるコメントの高さの合計
+	int totalHeight;
 };

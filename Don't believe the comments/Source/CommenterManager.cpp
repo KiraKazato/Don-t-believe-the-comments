@@ -24,7 +24,7 @@ void CommenterManager::Initialize()
 	mCommenterNames.clear();
 	mnCurrentCommentGridPositionX = mnBaseCommentGridPositionX;
 	mnCurrentCommentGridPositionY = mnBaseCommentGridPositionY;
-	
+	mnCommentBackHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/Button/CommentBack.png");
 }
 void CommenterManager::Finalize()
 {
@@ -290,10 +290,12 @@ void CommenterManager::Draw()
 {
 	if (mDisplayCommenters.empty())return;
 
+	
 	for (const auto& commenter : mDisplayCommenters)
 	{
 		commenter->Draw();
 	}
+	DrawBackScrollButton();
 }
 
 void CommenterManager::SetCommenter(Commenter* _commenter)
@@ -372,7 +374,7 @@ bool CommenterManager::IsOneSecond()
 
 	int diffTime = currentTime - lastTime;
 
-	if (diffTime >= 1500)
+	if (diffTime >= 800)
 	{
 		lastTime = currentTime;
 		return true;
@@ -424,7 +426,7 @@ void CommenterManager::ResetCommenterReputation()
 void CommenterManager::ScrollComments()
 {
 
-	int totalHeight{};
+	totalHeight = 0;
 	for (auto comment : mDisplayCommenters)
 	{
 		totalHeight += comment->GetTotalHeight();
@@ -442,11 +444,11 @@ void CommenterManager::ScrollComments()
 	Master::mpMouseManager->GetMouseWheelVolume(&mnMouseWheelValue);
 	if (mnMouseWheelValue > 0)
 	{
-		mnMouseWheelValue += 4;
+		mnMouseWheelValue += 5;
 	}
 	else if(mnMouseWheelValue < 0)
 	{
-		mnMouseWheelValue -= 4;
+		mnMouseWheelValue -= 5;
 	}
 	
 	mnCurrentCommentGridPositionY += mnMouseWheelValue;
@@ -465,5 +467,22 @@ void CommenterManager::ScrollComments()
 	else
 	{
 		mbIsScrolled = false;
+		
+	}
+}
+
+void CommenterManager::DrawBackScrollButton()
+{
+	if (mbIsScrolled)
+	{
+		int mouseX{}, mouseY{};
+		bool pressed;
+		Master::mpMouseManager->GetMousePosition(&mouseX, &mouseY);
+		DrawExtendGraph(Master::gridWidth * 101, Master::gridHeight * 104, Master::gridWidth * 105, Master::gridHeight * 111, mnCommentBackHandle, TRUE);
+		bool inside = Master::mpUIManager->InsideUI(Master::gridWidth * 101, Master::gridHeight * 104, Master::gridWidth * 105, Master::gridHeight * 111, mouseX, mouseY);
+		if (Master::mpUIManager->ClickedUI(&pressed, inside))
+		{
+			mnCurrentCommentGridPositionY = mnCommentFrameInY2 - totalHeight;
+		}
 	}
 }

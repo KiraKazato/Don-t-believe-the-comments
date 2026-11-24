@@ -126,7 +126,7 @@ void QuestionManager::Load(const std::string& _filePath)
 		if (getline(ss, cell, ',')) 
 		{
 			inData.answer = cell;
-			if (!cell.empty() && isalpha(cell.front()))
+			if (!cell.empty() && IsAlphabet(cell.front()))
 			{
 				inData.isInputEnglish = true;
 			}
@@ -436,6 +436,16 @@ bool QuestionManager::IsCharactorLargeByte(char _charactor)
 		}
 	}
 	return false;
+}
+
+bool QuestionManager::IsAlphabet(char _charactor)
+{
+	constexpr char smallMin = 'a';
+	constexpr char smallMax = 'z';
+	constexpr char largeMin = 'A';
+	constexpr char largeMax = 'Z';
+
+	return (_charactor >= smallMin && _charactor <= smallMax) || (_charactor >= largeMin && _charactor <= largeMax);
 }
 
 int QuestionManager::GetCorrectAnswerCount()

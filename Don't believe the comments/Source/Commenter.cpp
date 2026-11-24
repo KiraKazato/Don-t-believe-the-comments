@@ -91,7 +91,8 @@ void Commenter::SuperChatFrameDraw()
 	int drawY2 = drawY1 + (Master::gridHeight * (totalHeightSpace - 4)) + (Master::gridHeight / 2);
 
 	DrawBox(drawX1, drawY1, drawX2, drawY2 + Master::gridHeight, GetColor(178, 70, 70), TRUE);
-	DrawBox(drawX1, drawY1, drawX2, drawY2, GetColor(255, 100, 100), TRUE);
+	DrawBox(drawX1, drawY1, drawX2 - (Master::gridWidth / 2), drawY2, GetColor(255, 100, 100), TRUE);
+	DrawLine(drawX2 - (Master::gridWidth / 2), drawY2, drawX2, drawY2 + Master::gridHeight, GetColor(191, 75, 75));
 
 	std::string amountStr = AmountSeparate(10000);
 

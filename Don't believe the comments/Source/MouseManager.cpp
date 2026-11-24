@@ -14,13 +14,13 @@ void MouseManager::Update()
 {
 	GetMousePoint(&mMousePoint.mouseX, &mMousePoint.mouseY);
 	oldLeftClick = leftClick;
-	mouseWheelVolume = GetMouseWheelRotVol();
+	mnMouseWheelVolume = GetMouseWheelRotVol();
 	leftClick = (GetMouseInput() & MOUSE_INPUT_LEFT);
 }
 
 void MouseManager::Draw()
 {
-	//DrawFormatString(0, 0, GetColor(0,0,0), "%d : %d", mMousePoint.mouseX, mMousePoint.mouseY);
+	DrawFormatString(0, 0, GetColor(0,0,0), "%d",mnMouseWheelVolume);
 }
 
 void MouseManager::GetMousePosition(int* _x, int* _y)
@@ -33,7 +33,7 @@ void MouseManager::GetMousePosition(int* _x, int* _y)
 void MouseManager::GetMouseWheelVolume(int* _volume)
 {
 	if (!_volume)return;
-	*_volume = mouseWheelVolume;
+	*_volume = mnMouseWheelVolume;
 }
 
 bool MouseManager::PressLeftClick()

@@ -24,7 +24,7 @@ void CommenterManager::Initialize()
 	mCommenterNames.clear();
 	mnCurrentCommentGridPositionX = mnBaseCommentGridPositionX;
 	mnCurrentCommentGridPositionY = mnBaseCommentGridPositionY;
-	
+	mnCommentBackHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/Button/CommentBack.png");
 }
 void CommenterManager::Finalize()
 {
@@ -185,7 +185,11 @@ void CommenterManager::ChooseDisplayCommenter()
 		if (mnMaxCommentGridPositionY <= commentY)
 		{
 			int diff = commentY - mnMaxCommentGridPositionY;
-			mnCurrentCommentGridPositionY -= diff;
+			
+			if (!mbIsScrolled)
+			{
+				mnCurrentCommentGridPositionY -= diff;
+			}
 		}
 		mnID++;
 
@@ -286,9 +290,11 @@ std::vector<std::string> CommenterManager::ChooseTemplateCommentKind(int _kind)
 
 void CommenterManager::Update()
 {
+	ScrollComments();
 	ChooseDisplayCommenter();
+	
 	if (mDisplayCommenters.empty())return;
-	int drawTotalHeight = mnTotalHeight;
+	int drawTotalHeight{};
 	for (const auto& commenter : mDisplayCommenters)
 	{
 		commenter->updateReputation(drawTotalHeight);
@@ -300,10 +306,12 @@ void CommenterManager::Draw()
 {
 	if (mDisplayCommenters.empty())return;
 
+	
 	for (const auto& commenter : mDisplayCommenters)
 	{
 		commenter->Draw();
 	}
+	DrawBackScrollButton();
 }
 
 void CommenterManager::SetCommenter(Commenter* _commenter)
@@ -314,7 +322,7 @@ void CommenterManager::SetCommenter(Commenter* _commenter)
 void CommenterManager::SetDisplayCommenter(Commenter* _commenter)
 {
 	// データ上に残すコメントの数
-	constexpr int saveComments = 15;
+	constexpr int saveComments = 1000;
 
 	/**/if(mDisplayCommenters.size() > saveComments)
 	{
@@ -434,5 +442,69 @@ void CommenterManager::ResetCommenterReputation()
 	for (auto& commenter : mCommenters)
 	{
 		commenter->SetReputation(1.0f);
+	}
+}
+
+void CommenterManager::ScrollComments()
+{
+
+	totalHeight = 0;
+	for (auto comment : mDisplayCommenters)
+	{
+		totalHeight += comment->GetTotalHeight();
+	/*	if (totalHeight > (mnCommentFrameInY2 - mnCommentFrameInY1))
+		{
+			break;
+		}*/
+	}
+	
+	if (totalHeight < (mnCommentFrameInY2 - mnCommentFrameInY1))
+	{
+		return;
+	}
+	
+	Master::mpMouseManager->GetMouseWheelVolume(&mnMouseWheelValue);
+	if (mnMouseWheelValue > 0)
+	{
+		mnMouseWheelValue += 5;
+	}
+	else if(mnMouseWheelValue < 0)
+	{
+		mnMouseWheelValue -= 5;
+	}
+	
+	mnCurrentCommentGridPositionY += mnMouseWheelValue;
+	if (mnCurrentCommentGridPositionY > mnBaseCommentGridPositionY)
+	{
+		mnCurrentCommentGridPositionY = mnBaseCommentGridPositionY;
+	}
+	if (mnCurrentCommentGridPositionY < mnCommentFrameInY2 - totalHeight)
+	{
+		mnCurrentCommentGridPositionY = mnCommentFrameInY2 - totalHeight;
+	}
+	if (mnCurrentCommentGridPositionY > mnCommentFrameInY2 - totalHeight)
+	{
+		mbIsScrolled = true;
+	}
+	else
+	{
+		mbIsScrolled = false;
+		
+	}
+}
+
+void CommenterManager::DrawBackScrollButton()
+{
+	if (mbIsScrolled)
+	{
+		int mouseX{}, mouseY{};
+		bool pressed;
+		Master::mpMouseManager->GetMousePosition(&mouseX, &mouseY);
+		DrawExtendGraph(Master::gridWidth * 101, Master::gridHeight * 104, Master::gridWidth * 105, Master::gridHeight * 111, mnCommentBackHandle, TRUE);
+		bool inside = Master::mpUIManager->InsideUI(Master::gridWidth * 101, Master::gridHeight * 104, Master::gridWidth * 105, Master::gridHeight * 111, mouseX, mouseY);
+		if (Master::mpUIManager->ClickedUI(&pressed, inside))
+		{
+			mnCurrentCommentGridPositionY = mnCommentFrameInY2 - totalHeight;
+		}
 	}
 }

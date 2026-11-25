@@ -98,6 +98,7 @@ void Subscribers::Roll(float _duration)
 	if (mbIsRollingFinished)
 	{
 		mnStartSubscribersCount = mnTargetSubscribersCount;
+		AddSubscribers();
 		return;
 	}
 
@@ -147,13 +148,16 @@ void Subscribers::RollInitialize()
 	{
 		int digitNum = 1;
 
+		// Œ…
 		for (int j = 1; j < i; j++)
 		{
 			digitNum *= 10;
 		}
 
+		// ‚»‚ÌŒ…‚Í‚Ç‚ê‚¾‚¯“®‚­‚©
 		int moveDigits = (mnTargetSubscribersCount / digitNum) - (mnStartSubscribersCount / digitNum);
 
+		// ‚»‚ÌŒ…‚Ì”Žš
 		int targetNumber = (mnTargetSubscribersCount / digitNum) % 10;
 
 		NumberToRollPosition(i, targetNumber, moveDigits);

@@ -33,32 +33,15 @@ void TextInputManager::Draw()
 
 	if (mnKeyInputState == 0)
 	{
-		if (!mbIsAlphabet)
-		{
-			// サイズ計測
-			int width = 0, height = 0;
-			int cursorLineX = 0;
-			GetDrawFormatStringSizeToHandle(&width, &height, NULL, mnFontHandle, "%s", mOutputString.c_str());
-			int centerX = (mnKeyInputDrawX - (width / 2));
-			cursorLineX = centerX + GetDrawFormatStringWidthToHandle(mnFontHandle, "%s", mOutputString.c_str()); // カーソル位置を計算
+		std::string drawString = mbIsAlphabet ? mOutputAlphabetString : mOutputString;
 
-			// サイズに合わせて中央表示
-			DrawFormatStringToHandle(centerX, mnKeyInputDrawY, KEYINPUT_STRING_COLOR, mnFontHandle, "%s", mOutputString.c_str());
-			DrawLine(cursorLineX, mnKeyInputDrawY, cursorLineX, mnKeyInputDrawY + height, GetColor(128, 128, 128), 2);
-		}
-		else
-		{
-			// サイズ計測
-			int width = 0, height = 0;
-			int cursorLineX = 0;
-			GetDrawFormatStringSizeToHandle(&width, &height, NULL, mnFontHandle, "%s", mOutputAlphabetString.c_str());
-			int centerX = (mnKeyInputDrawX - (width / 2));
-			cursorLineX = centerX + GetDrawFormatStringWidthToHandle(mnFontHandle, "%s", mOutputAlphabetString.c_str()); // カーソル位置を計算
+		// サイズ計測
+		int width = 0, height = 0;
+		GetDrawFormatStringSizeToHandle(&width, &height, NULL, mnFontHandle, "%s", drawString.c_str());
+		int centerX = (mnKeyInputDrawX - (width / 2));
 
-			// サイズに合わせて中央表示
-			DrawFormatStringToHandle(centerX, mnKeyInputDrawY, KEYINPUT_STRING_COLOR, mnFontHandle, "%s", mOutputAlphabetString.c_str());
-			DrawLine(cursorLineX, mnKeyInputDrawY, cursorLineX, mnKeyInputDrawY + height, GetColor(128, 128, 128), 2);
-		}
+		// サイズに合わせて中央表示
+		DrawFormatStringToHandle(centerX, mnKeyInputDrawY, KEYINPUT_STRING_COLOR, mnFontHandle, "%s", drawString.c_str());
 	}
 }
 
@@ -80,11 +63,6 @@ void TextInputManager::Update()
 			mOutputString = mOutputString.erase(mOutputString.size() - 2, 2);
 			mOutputString += "ん";
 		}
-		else if (mInputString == "/p" || mInputString == "/ｐ" || mInputString == "・p" || mInputString == "・ｐ")
-		{
-			mbIsPause = true;
-			mnKeyInputState = 2;
-		}
 	}
 
 	if (mnKeyInputState == 0)
@@ -92,7 +70,7 @@ void TextInputManager::Update()
 		// 押したボタン（入力した文字）を得る
 		char inputChar = GetInputChar(TRUE);
 
-		// 
+		// 無入力（0）ではないなら
 		if (inputChar != 0)
 		{
 			ControllInput(inputChar);
@@ -154,9 +132,9 @@ void TextInputManager::ResetState()
 
 void TextInputManager::ResetInput()
 {
-	mInputString = "";
-	mOutputString = "";
-	mOutputAlphabetString = "";
+	mInputString.clear();
+	mOutputString.clear();
+	mOutputAlphabetString.clear();
 	mTyping.ClearString();
 }
 
@@ -176,12 +154,14 @@ void TextInputManager::ControllInput(char _input)
 		// 入力を変換
 		if (mbIsAlphabet)
 		{
+			// アルファベットモード
 			mOutputAlphabetString = mTyping.Alphabet(mInputString);
 		}
 		else
 		{
+			// ローマ字モード
 			mOutputString = mTyping.KanaDictionary(mInputString);
-			mTyping.KanaNormalize(mOutputString);
+			mTyping.KanaNormalize(mOutputString);	// 正規化（入力内容を一意にする）
 		}
 
 		if (!mTyping.GetConvertionUnits().empty())

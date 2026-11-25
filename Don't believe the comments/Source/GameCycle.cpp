@@ -238,11 +238,11 @@ void GameCycle::InputAnswer()
 		//•¶Žš“ü—Í
 		if (Master::mpTextInputManager->IsAlphabet())
 		{
-			answer = Master::mpTextInputManager->GetInputString();
+			answer = Master::mpTextInputManager->GetInputStringAlphabet();
 		}
 		else
 		{
-			answer = Master::mpTextInputManager->GetInputStringAlphabet();
+			answer = Master::mpTextInputManager->GetInputString();
 		}
 
 		

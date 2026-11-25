@@ -21,27 +21,39 @@ class Subscribers
 	struct VerticalNumberPos
 	{
 		Position4 position{};			// 現在座標
-		Position4 targetPosition{};		// 移動先座標
-		Position4 originMovePosition{};	// 移動時の原点座標
+		//Position4 targetPosition{};		// 移動先座標
+		//Position4 originMovePosition{};	// 移動時の原点座標
 		int digit = 0;					// 桁
 
 		int currentNumber = 0;			// 今の数
-		int startNumber = 0;			// アニメーション開始時数
+		int targetNumber = 0;			// アニメーション目標数
+		int startNumber = 0;
+
+		int moveDistance = 0;			// アニメーション移動距離
+		int prevMoveY = 0;
 
 		// 初期化
 		VerticalNumberPos(int x1, int y1, int x2, int y2, int digit)
 			:digit(digit - 1)
 		{
-			currentNumber = startNumber = 0;
-			position = targetPosition = originMovePosition = Position4(x1, y1, x2, y2);
+			currentNumber = startNumber = targetNumber = 0;
+			position = Position4(x1, y1, x2, y2);
+			prevMoveY = 0;
+			moveDistance = 0;
 		}
 
 		void LerpMove(float _t)
 		{
-			int y1 = this->originMovePosition.y1 + int(float(this->targetPosition.y1 - this->originMovePosition.y1) * _t);
-			int y2 = this->originMovePosition.y2 + int(float(this->targetPosition.y2 - this->originMovePosition.y2) * _t);
-			this->position.y1 = y1;
-			this->position.y2 = y2;
+			_t = std::min(std::max(0.0f, _t), 1.0f);
+
+			int currentMoveY = int(float(this->moveDistance) * _t);
+
+			int deltaY = currentMoveY - this->prevMoveY;
+
+			this->position.y1 -= deltaY;
+			this->position.y2 -= deltaY;
+
+			prevMoveY = currentMoveY;
 		}
 
 		VerticalNumberPos() = default;
@@ -63,6 +75,8 @@ public:
 
 	void RollInitialize();
 
+	void AddSubscribers();
+
 private:
 	// 縦 2 つの画像をループさせるように
 	// 1 つの画像が輪になるようなイメージを持てるように
@@ -77,7 +91,7 @@ private:
 	int GraphToNumber(int _graphNumber, int _digits);
 
 	// 移動先の座標を決める
-	void NumberToRollPosition(int _digits, int _number);
+	void NumberToRollPosition(int _digits, int _number, int _moveDigits);
 	Position4 NumberToPosition(int _number, int _digits) const;
 
 private:
@@ -99,7 +113,8 @@ private:
 	std::vector<int> mUpperImageIndex;
 
 private:
-	int mnSubscribersCount{};		//登録者数
-	float mfCountTime{};			//移動時間
-
+	int mnTargetSubscribersCount{};			// 登録者数
+	int mnStartSubscribersCount{};			// アニメーション開始時の登録者数
+	float mfCountTime{};					// 移動時間
+	bool mbIsRollingFinished{};				// カウント終了か
 };

@@ -35,9 +35,9 @@ void Subscribers::Initialize()
 			int corron = int(mnCorronWidth * (i / 3));
 			mNumberInfo[j][i] = VerticalNumberPos
 			(
-				mDrawArea.x1 + mnNumberWidth * i + corron,
+				mDrawArea.x1 + mnAllWidth * i + corron,
 				mDrawArea.y1 + mnAllNumberHeight * j,
-				mDrawArea.x1 + mnNumberWidth * (i + 1) + corron,
+				mDrawArea.x1 + mnAllWidth * (i + 1) + corron,
 				mDrawArea.y1 + mnAllNumberHeight * (j + 1),
 				mnDigits - i
 			);
@@ -71,12 +71,12 @@ void Subscribers::Draw()
 
 void Subscribers::Update()
 {
-	Roll(1.0f);
+	Roll(3.0f);
 
-	for (int j = 1; j <= mnDigits; j++)
+	for (int i = 1; i <= mnDigits; i++)
 	{
 		// 輪のように
-		Ring(j);
+		Ring(i);
 	}
 }
 
@@ -89,11 +89,23 @@ void Subscribers::DecideSubscribers()
 	const int randMin = 100;
 	const int randMax = 300;
 
-	mnSubscribersCount = 999;
+	mnTargetSubscribersCount = 199;
+	mnStartSubscribersCount = 0;
 }
 
 void Subscribers::Roll(float _duration)
 {
+	if (mbIsRollingFinished)
+	{
+		mnStartSubscribersCount = mnTargetSubscribersCount;
+		return;
+	}
+
+	auto easing = [](float _t) 
+		{
+			return _t == 1.0f ? 1.0f : 1.0f - powf(2.0f, -10.0f * _t);
+		};
+
 	constexpr float frameTime = 1.0f / 60.0f;
 	if (_duration == 0.0f)
 	{
@@ -108,58 +120,66 @@ void Subscribers::Roll(float _duration)
 		mfCountTime = _duration;
 		t = 1.0f;
 	}
+	t = easing(t);
 
 	for (size_t i = 0; i < mNumberInfo.size(); i++)
 	{
 		for (size_t j = 1; j <= mnDigits; j++)
 		{
-			mNumberInfo[i][j - 1ull].LerpMove(t);
-			mNumberInfo[i][j - 1ull].currentNumber = GraphToNumber(i, j);
+			auto& info = mNumberInfo[i][j - 1ull];
+			info.LerpMove(t);
+
+			if (t >= 1.0f)
+			{
+				mbIsRollingFinished = true;
+				info.currentNumber = info.targetNumber;
+			}
 		}
 	}
 }
 
 void Subscribers::RollInitialize()
 {
-	// カウントを文字列へ変換
-	std::string countString = std::to_string(mnSubscribersCount);
+	mfCountTime = 0.0f;
+	mbIsRollingFinished = false;
 
-	size_t size = countString.size();
-
-	std::vector<int> digitNumList;
-	digitNumList.reserve(size);
-
-	for (auto& c : countString)
+	for (int i = 1; i < mnDigits; i++)
 	{
-		digitNumList.push_back(c - '0');
-	}
+		int digitNum = 1;
 
-	int numberIndex = mnDigits - 1;
-	for (size_t i = 0; i < digitNumList.size(); i++)
-	{
-		numberIndex = mnDigits - 1;
-		numberIndex -= int(i + digitNumList.size()) - 1;
+		for (int j = 1; j < i; j++)
+		{
+			digitNum *= 10;
+		}
 
-		NumberToRollPosition(int(digitNumList.size() - i), digitNumList[i]);
+		int moveDigits = (mnTargetSubscribersCount / digitNum) - (mnStartSubscribersCount / digitNum);
+
+		int targetNumber = (mnTargetSubscribersCount / digitNum) % 10;
+
+		NumberToRollPosition(i, targetNumber, moveDigits);
 	}
+}
+
+void Subscribers::AddSubscribers()
+{
+	const int randMin = 250;
+	const int randMax = 500;
+
+	mnTargetSubscribersCount += rand() % (randMax - randMin) + randMin;
+	RollInitialize();
 }
 
 int Subscribers::GraphToNumber(int _graphNumber, int _digits)
 {
 	const auto& number = mNumberInfo[_graphNumber][size_t(_digits) - 1];
 
-	// 描画エリアからの移動量
-	// どれくらい上に行ったか
-	int y = mDrawArea.y2 - number.position.y1;
-	y--;
-	if (y < 0)
-	{
-		y = 0;
-	}
-	return y / mnNumberHeight;
+	// 移動した数
+	int moveNumber = number.prevMoveY / mnNumberHeight;
+
+	return (number.startNumber + moveNumber) % 10;
 }
 
-void Subscribers::NumberToRollPosition(int _digits, int _number)
+void Subscribers::NumberToRollPosition(int _digits, int _number, int _moveDigits)
 {
 	int digitIndex = mnDigits - size_t(_digits);
 	auto& info = mNumberInfo[GraphIndex(_digits)][digitIndex];
@@ -167,21 +187,14 @@ void Subscribers::NumberToRollPosition(int _digits, int _number)
 	_number = std::min(std::max(0, _number), 9);
 	auto [x1, y1, x2, y2] = mDrawArea;
 
-	int distance = ((_number - info.currentNumber + 10) % 10);
-	if (distance == 0)
-	{
-		distance = 10;
-	}
+	int moveY = _moveDigits * mnNumberHeight;
 
-	int moveY = distance * mnNumberWidth;
-
-	auto SetMovePosition = [moveY](VerticalNumberPos& _info)
+	auto SetMovePosition = [moveY,_number](VerticalNumberPos& _info)
 		{
-			_info.targetPosition = _info.position;
-			_info.originMovePosition = _info.position;
-
-			_info.targetPosition.y1 -= moveY;
-			_info.targetPosition.y2 -= moveY;
+			_info.moveDistance = moveY;
+			_info.prevMoveY = 0;
+			_info.startNumber = _info.currentNumber;
+			_info.targetNumber = _number;
 		};
 
 	SetMovePosition(info);
@@ -190,13 +203,17 @@ void Subscribers::NumberToRollPosition(int _digits, int _number)
 
 Subscribers::Position4 Subscribers::NumberToPosition(int _number, int _digits) const
 {
-	_digits--;
+	int digitIndex = mnDigits - _digits;
+
 	auto [x1, y1, x2, y2] = mDrawArea;
 
-	x1 += mnNumberWidth * (mnDigits - _digits);
+	int corron = mnCorronWidth * (digitIndex / 3);
+
+	x1 += mnNumberWidth * digitIndex + corron;
 	y1 -= mnNumberHeight * _number;
+
 	x2 = x1 + mnNumberWidth;
-	y2 -= mnNumberHeight * _number;
+	y2 = y1 + mnNumberHeight;
 
 	return Position4(x1, y1, x2, y2);
 }
@@ -221,19 +238,12 @@ void Subscribers::Ring(int _digits)
 	auto& nextPos = nextNumber.position;
 
 	// 対象の画像の一番下が表示区間を通り抜けた
-	if (mDrawArea.y1 >= pos.y2)
+	if (pos.y2 <= mDrawArea.y1)
 	{
-		auto& targetPos = number.targetPosition;
-		auto& origMovePos = number.originMovePosition;
-
 		// 常に繋がるようにする
 		pos.y1 = nextPos.y2;
 		pos.y2 = pos.y1 + mnAllNumberHeight;
 
-		// 次の画像の一番下へ
-		pos.y1 = nextNumber.position.y1 + mnAllNumberHeight;
-		pos.y2 = nextNumber.position.y2 + mnAllNumberHeight;
-		targetPos = origMovePos = pos;
 		mUpperImageIndex[size_t(_digits) - 1] = 1 - mUpperImageIndex[size_t(_digits) - 1];
 	}
 }

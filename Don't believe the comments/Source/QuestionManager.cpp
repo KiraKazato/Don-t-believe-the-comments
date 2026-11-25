@@ -126,7 +126,7 @@ void QuestionManager::Load(const std::string& _filePath)
 		if (getline(ss, cell, ',')) 
 		{
 			inData.answer = cell;
-			if (!cell.empty() && isalpha(cell.front()))
+			if (!cell.empty() && isalpha(static_cast<unsigned char>(cell.front())))
 			{
 				inData.isInputEnglish = true;
 			}

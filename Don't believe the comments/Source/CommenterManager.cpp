@@ -174,7 +174,7 @@ void CommenterManager::ChooseDisplayCommenter()
 		new Commenter(commenter, commenter->GetName(), commenter->GetState(), comment, mnID, mbIsSuperCommentDraw);
 		if (mbIsSuperCommentDraw)
 		{
-			mbIsSuperCommentDraw = false;	// ä¸€å›å‡ºã—ãŸã‚‰æ¬¡ã‚’æŒ‡ç¤ºã•ã‚Œã‚‹ã¾ã§ã‚‚ã†å‡ºã•ãªã„
+			mbIsSuperCommentDraw = false;	// ˆê‰ño‚µ‚½‚çŸ‚ğw¦‚³‚ê‚é‚Ü‚Å‚à‚¤o‚³‚È‚¢
 		}
 
 		for (const auto& displayCommenter : mDisplayCommenters)
@@ -205,16 +205,16 @@ std::string CommenterManager::GetDisplayComment(int _state)
 	float rate = GetRand(10000) / 10000.0f;
 	do
 	{
-		//å¤§ãƒ’ãƒ³ãƒˆ
+		//‘åƒqƒ“ƒg
 		if (mbIsSuperCommentDraw)
 		{
-			//è¤‡æ•°å­˜åœ¨ã™ã‚‹å ´åˆã¯é¸ã¶
+			//•¡”‘¶İ‚·‚éê‡‚Í‘I‚Ô
 			const std::vector<std::string>& chooseSuperHintComment = Master::mpQuestionManager->GetQuestionData().superHintComment;
 			index = GetRand(static_cast<int>(chooseSuperHintComment.size()) - 1);
 			return chooseSuperHintComment.at(index);
 		}
 
-		//ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆ
+		//ƒeƒ“ƒvƒŒ[ƒg
 		if (!mbQuestionStarted || (rate < 0.6f && !mTemplateComments.empty())|| continued > 5)
 		{
 			std::vector<std::string>&& chooseTemplateComment = ChooseTemplateCommentKind(mnCommentKind);
@@ -222,7 +222,7 @@ std::string CommenterManager::GetDisplayComment(int _state)
 			return chooseTemplateComment.at(index);
 		}
 
-		//â†“ä»¥å¾Œãƒ’ãƒ³ãƒˆ
+		//«ˆÈŒãƒqƒ“ƒg
 
 		const auto& comments = (_state == 0) ? Master::mpQuestionManager->GetQuestionData().trueComment : Master::mpQuestionManager->GetQuestionData().falseComment;
 
@@ -257,30 +257,30 @@ std::vector<std::string> CommenterManager::ChooseTemplateCommentKind(int _kind)
 
 	if (_kind == 0)
 	{
-		// é–‹å§‹æ™‚ã¯ 0 ç•ªç›®ã ã‘
+		// ŠJn‚Í 0 ”Ô–Ú‚¾‚¯
 		ret = mTemplateComments.at(0);
 		return ret;
 	}
 	else if (_kind == 4)
 	{
-		// çµ‚äº†æ™‚ã¯ 4 ç•ªç›®
+		// I—¹‚Í 4 ”Ô–Ú
 		ret = mTemplateComments.at(_kind);
 		return ret;
 	}
 
 
-	// å†ç¢ºä¿å‡¦ç†ã‚’ãªãã™ãŸã‚
+	// ÄŠm•Ûˆ—‚ğ‚È‚­‚·‚½‚ß
 	size_t capacity = 0;
 	for (size_t i = inIndexMax; i >= 1; i--)
 	{
 		capacity += mTemplateComments.at(i).size();
 	}
 
-	// è‡ªåˆ†ä»¥ä¸‹ã®ç•ªå·ã‚’é›†ã‚ã‚‹
+	// ©•ªˆÈ‰º‚Ì”Ô†‚ğW‚ß‚é
 	ret.reserve(capacity);
 	for (size_t i = inIndexMax; i >= 1; i--)
 	{
-		// æœ«å°¾ã«ä¸€æ‹¬è¿½åŠ 
+		// ––”ö‚ÉˆêŠ‡’Ç‰Á
 		ret.insert(ret.end(), mTemplateComments.at(i).begin(), mTemplateComments.at(i).end());
 	}
 
@@ -321,7 +321,7 @@ void CommenterManager::SetCommenter(Commenter* _commenter)
 
 void CommenterManager::SetDisplayCommenter(Commenter* _commenter)
 {
-	// ãƒ‡ãƒ¼ã‚¿ä¸Šã«æ®‹ã™ã‚³ãƒ¡ãƒ³ãƒˆã®æ•°
+	// ƒf[ƒ^ã‚Éc‚·ƒRƒƒ“ƒg‚Ì”
 	constexpr int saveComments = 1000;
 
 	/**/if(mDisplayCommenters.size() > saveComments)
@@ -390,13 +390,13 @@ void CommenterManager::ChangeQuestion()
 
 bool CommenterManager::IsOneSecond()
 {
-	//åŸºæº–ã®æ™‚é–“
+	//Šî€‚ÌŠÔ
 	static int lastTime = GetNowCount();
 	int currentTime = GetNowCount();
 
 	int diffTime = currentTime - lastTime;
 
-	if (diffTime >= 2000)
+	if (diffTime >= 1200)
 	{
 		lastTime = currentTime;
 		return true;
@@ -448,17 +448,17 @@ void CommenterManager::ResetCommenterReputation()
 void CommenterManager::ScrollComments()
 {
 
-	totalHeight = 0;
+	mnTotalHeight = 0;
 	for (auto comment : mDisplayCommenters)
 	{
-		totalHeight += comment->GetTotalHeight();
+		mnTotalHeight += comment->GetTotalHeight();
 	/*	if (totalHeight > (mnCommentFrameInY2 - mnCommentFrameInY1))
 		{
 			break;
 		}*/
 	}
 	
-	if (totalHeight < (mnCommentFrameInY2 - mnCommentFrameInY1))
+	if (mnTotalHeight < (mnCommentFrameInY2 - mnCommentFrameInY1))
 	{
 		return;
 	}
@@ -478,11 +478,11 @@ void CommenterManager::ScrollComments()
 	{
 		mnCurrentCommentGridPositionY = mnBaseCommentGridPositionY;
 	}
-	if (mnCurrentCommentGridPositionY < mnCommentFrameInY2 - totalHeight)
+	if (mnCurrentCommentGridPositionY < mnCommentFrameInY2 - mnTotalHeight)
 	{
-		mnCurrentCommentGridPositionY = mnCommentFrameInY2 - totalHeight;
+		mnCurrentCommentGridPositionY = mnCommentFrameInY2 - mnTotalHeight;
 	}
-	if (mnCurrentCommentGridPositionY > mnCommentFrameInY2 - totalHeight)
+	if (mnCurrentCommentGridPositionY > mnCommentFrameInY2 - mnTotalHeight)
 	{
 		mbIsScrolled = true;
 	}
@@ -504,7 +504,7 @@ void CommenterManager::DrawBackScrollButton()
 		bool inside = Master::mpUIManager->InsideUI(Master::gridWidth * 101, Master::gridHeight * 104, Master::gridWidth * 105, Master::gridHeight * 111, mouseX, mouseY);
 		if (Master::mpUIManager->ClickedUI(&pressed, inside))
 		{
-			mnCurrentCommentGridPositionY = mnCommentFrameInY2 - totalHeight;
+			mnCurrentCommentGridPositionY = mnCommentFrameInY2 - mnTotalHeight;
 		}
 	}
 }

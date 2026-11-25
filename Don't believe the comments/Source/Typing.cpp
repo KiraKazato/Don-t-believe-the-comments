@@ -805,6 +805,7 @@ void Typing::ClearString()
 {
 	mRoma.clear();
 	mKana.clear();
+	mAlphabet.clear();
 	mConvertionUnits.clear();
 	mnCurrentDraw = 0;
 	mnCurrentKanaByte = 0;

@@ -25,6 +25,19 @@ void GameScene::Initialize()
 
 	commentCountFontHandle = Master::mpFontManager->GetFontHandle(FontManager::FONT_TETUBINN, 50);
 
+	mpBubbleEffect = new EffekseerEffect("Resource/Effect/AquaBubbleEffect.efk", 40.0f);
+	mpBubbleEffect->SetManualDraw(true); // 手動描画モードにして好きな順番で描く
+
+	//Stage1.pngの真ん中あたりで再生開始
+	mpBubbleEffect->Play(
+		static_cast<float>(Master::gridWidth * 45),
+		static_cast<float>(Master::gridHeight * 50)
+	);
+
+	//背景＋バブルを描くための仮キャンバス
+	mnBubbleScreen = MakeScreen(Master::Width, Master::Height, FALSE);
+
+
 	mGameCycle.Initialize();
 	Master::mpPause->Initialize();
 	Master::mpQuestionManager->SetRandomNumber();
@@ -39,26 +52,80 @@ void GameScene::Update()
 		Scene::Update();
 		return;
 	}
+
+	//バブルエフェクトのループ再生と位置更新
+	if (mpBubbleEffect != nullptr)
+	{
+		// エフェクトの基準位置（Stage1.pngの中央あたり）
+		float bubbleX = static_cast<float>(Master::gridWidth * 45 + mGameCycle.GetShakeX());
+		float bubbleY = static_cast<float>(Master::gridHeight * 50 + mGameCycle.GetShakeY());
+
+		// 再生が終わっていたらもう一度再生する（ループ）
+		if (!mpBubbleEffect->IsPlaying())
+		{
+			mpBubbleEffect->Play(bubbleX, bubbleY);
+		}
+		else
+		{
+			// 再生中は画面揺れ（シェイク）に合わせて位置を追従させる
+			mpBubbleEffect->SetPosition(bubbleX, bubbleY);
+		}
+
+		mpBubbleEffect->Update();
+	}
+
+	
+
 	mGameCycle.Update();
 	Scene::Update();
 }
 
 void GameScene::Draw()
 {
-	DrawExtendGraph(0, 0, Master::Width, Master::Height, mnBackGround, TRUE);
-
-	
-	
 	int shakeX = mGameCycle.GetShakeX();
 	int shakeY = mGameCycle.GetShakeY();
 
-	
+	// Stage1.png の表示範囲を変数にまとめておく
+	int bgX1 = Master::gridWidth * 4 + shakeX;
+	int bgY1 = Master::gridHeight * 6 + shakeY;
+	int bgX2 = Master::gridWidth * 86 + shakeX;
+	int bgY2 = Master::gridHeight * 95 + shakeY;
 
-	DrawExtendGraph(
-		Master::gridWidth * 4 + shakeX, Master::gridHeight * 6 + shakeY,
-		Master::gridWidth * 86 + shakeX, Master::gridHeight * 95 + shakeY,
-		backGroundHandle, TRUE
-	);
+	//まず仮キャンバスに「Stage1.png → バブルエフェクト」の順で描く
+	if (mnBubbleScreen != -1)
+	{
+		SetDrawScreen(mnBubbleScreen); // 描き先を仮キャンバスへ
+		ClearDrawScreen();
+
+		//Stage1の背景を描く
+		DrawExtendGraph(bgX1, bgY1, bgX2, bgY2, backGroundHandle, TRUE);
+
+		//そのすぐ上にバブルエフェクトを描く
+		if (mpBubbleEffect != nullptr)
+		{
+			mpBubbleEffect->Draw();
+		}
+
+		SetDrawScreen(DX_SCREEN_BACK); // 描き先を元の裏画面に戻す
+	}
+
+	//裏画面に大元の背景（GameBackGround.png）を描く
+	DrawExtendGraph(0, 0, Master::Width, Master::Height, mnBackGround, TRUE);
+
+	//Stage1.pngの枠内だけ切り抜いて、仮キャンバス（背景＋バブル）を貼り付ける
+	if (mnBubbleScreen != -1)
+	{
+		SetDrawArea(bgX1, bgY1, bgX2, bgY2);
+		DrawGraph(0, 0, mnBubbleScreen, FALSE);
+		SetDrawAreaFull();
+	}
+	else
+	{
+		// 万が一仮キャンバスが作れなかったときの保険
+		DrawExtendGraph(bgX1, bgY1, bgX2, bgY2, backGroundHandle, TRUE);
+	}
+
+	//その上から問題画面と入力画面を描く（これでバブルが裏側に回る！）
 	DrawExtendGraph(
 		Master::gridWidth * 18 + shakeX, Master::gridHeight * 12 + shakeY,
 		Master::gridWidth * 72 + shakeX, Master::gridHeight * 73 + shakeY,
@@ -84,6 +151,19 @@ void GameScene::Draw()
 
 void GameScene::Finalize()
 {
+	//バブルエフェクトと仮キャンバスの後片付け
+	if (mpBubbleEffect != nullptr)
+	{
+		mpBubbleEffect->Stop();
+		delete mpBubbleEffect;
+		mpBubbleEffect = nullptr;
+	}
+	if (mnBubbleScreen != -1)
+	{
+		DeleteGraph(mnBubbleScreen);
+		mnBubbleScreen = -1;
+	}
+
 	Master::mpUIManager->ClearUI();
 	mGameCycle.Finalize();
 }

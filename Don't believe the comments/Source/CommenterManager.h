@@ -4,6 +4,7 @@
 #include <string>
 
 class Commenter;
+class EffekseerEffect; 
 
 class CommenterManager
 {
@@ -71,6 +72,10 @@ public:
 
 	void ResetCommenterReputation();
 
+	void ScrollComments();
+
+	void DrawBackScrollButton();
+	
 private:
 	//コメンターの情報
 	std::vector<Commenter*>mCommenters;
@@ -93,6 +98,12 @@ private:
 	int mnCurrentCommentGridPositionX = 89;
 	int mnCurrentCommentGridPositionY = 12;
 
+	//コメントの枠内
+	int mnCommentFrameInX1 =  89;
+	int mnCommentFrameInY1 =  12;
+	int mnCommentFrameInX2 = 117;
+	int mnCommentFrameInY2 =113;
+	 
 	//コメント表示の最大場所
 	int mnMaxCommentGridPositionX = 110;
 	int mnMaxCommentGridPositionY = 113;
@@ -107,8 +118,21 @@ private:
 	int mnCountComments = 0;
 
 	const int mnMaxCommentKind = 5;
+	
+	//マウスのホイール量
+	int mnMouseWheelValue;
+	//スクロールされたか
+	bool mbIsScrolled;
 
-	int mnTotalHeight = 0;
+	int mnCommentBackHandle{};
+
+	//表示されてるコメントの高さの合計
+	int mnTotalHeight;
 
 	bool mbIsSuperCommentDraw = false;
+
+	EffekseerEffect* mpSuperChatEffect = nullptr;
+
+	//エフェクトを切り抜くための透明な仮キャンバス
+	int mnEffectScreen = -1;
 };

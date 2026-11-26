@@ -47,6 +47,8 @@ private:
 
 	void GameEnd();
 
+	void Draw10CorrectEffect();//10問正解エフェクトを問題画面内に描画する
+
 private:
 	//入力する文字のフォントハンドルを入れる
 	int mnInputStringHandle = -1;
@@ -59,6 +61,8 @@ private:
 	int mnQuestionImageX2 = Master::gridWidth * 68;
 	int mnQuestionImageY1 = Master::gridHeight * 19;
 	int mnQuestionImageY2 = Master::gridHeight * 69;
+
+	int mn10CorrectEffectScreen = -1; // ★追加：切り抜き用の仮キャンバス
 
 	float mfQuestionDrawEasing = 0.0f;
 private:
@@ -90,6 +94,9 @@ private:
 	TextInputManager mTextInputManager;
 	EffekseerEffect* mnCorrectAnswer;
 	EffekseerEffect* mnFallingCrossMiss;
+	EffekseerEffect* mn10CorrectAnswersEffect;
+
+
 
 	int mnShakeTime = 0;  // 揺れる残り時間（フレーム数）
 	int mnShakeX = 0;     // 横方向のズレ量
@@ -97,8 +104,9 @@ private:
 
 private:
 	int mnQuestionTimer = 0;
-	const int mnLimitQuestionTimer = int(1000.0f * 10.0f);
+	const int mnLimitQuestionTimer = int(1000.0f * 30.0f);
 	bool mbIsDrawSuperHint = false;
 	//理由：static intを使った際、タイトルやリザルトに行ってもカウントし続けてしまうため
 	int lastTime = 0;
+
 };

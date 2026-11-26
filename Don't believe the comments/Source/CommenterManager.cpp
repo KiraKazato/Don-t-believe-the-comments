@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include "EffekseerEffect.h"
 
 CommenterManager::CommenterManager()
 {
@@ -24,10 +25,30 @@ void CommenterManager::Initialize()
 	mCommenterNames.clear();
 	mnCurrentCommentGridPositionX = mnBaseCommentGridPositionX;
 	mnCurrentCommentGridPositionY = mnBaseCommentGridPositionY;
-	
+
+	//繧ｹ繝代メ繝｣繧ｨ繝輔ぉ繧ｯ繝医ｒ菴懈�縺励※謇句虚謠冗判繝｢繝ｼ繝峨↓縺吶ｋ
+	mpSuperChatEffect = new EffekseerEffect("Resource/Effect/SuperChatEffect.efk", 50.0f);
+	mpSuperChatEffect->SetManualDraw(true);
+
+	//逕ｻ髱｢縺ｨ蜷後§繧ｵ繧､繧ｺ縺ｮ縲碁乗�縺ｪ莉ｮ繧ｭ繝｣繝ｳ繝舌せ縲阪ｒ菴懈��育ｬｬ3蠑墓焚縺ｮTRUE縺碁城℃縺ゅｊ縺ｮ諢丞袖�
+	mnEffectScreen = MakeScreen(Master::Width, Master::Height, FALSE);
+	mnCommentBackHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/Button/CommentBack.png");
 }
+
 void CommenterManager::Finalize()
 {
+	//繧ｨ繝輔ぉ繧ｯ繝医→莉ｮ繧ｭ繝｣繝ｳ繝舌せ縺ｮ蠕檎援莉倥￠
+	if (mpSuperChatEffect != nullptr)
+	{
+		delete mpSuperChatEffect;
+		mpSuperChatEffect = nullptr;
+	}
+	if (mnEffectScreen != -1)
+	{
+		DeleteGraph(mnEffectScreen);
+		mnEffectScreen = -1;
+	}
+
 	if (!mDisplayCommenters.empty())
 	{
 		for (auto& commenter : mDisplayCommenters)
@@ -185,7 +206,11 @@ void CommenterManager::ChooseDisplayCommenter()
 		if (mnMaxCommentGridPositionY <= commentY)
 		{
 			int diff = commentY - mnMaxCommentGridPositionY;
-			mnCurrentCommentGridPositionY -= diff;
+			
+			if (!mbIsScrolled)
+			{
+				mnCurrentCommentGridPositionY -= diff;
+			}
 		}
 		mnID++;
 
@@ -201,10 +226,18 @@ std::string CommenterManager::GetDisplayComment(int _state)
 	float rate = GetRand(10000) / 10000.0f;
 	do
 	{
-		//大ヒント
 		if (mbIsSuperCommentDraw)
 		{
-			//複数存在する場合は選ぶ
+			//繧ｹ繝代メ繝｣繧ｨ繝輔ぉ繧ｯ繝医ｒ蜀咲函縺吶ｋ
+			if (mpSuperChatEffect != nullptr)
+			{
+				mpSuperChatEffect->Play(
+					static_cast<float>(Master::gridWidth * 103),
+					static_cast<float>(Master::gridHeight * 53)
+				);
+			}
+
+			//隍�焚蟄伜惠縺吶ｋ蝣ｴ蜷医�驕ｸ縺ｶ
 			const std::vector<std::string>& chooseSuperHintComment = Master::mpQuestionManager->GetQuestionData().superHintComment;
 			index = GetRand(static_cast<int>(chooseSuperHintComment.size()) - 1);
 			return chooseSuperHintComment.at(index);
@@ -286,24 +319,66 @@ std::vector<std::string> CommenterManager::ChooseTemplateCommentKind(int _kind)
 
 void CommenterManager::Update()
 {
+	//繧ｹ繝代メ繝｣繧ｨ繝輔ぉ繧ｯ繝医�譖ｴ譁ｰ
+	if (mpSuperChatEffect != nullptr)
+	{
+		mpSuperChatEffect->Update();
+	}
+	ScrollComments();
 	ChooseDisplayCommenter();
+	
 	if (mDisplayCommenters.empty())return;
-	int drawTotalHeight = mnTotalHeight;
+	int drawTotalHeight{};
 	for (const auto& commenter : mDisplayCommenters)
 	{
 		commenter->updateReputation(drawTotalHeight);
 		drawTotalHeight += commenter->GetTotalHeight();
 	}
+	if (CheckHitKey(KEY_INPUT_BACK))
+	{
+		mpSuperChatEffect->Play(
+			static_cast<float>(Master::gridWidth * 103),
+			static_cast<float>(Master::gridHeight * 53));
+
+	}
 }
 
 void CommenterManager::Draw()
 {
-	if (mDisplayCommenters.empty())return;
 
+	//縺昴�荳翫°繧峨さ繝｡繝ｳ繝域悽菴薙ｒ謠冗判縺吶ｋ
 	for (const auto& commenter : mDisplayCommenters)
 	{
 		commenter->Draw();
 	}
+	bool isEffectPlaying = (mpSuperChatEffect != nullptr && mpSuperChatEffect->IsPlaying());
+
+	//繧ｨ繝輔ぉ繧ｯ繝亥�逕滉ｸｭ縺ｪ繧峨∽ｻ翫�陬冗判髱｢�郁レ譎ｯ�峨ｒ莉ｮ繧ｭ繝｣繝ｳ繝舌せ縺ｫ繧ｳ繝斐�縺励※繧ｨ繝輔ぉ繧ｯ繝医ｒ謠上￥
+	if (isEffectPlaying && mnEffectScreen != -1)
+	{
+		// 莉翫�逕ｻ髱｢繧剃ｻｮ繧ｭ繝｣繝ｳ繝舌せ縺ｫ縺昴�縺ｾ縺ｾ繧ｳ繝斐�縺吶ｋ
+		GetDrawScreenGraph(0, 0, Master::Width, Master::Height, mnEffectScreen);
+
+		SetDrawScreen(mnEffectScreen); // 謠上″蜈医ｒ莉ｮ繧ｭ繝｣繝ｳ繝舌せ縺ｫ螟画峩
+		
+		mpSuperChatEffect->Draw();     // 閭梧勹縺ｮ荳翫↓逶ｴ謗･繧ｨ繝輔ぉ繧ｯ繝医ｒ謠上￥
+		SetDrawScreen(DX_SCREEN_BACK); // 謠上″蜈医ｒ蜈��陬冗判髱｢縺ｫ謌ｻ縺
+	}
+
+	//繧ｳ繝｡繝ｳ繝域ｬ��譫蜀�□縺第緒縺九ｌ繧九ｈ縺�↓蛻�ｊ謚懊″遽�峇繧定ｨｭ螳壹☆繧
+	SetDrawArea(Master::gridWidth * 89, Master::gridHeight * 12, Master::gridWidth * 117, Master::gridHeight * 113);
+
+	//閭梧勹�九お繝輔ぉ繧ｯ繝医′謠上°繧後◆莉ｮ繧ｭ繝｣繝ｳ繝舌せ繧偵∵棧蜀�□縺題｣冗判髱｢縺ｫ雋ｼ繧贋ｻ倥￠繧
+	if (isEffectPlaying && mnEffectScreen != -1)
+	{
+		DrawGraph(0, 0, mnEffectScreen, FALSE);
+	}
+
+
+
+	//蛻�ｊ謚懊″遽�峇繧貞�逕ｻ髱｢縺ｫ謌ｻ縺
+	SetDrawAreaFull();
+	DrawBackScrollButton();
 }
 
 void CommenterManager::SetCommenter(Commenter* _commenter)
@@ -314,7 +389,7 @@ void CommenterManager::SetCommenter(Commenter* _commenter)
 void CommenterManager::SetDisplayCommenter(Commenter* _commenter)
 {
 	// データ上に残すコメントの数
-	constexpr int saveComments = 15;
+	constexpr int saveComments = 1000;
 
 	/**/if(mDisplayCommenters.size() > saveComments)
 	{
@@ -388,7 +463,7 @@ bool CommenterManager::IsOneSecond()
 
 	int diffTime = currentTime - lastTime;
 
-	if (diffTime >= 2000)
+	if (diffTime >= 1200)
 	{
 		lastTime = currentTime;
 		return true;
@@ -399,6 +474,11 @@ bool CommenterManager::IsOneSecond()
 
 void CommenterManager::GameEnd()
 {
+	//繧ｲ繝ｼ繝邨ゆｺ�凾縺ｫ蜀咲函荳ｭ縺ｮ繧ｹ繝代メ繝｣繧ｨ繝輔ぉ繧ｯ繝医ｒ豁｢繧√ｋ
+	if (mpSuperChatEffect != nullptr)
+	{
+		mpSuperChatEffect->Stop();
+	}
 	if (!mDisplayCommenters.empty())
 	{
 		for (auto& commenter : mDisplayCommenters)
@@ -434,5 +514,69 @@ void CommenterManager::ResetCommenterReputation()
 	for (auto& commenter : mCommenters)
 	{
 		commenter->SetReputation(1.0f);
+	}
+}
+
+void CommenterManager::ScrollComments()
+{
+
+	mnTotalHeight = 0;
+	for (auto comment : mDisplayCommenters)
+	{
+		mnTotalHeight += comment->GetTotalHeight();
+	/*	if (totalHeight > (mnCommentFrameInY2 - mnCommentFrameInY1))
+		{
+			break;
+		}*/
+	}
+	
+	if (mnTotalHeight < (mnCommentFrameInY2 - mnCommentFrameInY1))
+	{
+		return;
+	}
+	
+	Master::mpMouseManager->GetMouseWheelVolume(&mnMouseWheelValue);
+	if (mnMouseWheelValue > 0)
+	{
+		mnMouseWheelValue += 5;
+	}
+	else if(mnMouseWheelValue < 0)
+	{
+		mnMouseWheelValue -= 5;
+	}
+	
+	mnCurrentCommentGridPositionY += mnMouseWheelValue;
+	if (mnCurrentCommentGridPositionY > mnBaseCommentGridPositionY)
+	{
+		mnCurrentCommentGridPositionY = mnBaseCommentGridPositionY;
+	}
+	if (mnCurrentCommentGridPositionY < mnCommentFrameInY2 - mnTotalHeight)
+	{
+		mnCurrentCommentGridPositionY = mnCommentFrameInY2 - mnTotalHeight;
+	}
+	if (mnCurrentCommentGridPositionY > mnCommentFrameInY2 - mnTotalHeight)
+	{
+		mbIsScrolled = true;
+	}
+	else
+	{
+		mbIsScrolled = false;
+		
+	}
+}
+
+void CommenterManager::DrawBackScrollButton()
+{
+	if (mbIsScrolled)
+	{
+		int mouseX{}, mouseY{};
+		bool pressed;
+		Master::mpMouseManager->GetMousePosition(&mouseX, &mouseY);
+		DrawExtendGraph(Master::gridWidth * 101, Master::gridHeight * 104, Master::gridWidth * 105, Master::gridHeight * 111, mnCommentBackHandle, TRUE);
+		bool inside = Master::mpUIManager->InsideUI(Master::gridWidth * 101, Master::gridHeight * 104, Master::gridWidth * 105, Master::gridHeight * 111, mouseX, mouseY);
+		if (Master::mpUIManager->ClickedUI(&pressed, inside))
+		{
+			mnCurrentCommentGridPositionY = mnCommentFrameInY2 - mnTotalHeight;
+		}
 	}
 }

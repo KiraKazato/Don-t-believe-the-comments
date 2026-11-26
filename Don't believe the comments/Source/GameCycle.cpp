@@ -3,6 +3,7 @@
 GameCycle::GameCycle()
 	:mnCorrectAnswer(0)
 	,mnFallingCrossMiss(0)
+	, mn10CorrectAnswersEffect(nullptr) 
 {
 
 }
@@ -26,6 +27,11 @@ void GameCycle::Initialize()
 
 	mnCorrectAnswer = new EffekseerEffect("Resource/Effect/CorrectAnswer.efk",300.0f);
 	mnFallingCrossMiss = new EffekseerEffect("Resource/Effect/FallingCrossMiss.efk", 95.0f);
+	mn10CorrectAnswersEffect = new EffekseerEffect("Resource/Effect/10CorrectAnswersEffect4.efk", 37.0f);
+
+	mn10CorrectAnswersEffect->SetManualDraw(true);
+	mn10CorrectEffectScreen = MakeScreen(Master::Width, Master::Height, FALSE);
+
 
 	Master::mpCommenterManager->ResetCommentCount();
 	mnNextButtonHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/Button/NextButton.png");
@@ -75,6 +81,11 @@ void GameCycle::Update()
 	if (mnFallingCrossMiss != nullptr)
 	{
 		mnFallingCrossMiss->Update();
+	}
+	
+	if (mn10CorrectAnswersEffect != nullptr)
+	{
+		mn10CorrectAnswersEffect->Update();
 	}
 
 	if (mbGameEnd)
@@ -126,6 +137,12 @@ void GameCycle::Update()
 		mnQuestionTimer = 0;
 		if (mnQuestionNumber >= mnMaxQuestionNumber)
 		{
+			//ウィンドウ全体の中央ではなく、問題画面の中央で再生する
+			mn10CorrectAnswersEffect->Play(
+				static_cast<float>(Master::gridWidth * 45),
+				static_cast<float>(Master::gridHeight * 43)
+			);
+
 			GameEnd();
 		}
 		else
@@ -133,13 +150,26 @@ void GameCycle::Update()
 			mnQuestionNumber++;
 		}
 	}
+	if (CheckHitKey(KEY_INPUT_BACK))
+	{
+		mn10CorrectAnswersEffect->Play(
+			static_cast<float>(Master::gridWidth * 45),
+			static_cast<float>(Master::gridHeight * 43)
+		);
+
+	}
+
 	GameOver();
+
 }
 
 
 void GameCycle::Draw()
 {
 	CommentDraw();
+
+	//10問正解エフェクトを問題画面の枠内に描画する
+	Draw10CorrectEffect();
 
 	QuestionNumberDraw();
 
@@ -169,12 +199,28 @@ void GameCycle::Draw()
 
 void GameCycle::Finalize()
 {
+	//エフェクトの停止と仮キャンバスの解放
+	if (mn10CorrectAnswersEffect != nullptr)
+	{
+		mn10CorrectAnswersEffect->Stop();
+		delete mn10CorrectAnswersEffect;
+		mn10CorrectAnswersEffect = nullptr;
+	}
+	if (mn10CorrectEffectScreen != -1)
+	{
+		DeleteGraph(mn10CorrectEffectScreen);
+		mn10CorrectEffectScreen = -1;
+	}
+
 	Master::mpTextInputManager->Finalize();
 	Master::mpCommenterManager->GameEnd();
 }
 
 void GameCycle::CommentDraw()
 {
+	
+
+	//その上からコメントを描画する
 	SetDrawArea(Master::gridWidth * 89, Master::gridHeight * 12, Master::gridWidth * 117, Master::gridHeight * 113);
 	Master::mpCommenterManager->Draw();
 	SetDrawAreaFull();
@@ -241,11 +287,11 @@ void GameCycle::InputAnswer()
 		//文字入力
 		if (Master::mpTextInputManager->IsAlphabet())
 		{
-			answer = Master::mpTextInputManager->GetInputString();
+			answer = Master::mpTextInputManager->GetInputStringAlphabet();
 		}
 		else
 		{
-			answer = Master::mpTextInputManager->GetInputStringAlphabet();
+			answer = Master::mpTextInputManager->GetInputString();
 		}
 
 		
@@ -399,4 +445,31 @@ void GameCycle::GameEnd()
 	Master::mpQuestionManager->SetIsAllClear(true);
 	Master::mpCommenterManager->QuestionStarted(false);
 	Master::mpCommenterManager->SetCommentSpawnKind(STATE_AFTER);
+}
+
+void GameCycle::Draw10CorrectEffect()
+{
+	// 再生中でない、または準備できていなければ何もしない
+	if (mn10CorrectAnswersEffect == nullptr || !mn10CorrectAnswersEffect->IsPlaying() || mn10CorrectEffectScreen == -1)
+	{
+		return;
+	}
+
+	//今の裏画面（背景や問題枠が描かれた状態）を仮キャンバスにコピー
+	GetDrawScreenGraph(0, 0, Master::Width, Master::Height, mn10CorrectEffectScreen);
+
+	//仮キャンバスにエフェクトを描く（背景の上から描くので黒ずみが出ない）
+	SetDrawScreen(mn10CorrectEffectScreen);
+	mn10CorrectAnswersEffect->Draw();
+	SetDrawScreen(DX_SCREEN_BACK);
+
+	//問題画面（BackBoard.png）の枠内だけ切り抜いて裏画面に貼り付ける
+	SetDrawArea(
+		Master::gridWidth * 18 + mnShakeX,
+		Master::gridHeight * 12 + mnShakeY,
+		Master::gridWidth * 72 + mnShakeX,
+		Master::gridHeight * 73 + mnShakeY
+	);
+	DrawGraph(0, 0, mn10CorrectEffectScreen, FALSE);
+	SetDrawAreaFull();
 }

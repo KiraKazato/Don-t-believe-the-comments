@@ -1,5 +1,6 @@
 #include "EffectManager.h"
 #include "Master.h"
+#include <vector>
 
 // コンストラクタ
 EffectManager::EffectManager()
@@ -17,7 +18,7 @@ EffectManager::~EffectManager()
 	{
 		DeleteEffekseerEffect(effectResourceHandle);
 	}
-	// ★追加：長押し用エフェクトの解放
+	// 長押し用エフェクトの解放
 	if (holdEffectResourceHandle != -1)
 	{
 		DeleteEffekseerEffect(holdEffectResourceHandle);
@@ -36,11 +37,11 @@ void EffectManager::Initalize()
 	SetChangeScreenModeGraphicsSystemResetFlag(FALSE);
 	Effekseer_SetGraphicsDeviceLostCallbackFunctions();
 
-	//単発クリック用のエフェクト読み込み
+	// 単発クリック用のエフェクト読み込み
 	effectResourceHandle = LoadEffekseerEffect("Resource/Effect/ClickEffect.efk", 20.0f);
 
-	//長押し用の違うエフェクトを読み込む
-	holdEffectResourceHandle = LoadEffekseerEffect("Resource/Effect/LongPressEffect.efk",60.0f);
+	// 長押し用の違うエフェクトを読み込む
+	holdEffectResourceHandle = LoadEffekseerEffect("Resource/Effect/LongPressEffect.efk", 60.0f);
 }
 
 void EffectManager::Update()
@@ -56,20 +57,53 @@ void EffectManager::Update()
 		if (playingEffectHandle != -1)
 		{
 			SetPosPlayingEffekseer2DEffect(playingEffectHandle, static_cast<float>(mouseX), static_cast<float>(mouseY), 0.0f);
+			// リストに登録する（これで連打しても全部最後まで再生される）
+			RegisterNormalEffect(playingEffectHandle);
 		}
 	}
 
-	//2D用のアップデート
+	// 2D用のアップデート
 	UpdateEffekseer2D();
+
+	// 再生が終わったエフェクトをリストからお掃除する
+	for (auto it = mNormalEffectHandles.begin(); it != mNormalEffectHandles.end(); )
+	{
+		// 再生終了（-1）になっていたらリストから消す
+		if (IsEffekseer2DEffectPlaying(*it) == -1)
+		{
+			it = mNormalEffectHandles.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
 }
 
 void EffectManager::Draw()
 {
-	//2D用の描画
-	DrawEffekseer2D();
+	// リストにある通常エフェクトと長押しエフェクトだけを描画する
+	DrawEffekseer2D_Begin();
+
+	// 登録されている通常エフェクトをすべて描画
+	for (int handle : mNormalEffectHandles)
+	{
+		if (IsEffekseer2DEffectPlaying(handle) == 0)
+		{
+			DrawEffekseer2D_Draw(handle);
+		}
+	}
+
+	// 長押しエフェクトが再生中なら描画
+	if (playingHoldEffectHandle != -1 && IsEffekseer2DEffectPlaying(playingHoldEffectHandle) == 0)
+	{
+		DrawEffekseer2D_Draw(playingHoldEffectHandle);
+	}
+
+	DrawEffekseer2D_End();
 }
 
-//長押しエフェクト：終わったらすぐ最初から再生＋位置を追従させる
+// 長押しエフェクト：終わったらすぐ最初から再生＋位置を追従させる
 void EffectManager::KeepPlayingEffect(float x, float y)
 {
 	// まだ再生されていない、または最後まで再生し終わった瞬間なら
@@ -86,12 +120,21 @@ void EffectManager::KeepPlayingEffect(float x, float y)
 	}
 }
 
-//長押しをやめたときにエフェクトをピタッと止める関数
+// 長押しをやめたときにエフェクトをピタッと止める関数
 void EffectManager::StopHoldEffect()
 {
 	if (playingHoldEffectHandle != -1)
 	{
 		StopEffekseer2DEffect(playingHoldEffectHandle);
 		playingHoldEffectHandle = -1;
+	}
+}
+
+// 描画リストにハンドルを登録する関数
+void EffectManager::RegisterNormalEffect(int handle)
+{
+	if (handle != -1)
+	{
+		mNormalEffectHandles.push_back(handle);
 	}
 }

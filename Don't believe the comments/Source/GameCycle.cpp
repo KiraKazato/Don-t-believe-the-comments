@@ -18,6 +18,7 @@ void GameCycle::Initialize()
 	mnQuestionNumberHandle = Master::mpFontManager->GetFontHandle(Master::mpFontManager->FONT_TETUBINN, 26);
 	Master::mpTextInputManager->Initialize(mnInputStringHandle);
 	Master::mpTextInputManager->SetKeyInputDrawPosition(Master::gridWidth * 45, Master::gridHeight * 82);
+	Master::mpTextInputManager->SetIsAlphabet(false);
 	Master::mpQuestionManager->SetMaxQuestionCount(mnMaxQuestionNumber);
 	Master::mpQuestionManager->ResetCorrectAnswer();
 	Master::mpQuestionManager->SetIsAllClear(false);
@@ -97,6 +98,7 @@ void GameCycle::Update()
 		mnNowQuestionImageHandle = Master::mpQuestionManager->GetQuestionData().questionGraphHandle;
 		mbQuestionSpawned = true;
 		mbIsDrawSuperHint = false;
+		Master::mpTextInputManager->SetIsAlphabet(Master::mpQuestionManager->GetQuestionData().isInputEnglish);
 		mnQuestionTimer = 0;
 		switch (mnQuestionNumber)
 		{
@@ -280,7 +282,15 @@ void GameCycle::InputAnswer()
 	else if (nowState == 1)
 	{
 		//•¶Žš“ü—Í
-		answer = Master::mpTextInputManager->GetInputString();
+		if (Master::mpTextInputManager->IsAlphabet())
+		{
+			answer = Master::mpTextInputManager->GetInputStringAlphabet();
+		}
+		else
+		{
+			answer = Master::mpTextInputManager->GetInputString();
+		}
+
 		
 		mbInputAnswered = true;
 	}

@@ -74,8 +74,6 @@ void QuestionManager::Load(const std::string& _filePath)
 {
 	mQuestions.resize(DIFFICULT_MAX);
 
-	// 入れるためのデータを用意する
-	QuestionData inData = QuestionData();
 
 	std::ifstream ifs(_filePath, std::ios::in);
 
@@ -92,6 +90,9 @@ void QuestionManager::Load(const std::string& _filePath)
 
 	while (getline(ifs, line))
 	{
+		// 入れるためのデータを用意する
+		QuestionData inData = QuestionData();
+
 		size_t pos = 0;
 
 		// 行の最後は\n\rとなるため、\rを消す
@@ -123,7 +124,15 @@ void QuestionManager::Load(const std::string& _filePath)
 		}
 
 		// 答え
-		if (getline(ss, cell, ',')) inData.answer = cell;
+		if (getline(ss, cell, ',')) 
+		{
+			inData.answer = cell;
+			if (!cell.empty() && IsAlphabet(cell.front()))
+			{
+				StringAlphabetLargeToSmall(inData.answer);
+				inData.isInputEnglish = true;
+			}
+		}
 		
 		// 難易度
 		if (getline(ss, cell, ',')) 
@@ -429,6 +438,35 @@ bool QuestionManager::IsCharactorLargeByte(char _charactor)
 		}
 	}
 	return false;
+}
+
+bool QuestionManager::IsAlphabet(char _charactor)
+{
+	if (IsCharactorLargeByte(_charactor) )
+	{
+		return false;
+	}
+
+	constexpr char smallMin = 'a';
+	constexpr char smallMax = 'z';
+	
+	constexpr char largeMin = 'A';
+	constexpr char largeMax = 'Z';
+
+	bool isAlphabet[] = { _charactor >= smallMin && _charactor <= smallMax, _charactor >= largeMin && _charactor <= largeMax };
+
+	return isAlphabet[0] || isAlphabet[1];
+}
+
+void QuestionManager::StringAlphabetLargeToSmall(std::string& _str)
+{
+	for (size_t i = 0; i < _str.size(); i++)
+	{
+		if (IsAlphabet(_str[i]))
+		{
+			_str[i] = std::tolower(_str[i]);
+		}
+	}
 }
 
 int QuestionManager::GetCorrectAnswerCount()

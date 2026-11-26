@@ -171,4 +171,7 @@ private:
 	std::string mRoma{};
 	std::string mKana{};
 	std::string mAlphabet{};
+
+private:
+	bool mbIsEnglish = false;
 };

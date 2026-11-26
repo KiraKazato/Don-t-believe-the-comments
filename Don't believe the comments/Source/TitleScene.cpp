@@ -30,6 +30,7 @@ void TitleScene::Initialize()
 	Master::mpSoundManager->PlayBGM(SoundManager::BGM_TITLE);
 
 	Master::mpViewers->Initialize();
+	Master::mpSubscribers->Initialize();
 	Master::mpQuestionManager->ResetCorrectAnswer();
 	Master::mpSoundManager->PlayBGM(SoundManager::BGM_TITLE);
 }

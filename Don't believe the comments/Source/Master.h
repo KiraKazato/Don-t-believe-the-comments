@@ -7,12 +7,14 @@
 #include "QuestionManager.h"
 #include "UIManager.h"
 #include "CommenterManager.h"
-#include "Viewers.h"
-#include "Transitor.h"
-#include "Pause.h"
 #include "MouseManager.h"
 #include "TextInputManager.h"
 #include "KeyInputManager.h"
+
+#include "Viewers.h"
+#include "Transitor.h"
+#include "Pause.h"
+#include "Subscribers.h"
 
 // ゲーム内で1つだけしか存在しないものを管理するクラス
 //例えば、
@@ -37,6 +39,7 @@ public:
 	static Viewers* mpViewers;//視聴者クラスのポインタ
 	static Transitor* mpTransitor;//トランジションのポインタ
 	static Pause* mpPause;//ポーズのポインタ
+	static Subscribers* mpSubscribers;//登録者クラスのポインタ
 public:
 	static const int Width = 1920;
 	static const int Height = 1080;

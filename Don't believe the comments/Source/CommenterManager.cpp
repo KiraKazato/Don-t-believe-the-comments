@@ -327,11 +327,23 @@ void CommenterManager::Update()
 		commenter->updateReputation(drawTotalHeight);
 		drawTotalHeight += commenter->GetTotalHeight();
 	}
-	
+	if (CheckHitKey(KEY_INPUT_BACK))
+	{
+		mpSuperChatEffect->Play(
+			static_cast<float>(Master::gridWidth * 103),
+			static_cast<float>(Master::gridHeight * 53));
+
+	}
 }
 
 void CommenterManager::Draw()
 {
+
+	//その上からコメント本体を描画する
+	for (const auto& commenter : mDisplayCommenters)
+	{
+		commenter->Draw();
+	}
 	bool isEffectPlaying = (mpSuperChatEffect != nullptr && mpSuperChatEffect->IsPlaying());
 
 	//エフェクト再生中なら、今の裏画面（背景）を仮キャンバスにコピーしてエフェクトを描く
@@ -355,11 +367,7 @@ void CommenterManager::Draw()
 		DrawGraph(0, 0, mnEffectScreen, FALSE);
 	}
 
-	//その上からコメント本体を描画する
-	for (const auto& commenter : mDisplayCommenters)
-	{
-		commenter->Draw();
-	}
+
 
 	//切り抜き範囲を全画面に戻す
 	SetDrawAreaFull();

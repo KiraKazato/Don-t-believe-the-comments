@@ -74,11 +74,7 @@ void GameScene::Update()
 		mpBubbleEffect->Update();
 	}
 
-	if (CheckHitKey(KEY_INPUT_BACK))
-	{
-		mpBubbleEffect->Play(Master::gridWidth * 103, Master::gridHeight * 53);
-
-	}
+	
 
 	mGameCycle.Update();
 	Scene::Update();

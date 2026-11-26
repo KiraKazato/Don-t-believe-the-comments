@@ -162,6 +162,8 @@ const std::string Typing::KanaDictionary(const std::string& _roma, bool _isNorma
 		mnCurrentRomaByte = 0;
 	}
 
+	mbIsEnglish = false;
+
 	if (_roma.empty())
 	{
 		return _roma;
@@ -317,6 +319,8 @@ const std::string Typing::Alphabet(const std::string& _alphabetString)
 		mnCurrentKanaByte = 0;
 		mnCurrentRomaByte = 0;
 	}
+
+	mbIsEnglish = true;
 
 	for (size_t i = 0; i < _alphabetString.size(); i++)
 	{
@@ -695,8 +699,17 @@ void Typing::DeleteChar()
 
 	// 削除
 	mRoma.erase(unit.romaBegin, unit.romaLength);
-	mKana.erase(unit.kanaBegin, unit.kanaLength);
 
+	if(mbIsEnglish)
+	{
+		mAlphabet.erase(unit.kanaBegin, unit.kanaLength);
+	}
+	else
+	{
+		mKana.erase(unit.kanaBegin, unit.kanaLength);
+	}
+	
+	
 	// 消した情報を得る
 	decltype(auto) deleteUnit = unit;
 

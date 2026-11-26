@@ -277,6 +277,7 @@ bool GameCycle::AnswerJudge()
 		Master::mpTextInputManager->ResetInput();
 		answer = "";
 		Master::mpViewers->ComeViewers();
+		Master::mpSubscribers->AddSubscribers();
 
 		mnCorrectAnswer->Play(Master::gridWidth * 45, Master::gridHeight * 50);
 
@@ -381,6 +382,7 @@ void GameCycle::GameOver()
 	std::function<void()>transitorFunction = [&]() 
 		{
 			Master::mpViewers->Update(); 
+			Master::mpSubscribers->Update();
 		};
 
 	// ラムダ式でトランジション中にやりたい処理を保存

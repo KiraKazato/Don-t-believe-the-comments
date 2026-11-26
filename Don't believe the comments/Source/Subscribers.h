@@ -77,6 +77,8 @@ public:
 
 	void AddSubscribers();
 
+	void UpdateDigits();
+
 private:
 	// 縦 2 つの画像をループさせるように
 	// 1 つの画像が輪になるようなイメージを持てるように
@@ -91,7 +93,7 @@ private:
 	int GraphToNumber(int _graphNumber, int _digits);
 
 	// 移動先の座標を決める
-	void NumberToRollPosition(int _digits, int _number, int _moveDigits);
+	void NumberToRollPosition(int _digits, int _number, int _moveDigits, bool _isNewDigits = false);
 	Position4 NumberToPosition(int _number, int _digits) const;
 
 private:
@@ -99,13 +101,17 @@ private:
 	int mnCorronFontHandle{};
 
 private:
-	int mnDigits{};
+	int mnDigits{};				// 桁数
+	int mnTopDigits{};			// 最上位桁
+	bool mbIsNewTopDigits{};	// 最上位桁が出来たか
+	const int mnMaxDigits{6};	// 最大桁数
+
 	int mnNumberWidth{};	// 数の横の大きさ
 	int mnNumberHeight{};	// 数一つの縦の大きさ
 	int mnAllNumberHeight{};// 全数字の高さ
 	int mnBlankWidth{};		// 空白の幅
 	int mnAllWidth{};		// 空白と数字の幅の合計
-	int mnCorronWidth{};	// コロンの幅
+	int mnCommaWidth{};		// コンマの幅
 
 	Position4 mDrawArea;
 	

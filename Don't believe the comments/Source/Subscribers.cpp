@@ -12,34 +12,38 @@ Subscribers::~Subscribers()
 void Subscribers::Initialize()
 {
 	mnCountNumberHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/NumberV.png");
+	mnCorronFontHandle = Master::mpFontManager->GetFontHandle(FontManager::FONT_TETUBINN, 60);
+
 
 	constexpr float a = 0.8f;
 	mnNumberWidth = int(63.0f * a);
 	mnNumberHeight = int(144.0f * a);
 	mnAllNumberHeight = mnNumberHeight * 10;
-	mnDigits = 9;
+	mnDigits = 1;
 	mnBlankWidth = 0;
 	mnAllWidth = mnNumberWidth + mnBlankWidth;
-	mnCorronWidth = 30;
-	mDrawArea = Position4(Master::gridWidth * 10, Master::gridHeight * 100, Master::gridWidth * 10 + mnAllWidth * mnDigits + (mnCorronWidth * ((mnDigits-1) / 3)), Master::gridHeight * 100 + mnNumberHeight);
+	mnCommaWidth = GetDrawStringWidthToHandle(",", int(strlenDx(",")), mnCorronFontHandle);
+
+
+	mDrawArea = Position4(Master::gridWidth * 10, Master::gridHeight * 100, Master::gridWidth * 10 + mnAllWidth * mnMaxDigits + (mnCommaWidth * ((mnMaxDigits - 1) / 3)), Master::gridHeight * 100 + mnNumberHeight);
 	mfCountTime = 0.0f;
 
-	mNumberInfo[0].resize(mnDigits, VerticalNumberPos());
-	mNumberInfo[1].resize(mnDigits, VerticalNumberPos());
-	mUpperImageIndex.resize(mnDigits, 0);
+	mNumberInfo[0].resize(mnMaxDigits, VerticalNumberPos());
+	mNumberInfo[1].resize(mnMaxDigits, VerticalNumberPos());
+	mUpperImageIndex.resize(mnMaxDigits, 0);
 
-	for (int i = 0; i < mnDigits; i++)
+	for (int i = 0; i < mnMaxDigits; i++)
 	{
 		for (int j = 0; j < mNumberInfo.size(); j++)
 		{
-			int corron = int(mnCorronWidth * (i / 3));
+			int corron = int(mnCommaWidth * (i / 3));
 			mNumberInfo[j][i] = VerticalNumberPos
 			(
 				mDrawArea.x1 + mnAllWidth * i + corron,
 				mDrawArea.y1 + mnAllNumberHeight * j,
 				mDrawArea.x1 + mnAllWidth * (i + 1) + corron,
 				mDrawArea.y1 + mnAllNumberHeight * (j + 1),
-				mnDigits - i
+				mnMaxDigits - i
 			);
 		}
 	}
@@ -50,19 +54,41 @@ void Subscribers::Initialize()
 
 void Subscribers::Draw()
 {
+	clsDx();
 	const auto& [areaX1, areaY1, areaX2, areaY2] = mDrawArea;
 
-	DrawBox(areaX1, areaY1, areaX2, areaY2, GetColor(255, 255, 255), TRUE);
+	DrawBox(areaX1 - Master::gridWidth, areaY1, areaX2 + Master::gridWidth, areaY2, GetColor(255, 255, 255), TRUE);
 
 	SetDrawArea(areaX1, areaY1, areaX2, areaY2);
-	
-	for (size_t i = 0; i < mnDigits; i++)
+
+	int commaCount = (mnDigits - 1) / 3;
+
+	int dispWidth = mnDigits * mnNumberWidth + commaCount * mnCommaWidth;
+
+	int startX = areaX1 + ((areaX2 - areaX1 - dispWidth) >> 1);
+
+	for (int i = 0; i < mnDigits; i++)
 	{
+		int digitIndex = mnMaxDigits - mnDigits + i;
+
+		int commaBefore = ((mnDigits - 1) / 3) - ((mnDigits - 1 - i) / 3);
+
+		int drawX = startX + (i * mnNumberWidth) + (commaBefore * mnCommaWidth);
+
 		for (size_t j = 0; j < mNumberInfo.size(); j++)
 		{
-			const auto& [x1, y1, x2, y2] = mNumberInfo[j][i].position;
+			const auto& [x1, y1, x2, y2] = mNumberInfo[j][digitIndex].position;
+			
+			DrawExtendGraph(drawX, y1, drawX + mnNumberWidth, y2, mnCountNumberHandle, TRUE);
 
-			DrawExtendGraph(x1, y1, x2, y2, mnCountNumberHandle, TRUE);
+			if (!(mbIsNewTopDigits && (mnTopDigits - 1) == i))continue;
+			
+			DrawBox(drawX, y1, drawX + mnNumberWidth, y1 + mnNumberHeight, GetColor(255, 255, 255), TRUE);
+		}
+		
+		if ((i < mnDigits - 1) && ((mnDigits - 1 - i) % 3 == 0))
+		{
+			DrawStringToHandle(drawX + mnNumberWidth, areaY2 - 70, ",", GetColor(0, 0, 0), mnCorronFontHandle);
 		}
 	}
 
@@ -73,7 +99,7 @@ void Subscribers::Update()
 {
 	Roll(3.0f);
 
-	for (int i = 1; i <= mnDigits; i++)
+	for (int i = 1; i <= mnMaxDigits; i++)
 	{
 		// ó÷ÇÃÇÊÇ§Ç…
 		Ring(i);
@@ -89,7 +115,7 @@ void Subscribers::DecideSubscribers()
 	const int randMin = 100;
 	const int randMax = 300;
 
-	mnTargetSubscribersCount = 199;
+	mnTargetSubscribersCount = 100;
 	mnStartSubscribersCount = 0;
 }
 
@@ -97,14 +123,13 @@ void Subscribers::Roll(float _duration)
 {
 	if (mbIsRollingFinished)
 	{
-		mnStartSubscribersCount = mnTargetSubscribersCount;
 		AddSubscribers();
 		return;
 	}
 
 	auto easing = [](float _t) 
 		{
-			return _t == 1.0f ? 1.0f : 1.0f - powf(2.0f, -10.0f * _t);
+			return -(cosf(DX_PI_F * _t) - 1.0f) / 2.0f;
 		};
 
 	constexpr float frameTime = 1.0f / 60.0f;
@@ -116,7 +141,7 @@ void Subscribers::Roll(float _duration)
 	float t = mfCountTime / _duration;
 	mfCountTime += frameTime;
 
-	if (t > 1.0f)
+	if (t >= 1.0f)
 	{
 		mfCountTime = _duration;
 		t = 1.0f;
@@ -125,13 +150,13 @@ void Subscribers::Roll(float _duration)
 
 	for (size_t i = 0; i < mNumberInfo.size(); i++)
 	{
-		for (size_t j = 1; j <= mnDigits; j++)
+		for (size_t j = 1; j <= mnMaxDigits; j++)
 		{
 			auto& info = mNumberInfo[i][j - 1ull];
 			info.LerpMove(t);
-
 			if (t >= 1.0f)
 			{
+				mnStartSubscribersCount = mnTargetSubscribersCount;
 				mbIsRollingFinished = true;
 				info.currentNumber = info.targetNumber;
 			}
@@ -144,7 +169,16 @@ void Subscribers::RollInitialize()
 	mfCountTime = 0.0f;
 	mbIsRollingFinished = false;
 
-	for (int i = 1; i < mnDigits; i++)
+	int oldDigit = mnDigits;
+	UpdateDigits();
+
+	bool isNewDigit = mnDigits > oldDigit;
+	if (isNewDigit)
+	{
+		mbIsNewTopDigits = isNewDigit;
+	}
+
+	for (int i = 1; i <= mnMaxDigits; i++)
 	{
 		int digitNum = 1;
 
@@ -160,17 +194,31 @@ void Subscribers::RollInitialize()
 		// ÇªÇÃåÖÇÃêîéö
 		int targetNumber = (mnTargetSubscribersCount / digitNum) % 10;
 
-		NumberToRollPosition(i, targetNumber, moveDigits);
+		bool isTopNewDigit = isNewDigit && (i == mnDigits);
+
+		NumberToRollPosition(i, targetNumber, moveDigits, isTopNewDigit);
 	}
 }
 
 void Subscribers::AddSubscribers()
 {
-	const int randMin = 250;
-	const int randMax = 500;
+	const int randMin = 500;
+	const int randMax = 750;
 
 	mnTargetSubscribersCount += rand() % (randMax - randMin) + randMin;
 	RollInitialize();
+}
+
+void Subscribers::UpdateDigits()
+{
+	mnDigits = 1;
+
+	int count = mnTargetSubscribersCount;
+	while (count >= 10)
+	{
+		count /= 10;
+		mnDigits++;
+	}
 }
 
 int Subscribers::GraphToNumber(int _graphNumber, int _digits)
@@ -183,9 +231,13 @@ int Subscribers::GraphToNumber(int _graphNumber, int _digits)
 	return (number.startNumber + moveNumber) % 10;
 }
 
-void Subscribers::NumberToRollPosition(int _digits, int _number, int _moveDigits)
+void Subscribers::NumberToRollPosition(int _digits, int _number, int _moveDigits, bool _isNewDigits)
 {
-	int digitIndex = mnDigits - size_t(_digits);
+	int digitIndex = mnMaxDigits - size_t(_digits);
+	if (mbIsNewTopDigits)
+	{
+		mnTopDigits = digitIndex + 1;
+	}
 	auto& info = mNumberInfo[GraphIndex(_digits)][digitIndex];
 	auto& nextInfo = mNumberInfo[GraphNoIndex(_digits)][digitIndex];
 	_number = std::min(std::max(0, _number), 9);
@@ -193,10 +245,19 @@ void Subscribers::NumberToRollPosition(int _digits, int _number, int _moveDigits
 
 	int moveY = _moveDigits * mnNumberHeight;
 
-	auto SetMovePosition = [moveY,_number](VerticalNumberPos& _info)
+	auto SetMovePosition = [moveY, _number, _isNewDigits, this](VerticalNumberPos& _info)
 		{
 			_info.moveDistance = moveY;
 			_info.prevMoveY = 0;
+
+			if (_isNewDigits)
+			{
+				_info.currentNumber = 0;
+				_info.startNumber = 0;
+				_info.targetNumber = 1;
+				return;
+			}
+
 			_info.startNumber = _info.currentNumber;
 			_info.targetNumber = _number;
 		};
@@ -211,7 +272,7 @@ Subscribers::Position4 Subscribers::NumberToPosition(int _number, int _digits) c
 
 	auto [x1, y1, x2, y2] = mDrawArea;
 
-	int corron = mnCorronWidth * (digitIndex / 3);
+	int corron = mnCommaWidth * (digitIndex / 3);
 
 	x1 += mnNumberWidth * digitIndex + corron;
 	y1 -= mnNumberHeight * _number;
@@ -234,17 +295,23 @@ size_t Subscribers::GraphNoIndex(int _digits)
 
 void Subscribers::Ring(int _digits)
 {
-	auto& number = mNumberInfo[GraphIndex(_digits)][size_t(_digits) - 1];
-	auto& nextNumber = mNumberInfo[GraphNoIndex(_digits)][size_t(_digits) - 1];
-
-	auto& pos = number.position;
-
-	auto& nextPos = nextNumber.position;
+	int digitIndex = mnMaxDigits - _digits;
 
 	// ëŒè€ÇÃâÊëúÇÃàÍî‘â∫Ç™ï\é¶ãÊä‘Çí ÇËî≤ÇØÇΩ
-	if (pos.y2 <= mDrawArea.y1)
+	while (true)
 	{
-		// èÌÇ…åqÇ™ÇÈÇÊÇ§Ç…Ç∑ÇÈ
+		auto& number = mNumberInfo[GraphIndex(_digits)][digitIndex];
+		auto& nextNumber = mNumberInfo[GraphNoIndex(_digits)][digitIndex];
+
+		auto& pos = number.position;
+		auto& nextPos = nextNumber.position;
+
+		if (pos.y2 > mDrawArea.y1)
+		{
+			break;
+		}
+
+		// åqÇ∞ÇÈ
 		pos.y1 = nextPos.y2;
 		pos.y2 = pos.y1 + mnAllNumberHeight;
 

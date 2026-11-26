@@ -90,7 +90,6 @@ private:
 	TextInputManager mTextInputManager;
 	EffekseerEffect* mnCorrectAnswer;
 	EffekseerEffect* mnFallingCrossMiss;
-	EffekseerEffect* mnSuperChatEffect;
 	EffekseerEffect* mn10CorrectAnswersEffect;
 
 

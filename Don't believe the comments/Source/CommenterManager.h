@@ -4,6 +4,7 @@
 #include <string>
 
 class Commenter;
+class EffekseerEffect; 
 
 class CommenterManager
 {
@@ -111,4 +112,9 @@ private:
 	int mnTotalHeight = 0;
 
 	bool mbIsSuperCommentDraw = false;
+
+	EffekseerEffect* mpSuperChatEffect = nullptr;
+
+	//エフェクトを切り抜くための透明な仮キャンバス
+	int mnEffectScreen = -1;
 };

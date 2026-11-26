@@ -48,6 +48,12 @@ public:
 
 	void SetManualDraw(bool flag) { mbManualDraw = flag; }
 
+	bool IsPlaying() const
+	{
+		return (playingEffectHandle != -1 && IsEffekseer2DEffectPlaying(playingEffectHandle) == 0);
+	}
+
+
 private:
 	VECTOR PlayPos;		// çƒê∂ÇµÇΩÇ¢ç¿ïW
 	VECTOR mvRotation;  // âÒì]Ç≥ÇπÇΩÇ¢äpìx
@@ -68,4 +74,7 @@ private:
 	float effectSpeed = 1.0f;
 
 	bool mbManualDraw = false;
+
+	
+	
 };

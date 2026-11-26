@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include "EffekseerEffect.h"
 
 CommenterManager::CommenterManager()
 {
@@ -24,10 +25,29 @@ void CommenterManager::Initialize()
 	mCommenterNames.clear();
 	mnCurrentCommentGridPositionX = mnBaseCommentGridPositionX;
 	mnCurrentCommentGridPositionY = mnBaseCommentGridPositionY;
-	
+
+	//スパチャエフェクトを作成して手動描画モードにする
+	mpSuperChatEffect = new EffekseerEffect("Resource/Effect/SuperChatEffect.efk", 50.0f);
+	mpSuperChatEffect->SetManualDraw(true);
+
+	//画面と同じサイズの「透明な仮キャンバス」を作成（第3引数のTRUEが透過ありの意味）
+	mnEffectScreen = MakeScreen(Master::Width, Master::Height, FALSE);
 }
+
 void CommenterManager::Finalize()
 {
+	//エフェクトと仮キャンバスの後片付け
+	if (mpSuperChatEffect != nullptr)
+	{
+		delete mpSuperChatEffect;
+		mpSuperChatEffect = nullptr;
+	}
+	if (mnEffectScreen != -1)
+	{
+		DeleteGraph(mnEffectScreen);
+		mnEffectScreen = -1;
+	}
+
 	if (!mDisplayCommenters.empty())
 	{
 		for (auto& commenter : mDisplayCommenters)
@@ -201,9 +221,17 @@ std::string CommenterManager::GetDisplayComment(int _state)
 	float rate = GetRand(10000) / 10000.0f;
 	do
 	{
-		//大ヒント
 		if (mbIsSuperCommentDraw)
 		{
+			//スパチャエフェクトを再生する
+			if (mpSuperChatEffect != nullptr)
+			{
+				mpSuperChatEffect->Play(
+					static_cast<float>(Master::gridWidth * 103),
+					static_cast<float>(Master::gridHeight * 53)
+				);
+			}
+
 			//複数存在する場合は選ぶ
 			const std::vector<std::string>& chooseSuperHintComment = Master::mpQuestionManager->GetQuestionData().superHintComment;
 			index = GetRand(static_cast<int>(chooseSuperHintComment.size()) - 1);
@@ -286,6 +314,11 @@ std::vector<std::string> CommenterManager::ChooseTemplateCommentKind(int _kind)
 
 void CommenterManager::Update()
 {
+	//スパチャエフェクトの更新
+	if (mpSuperChatEffect != nullptr)
+	{
+		mpSuperChatEffect->Update();
+	}
 	ChooseDisplayCommenter();
 	if (mDisplayCommenters.empty())return;
 	int drawTotalHeight = mnTotalHeight;
@@ -294,16 +327,42 @@ void CommenterManager::Update()
 		commenter->updateReputation(drawTotalHeight);
 		drawTotalHeight += commenter->GetTotalHeight();
 	}
+	
 }
 
 void CommenterManager::Draw()
 {
-	if (mDisplayCommenters.empty())return;
+	bool isEffectPlaying = (mpSuperChatEffect != nullptr && mpSuperChatEffect->IsPlaying());
 
+	//エフェクト再生中なら、今の裏画面（背景）を仮キャンバスにコピーしてエフェクトを描く
+	if (isEffectPlaying && mnEffectScreen != -1)
+	{
+		// 今の画面を仮キャンバスにそのままコピーする
+		GetDrawScreenGraph(0, 0, Master::Width, Master::Height, mnEffectScreen);
+
+		SetDrawScreen(mnEffectScreen); // 描き先を仮キャンバスに変更
+		
+		mpSuperChatEffect->Draw();     // 背景の上に直接エフェクトを描く
+		SetDrawScreen(DX_SCREEN_BACK); // 描き先を元の裏画面に戻す
+	}
+
+	//コメント欄の枠内だけ描かれるように切り抜き範囲を設定する
+	SetDrawArea(Master::gridWidth * 89, Master::gridHeight * 12, Master::gridWidth * 117, Master::gridHeight * 113);
+
+	//背景＋エフェクトが描かれた仮キャンバスを、枠内だけ裏画面に貼り付ける
+	if (isEffectPlaying && mnEffectScreen != -1)
+	{
+		DrawGraph(0, 0, mnEffectScreen, FALSE);
+	}
+
+	//その上からコメント本体を描画する
 	for (const auto& commenter : mDisplayCommenters)
 	{
 		commenter->Draw();
 	}
+
+	//切り抜き範囲を全画面に戻す
+	SetDrawAreaFull();
 }
 
 void CommenterManager::SetCommenter(Commenter* _commenter)
@@ -399,6 +458,11 @@ bool CommenterManager::IsOneSecond()
 
 void CommenterManager::GameEnd()
 {
+	//ゲーム終了時に再生中のスパチャエフェクトを止める
+	if (mpSuperChatEffect != nullptr)
+	{
+		mpSuperChatEffect->Stop();
+	}
 	if (!mDisplayCommenters.empty())
 	{
 		for (auto& commenter : mDisplayCommenters)

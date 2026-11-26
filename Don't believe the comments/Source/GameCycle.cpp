@@ -27,6 +27,7 @@ void GameCycle::Initialize()
 	mnFallingCrossMiss = new EffekseerEffect("Resource/Effect/FallingCrossMiss.efk", 95.0f);
 	mnSuperChatEffect = new EffekseerEffect("Resource/Effect/SuperChatEffect.efk", 50.0f);
 	mnSuperChatEffect->SetManualDraw(true); //このエフェクトだけ手動で描く
+	mn10CorrectAnswersEffect = new EffekseerEffect("Resource/Effect/10CorrectAnswersEffect4.efk", 37.0f);
 
 
 	Master::mpCommenterManager->ResetCommentCount();
@@ -80,6 +81,10 @@ void GameCycle::Update()
 	{
 		mnSuperChatEffect->Update();
 	}
+	if (mn10CorrectAnswersEffect != nullptr)
+	{
+		mn10CorrectAnswersEffect->Update();
+	}
 
 	if (mbGameEnd)
 	{
@@ -129,6 +134,8 @@ void GameCycle::Update()
 		mnQuestionTimer = 0;
 		if (mnQuestionNumber >= mnMaxQuestionNumber)
 		{
+			mn10CorrectAnswersEffect->Play(Master::Width / 2.0f, Master::Height / 2.0f);
+
 			GameEnd();
 		}
 		else

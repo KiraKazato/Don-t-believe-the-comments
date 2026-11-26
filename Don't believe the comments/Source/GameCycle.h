@@ -91,6 +91,8 @@ private:
 	EffekseerEffect* mnCorrectAnswer;
 	EffekseerEffect* mnFallingCrossMiss;
 	EffekseerEffect* mnSuperChatEffect;
+	EffekseerEffect* mn10CorrectAnswersEffect;
+
 
 
 	int mnShakeTime = 0;  // 揺れる残り時間（フレーム数）

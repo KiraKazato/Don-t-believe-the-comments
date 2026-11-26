@@ -3,6 +3,8 @@
 #include <vector>
 #include "SoundManager.h"
 #include "GameCycle.h"
+#include "EffekseerEffect.h" 
+
 
 class GameScene :public Scene
 {
@@ -26,4 +28,8 @@ private:
 private:
 	GameCycle mGameCycle;
 	int mnBackGround;
+
+	//：背景用バブルエフェクトと、枠内切り抜き用の仮キャンバス
+	EffekseerEffect* mpBubbleEffect = nullptr;
+	int mnBubbleScreen = -1;
 };

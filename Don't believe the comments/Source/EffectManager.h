@@ -21,6 +21,8 @@ public:
 	//長押しをやめたときにエフェクトを止める関数
 	void StopHoldEffect();
 
+	void RegisterNormalEffect(int handle);
+
 private:
 	const int effectParticleLimit = 20000;// 画面に表示できる最大パーティクル
 
@@ -30,4 +32,6 @@ private:
 	//追加：長押し（つまみ操作など）エフェクト用の変数
 	int holdEffectResourceHandle = -1; // 長押しエフェクトのリソース用
 	int playingHoldEffectHandle = -1;  // 長押しエフェクトの再生中ハンドル
+
+	std::vector<int> mNormalEffectHandles;
 };

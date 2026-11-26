@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include "EffekseerEffect.h"
 
 CommenterManager::CommenterManager()
 {
@@ -24,10 +25,30 @@ void CommenterManager::Initialize()
 	mCommenterNames.clear();
 	mnCurrentCommentGridPositionX = mnBaseCommentGridPositionX;
 	mnCurrentCommentGridPositionY = mnBaseCommentGridPositionY;
+
+	//繧ｹ繝代メ繝｣繧ｨ繝輔ぉ繧ｯ繝医ｒ菴懈�縺励※謇句虚謠冗判繝｢繝ｼ繝峨↓縺吶ｋ
+	mpSuperChatEffect = new EffekseerEffect("Resource/Effect/SuperChatEffect.efk", 50.0f);
+	mpSuperChatEffect->SetManualDraw(true);
+
+	//逕ｻ髱｢縺ｨ蜷後§繧ｵ繧､繧ｺ縺ｮ縲碁乗�縺ｪ莉ｮ繧ｭ繝｣繝ｳ繝舌せ縲阪ｒ菴懈��育ｬｬ3蠑墓焚縺ｮTRUE縺碁城℃縺ゅｊ縺ｮ諢丞袖�
+	mnEffectScreen = MakeScreen(Master::Width, Master::Height, FALSE);
 	mnCommentBackHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/Button/CommentBack.png");
 }
+
 void CommenterManager::Finalize()
 {
+	//繧ｨ繝輔ぉ繧ｯ繝医→莉ｮ繧ｭ繝｣繝ｳ繝舌せ縺ｮ蠕檎援莉倥￠
+	if (mpSuperChatEffect != nullptr)
+	{
+		delete mpSuperChatEffect;
+		mpSuperChatEffect = nullptr;
+	}
+	if (mnEffectScreen != -1)
+	{
+		DeleteGraph(mnEffectScreen);
+		mnEffectScreen = -1;
+	}
+
 	if (!mDisplayCommenters.empty())
 	{
 		for (auto& commenter : mDisplayCommenters)
@@ -174,7 +195,7 @@ void CommenterManager::ChooseDisplayCommenter()
 		new Commenter(commenter, commenter->GetName(), commenter->GetState(), comment, mnID, mbIsSuperCommentDraw);
 		if (mbIsSuperCommentDraw)
 		{
-			mbIsSuperCommentDraw = false;	// ���o�����玟���w�������܂ł����o���Ȃ�
+			mbIsSuperCommentDraw = false;	// 一回出したら次を指示されるまでもう出さない
 		}
 
 		for (const auto& displayCommenter : mDisplayCommenters)
@@ -205,16 +226,24 @@ std::string CommenterManager::GetDisplayComment(int _state)
 	float rate = GetRand(10000) / 10000.0f;
 	do
 	{
-		//��q���g
 		if (mbIsSuperCommentDraw)
 		{
-			//�������݂���ꍇ�͑I��
+			//繧ｹ繝代メ繝｣繧ｨ繝輔ぉ繧ｯ繝医ｒ蜀咲函縺吶ｋ
+			if (mpSuperChatEffect != nullptr)
+			{
+				mpSuperChatEffect->Play(
+					static_cast<float>(Master::gridWidth * 103),
+					static_cast<float>(Master::gridHeight * 53)
+				);
+			}
+
+			//隍�焚蟄伜惠縺吶ｋ蝣ｴ蜷医�驕ｸ縺ｶ
 			const std::vector<std::string>& chooseSuperHintComment = Master::mpQuestionManager->GetQuestionData().superHintComment;
 			index = GetRand(static_cast<int>(chooseSuperHintComment.size()) - 1);
 			return chooseSuperHintComment.at(index);
 		}
 
-		//�e���v���[�g
+		//テンプレート
 		if (!mbQuestionStarted || (rate < 0.6f && !mTemplateComments.empty())|| continued > 5)
 		{
 			std::vector<std::string>&& chooseTemplateComment = ChooseTemplateCommentKind(mnCommentKind);
@@ -222,7 +251,7 @@ std::string CommenterManager::GetDisplayComment(int _state)
 			return chooseTemplateComment.at(index);
 		}
 
-		//���Ȍ�q���g
+		//↓以後ヒント
 
 		const auto& comments = (_state == 0) ? Master::mpQuestionManager->GetQuestionData().trueComment : Master::mpQuestionManager->GetQuestionData().falseComment;
 
@@ -257,30 +286,30 @@ std::vector<std::string> CommenterManager::ChooseTemplateCommentKind(int _kind)
 
 	if (_kind == 0)
 	{
-		// �J�n���� 0 �Ԗڂ���
+		// 開始時は 0 番目だけ
 		ret = mTemplateComments.at(0);
 		return ret;
 	}
 	else if (_kind == 4)
 	{
-		// �I������ 4 �Ԗ�
+		// 終了時は 4 番目
 		ret = mTemplateComments.at(_kind);
 		return ret;
 	}
 
 
-	// �Ċm�ۏ������Ȃ�������
+	// 再確保処理をなくすため
 	size_t capacity = 0;
 	for (size_t i = inIndexMax; i >= 1; i--)
 	{
 		capacity += mTemplateComments.at(i).size();
 	}
 
-	// �����ȉ��̔ԍ����W�߂�
+	// 自分以下の番号を集める
 	ret.reserve(capacity);
 	for (size_t i = inIndexMax; i >= 1; i--)
 	{
-		// �����Ɉꊇ�ǉ�
+		// 末尾に一括追加
 		ret.insert(ret.end(), mTemplateComments.at(i).begin(), mTemplateComments.at(i).end());
 	}
 
@@ -290,6 +319,11 @@ std::vector<std::string> CommenterManager::ChooseTemplateCommentKind(int _kind)
 
 void CommenterManager::Update()
 {
+	//繧ｹ繝代メ繝｣繧ｨ繝輔ぉ繧ｯ繝医�譖ｴ譁ｰ
+	if (mpSuperChatEffect != nullptr)
+	{
+		mpSuperChatEffect->Update();
+	}
 	ScrollComments();
 	ChooseDisplayCommenter();
 	
@@ -300,17 +334,50 @@ void CommenterManager::Update()
 		commenter->updateReputation(drawTotalHeight);
 		drawTotalHeight += commenter->GetTotalHeight();
 	}
+	if (CheckHitKey(KEY_INPUT_BACK))
+	{
+		mpSuperChatEffect->Play(
+			static_cast<float>(Master::gridWidth * 103),
+			static_cast<float>(Master::gridHeight * 53));
+
+	}
 }
 
 void CommenterManager::Draw()
 {
-	if (mDisplayCommenters.empty())return;
 
-	
+	//縺昴�荳翫°繧峨さ繝｡繝ｳ繝域悽菴薙ｒ謠冗判縺吶ｋ
 	for (const auto& commenter : mDisplayCommenters)
 	{
 		commenter->Draw();
 	}
+	bool isEffectPlaying = (mpSuperChatEffect != nullptr && mpSuperChatEffect->IsPlaying());
+
+	//繧ｨ繝輔ぉ繧ｯ繝亥�逕滉ｸｭ縺ｪ繧峨∽ｻ翫�陬冗判髱｢�郁レ譎ｯ�峨ｒ莉ｮ繧ｭ繝｣繝ｳ繝舌せ縺ｫ繧ｳ繝斐�縺励※繧ｨ繝輔ぉ繧ｯ繝医ｒ謠上￥
+	if (isEffectPlaying && mnEffectScreen != -1)
+	{
+		// 莉翫�逕ｻ髱｢繧剃ｻｮ繧ｭ繝｣繝ｳ繝舌せ縺ｫ縺昴�縺ｾ縺ｾ繧ｳ繝斐�縺吶ｋ
+		GetDrawScreenGraph(0, 0, Master::Width, Master::Height, mnEffectScreen);
+
+		SetDrawScreen(mnEffectScreen); // 謠上″蜈医ｒ莉ｮ繧ｭ繝｣繝ｳ繝舌せ縺ｫ螟画峩
+		
+		mpSuperChatEffect->Draw();     // 閭梧勹縺ｮ荳翫↓逶ｴ謗･繧ｨ繝輔ぉ繧ｯ繝医ｒ謠上￥
+		SetDrawScreen(DX_SCREEN_BACK); // 謠上″蜈医ｒ蜈��陬冗判髱｢縺ｫ謌ｻ縺
+	}
+
+	//繧ｳ繝｡繝ｳ繝域ｬ��譫蜀�□縺第緒縺九ｌ繧九ｈ縺�↓蛻�ｊ謚懊″遽�峇繧定ｨｭ螳壹☆繧
+	SetDrawArea(Master::gridWidth * 89, Master::gridHeight * 12, Master::gridWidth * 117, Master::gridHeight * 113);
+
+	//閭梧勹�九お繝輔ぉ繧ｯ繝医′謠上°繧後◆莉ｮ繧ｭ繝｣繝ｳ繝舌せ繧偵∵棧蜀�□縺題｣冗判髱｢縺ｫ雋ｼ繧贋ｻ倥￠繧
+	if (isEffectPlaying && mnEffectScreen != -1)
+	{
+		DrawGraph(0, 0, mnEffectScreen, FALSE);
+	}
+
+
+
+	//蛻�ｊ謚懊″遽�峇繧貞�逕ｻ髱｢縺ｫ謌ｻ縺
+	SetDrawAreaFull();
 	DrawBackScrollButton();
 }
 
@@ -321,7 +388,7 @@ void CommenterManager::SetCommenter(Commenter* _commenter)
 
 void CommenterManager::SetDisplayCommenter(Commenter* _commenter)
 {
-	// �f�[�^��Ɏc���R�����g�̐�
+	// データ上に残すコメントの数
 	constexpr int saveComments = 1000;
 
 	/**/if(mDisplayCommenters.size() > saveComments)
@@ -390,7 +457,7 @@ void CommenterManager::ChangeQuestion()
 
 bool CommenterManager::IsOneSecond()
 {
-	//��̎���
+	//基準の時間
 	static int lastTime = GetNowCount();
 	int currentTime = GetNowCount();
 
@@ -407,6 +474,11 @@ bool CommenterManager::IsOneSecond()
 
 void CommenterManager::GameEnd()
 {
+	//繧ｲ繝ｼ繝邨ゆｺ�凾縺ｫ蜀咲函荳ｭ縺ｮ繧ｹ繝代メ繝｣繧ｨ繝輔ぉ繧ｯ繝医ｒ豁｢繧√ｋ
+	if (mpSuperChatEffect != nullptr)
+	{
+		mpSuperChatEffect->Stop();
+	}
 	if (!mDisplayCommenters.empty())
 	{
 		for (auto& commenter : mDisplayCommenters)

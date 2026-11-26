@@ -48,28 +48,43 @@ void EffekseerEffect::Update()
 
 void EffekseerEffect::Draw()
 {
-	//2Dエフェクトの描画はDrawEffekseer2D()をほかで呼ぶため、
-	//ここは空のまま
+	// 手動描画モードでない場合や、再生中でない場合は何もしない
+	if (!mbManualDraw || playingEffectHandle == -1)
+	{
+		return;
+	}
+	if (IsEffekseer2DEffectPlaying(playingEffectHandle) == -1)
+	{
+		return;
+	}
+
+	// このエフェクトだけを個別に描画する
+	DrawEffekseer2D_Begin();
+	DrawEffekseer2D_Draw(playingEffectHandle);
+	DrawEffekseer2D_End();
 }
 
 // 基本的にエフェクトの使用はこの関数を呼ぶ。
 void EffekseerEffect::Play()
 {
-	//再生関数
+	// 再生関数
 	playingEffectHandle = PlayEffekseer2DEffect(effectResourcehandle);
 
-	
-
-	//座標の設定
+	// 座標の設定
 	if (playingEffectHandle != -1)
 	{
 		SetPosPlayingEffekseer2DEffect(playingEffectHandle, PlayPos.x, PlayPos.y, 0.0f);
 
-		//再生開始時にも速度を設定する
+		// 再生開始時にも速度を設定する
 		SetSpeedPlayingEffekseer2DEffect(playingEffectHandle, effectSpeed);
+
+		//手動描画モードでなければ、EffectManagerに自動描画をお願いする
+		if (!mbManualDraw)
+		{
+			Master::mpEffectManager->RegisterNormalEffect(playingEffectHandle);
+		}
 	}
 }
-
 // エフェクトを止めたいときに使う
 void EffekseerEffect::Stop()
 {

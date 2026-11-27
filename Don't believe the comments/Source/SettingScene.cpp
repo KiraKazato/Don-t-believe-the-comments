@@ -201,13 +201,7 @@ void SettingScene::Update()
 		dialX = barLeftX + (overallLength * volumeRatio);
 	}
 
-	//バックスペースキーでタイトルに戻る
-	if (CheckHitKey(KEY_INPUT_BACK))
-	{
-		//BGMを止めてシーン遷移
-		Master::mpTransitor->AddTransitorAfterUpdate("SettingBGMStop", [&]() {Master::mpSoundManager->StopBGM(); });
-		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
-	}
+
 
 	Scene::Update();
 }

@@ -150,14 +150,6 @@ void GameCycle::Update()
 			mnQuestionNumber++;
 		}
 	}
-	if (CheckHitKey(KEY_INPUT_BACK))
-	{
-		mn10CorrectAnswersEffect->Play(
-			static_cast<float>(Master::gridWidth * 45),
-			static_cast<float>(Master::gridHeight * 43)
-		);
-
-	}
 
 	GameOver();
 

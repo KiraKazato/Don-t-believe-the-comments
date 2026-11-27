@@ -327,13 +327,7 @@ void CommenterManager::Update()
 		commenter->updateReputation(drawTotalHeight);
 		drawTotalHeight += commenter->GetTotalHeight();
 	}
-	if (CheckHitKey(KEY_INPUT_BACK))
-	{
-		mpSuperChatEffect->Play(
-			static_cast<float>(Master::gridWidth * 103),
-			static_cast<float>(Master::gridHeight * 53));
-
-	}
+	
 }
 
 void CommenterManager::Draw()

@@ -24,6 +24,8 @@ public:
 	void Draw();
 	void Finalize();
 	void SetStage(StageNumber _stageNumeber);
+	void Draw10CorrectEffect();//10問正解エフェクトを問題画面内に描画する
+
 
 	int GetShakeX() const { return mnShakeX; }
 	int GetShakeY() const { return mnShakeY; }
@@ -47,7 +49,6 @@ private:
 
 	void GameEnd();
 
-	void Draw10CorrectEffect();//10問正解エフェクトを問題画面内に描画する
 
 private:
 	//入力する文字のフォントハンドルを入れる

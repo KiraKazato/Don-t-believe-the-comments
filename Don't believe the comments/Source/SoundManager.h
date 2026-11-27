@@ -63,7 +63,7 @@ public://©•ª‚Å’Ç‰Á
 
 	//trunc‚Í¬”•”•ª‚ÌØ‚èÌ‚Ä
 	//0~255‚ğ0~100‚Å•Ô‚·
-	int  GetSEVolume() { return (int)truncf(NowSevolume / 2.555f); }
+	int  GetSEVolume() { return (int)truncf(NowSevolume / 2.55f); }
 	int  GetBGMVolume() { return (int)truncf(NowBgmvolume / 2.55f); }
 
 private:  //ƒƒ“ƒo•Ï”

@@ -23,13 +23,17 @@ private:
 	int inputFieldHandle = -1;
 	int backGroundHandle = -1;
 	int commentFieldHandle = -1;
+	int scoreField = -1;
 
 	int commentCountFontHandle = -1;
 private:
-	GameCycle mGameCycle;
-	int mnBackGround;
+	GameCycle mGameCycle{};
+	int mnBackGround = 0;
 
 	//：背景用バブルエフェクトと、枠内切り抜き用の仮キャンバス
 	EffekseerEffect* mpBubbleEffect = nullptr;
 	int mnBubbleScreen = -1;
+
+private:
+	float mfGameEndEasingTime = 0.0f;
 };

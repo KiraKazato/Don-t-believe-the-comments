@@ -30,9 +30,8 @@ void Viewers::Update()
 
 void Viewers::Draw()
 {
-	int drawBaseX = Master::gridWidth * 58;
+	int drawBaseX = Master::gridWidth * 57;
 	int drawBaseY = Master::gridHeight * 110;
-	const int baseX2 = Master::gridWidth * 86;
 
 	// ‹’®Ò”‚Ì‰¡•‚ğ’²‚×‚é
 	int labelWidth = GetDrawStringWidthToHandle("‹’®Ò”:", static_cast<int>(strlen("‹’®Ò”:")), mnStringHandle);
@@ -48,10 +47,10 @@ void Viewers::Draw()
 	int drawY = drawBaseY + static_cast<int>((numHeight * (mfScale - 1.0f)) / 2.0f);
 	
 	//‹’®Ò”‚Ì•”•ª‚Í•’Ê‚Ì‘å‚«‚³‚Å•`‚­
-	DrawStringToHandle(drawBaseX + int(Master::gridWidth * 2.9f), drawBaseY, "‹’®Ò”:", GetColor(0, 0, 0), mnStringHandle);
+	DrawStringToHandle(drawBaseX + int(Master::gridWidth * 2.9f) - Master::gridWidth, drawBaseY, "‹’®Ò”:", GetColor(0, 0, 0), mnStringHandle);
 
 	//”š‚¾‚¯‚ğŠg‘å‚µ‚Ä•`‚­
-	DrawExtendFormatStringToHandle(drawX, drawY, mfScale, mfScale, GetColor(0, 0, 0), mnStringHandle, "%d", mnCurrentViewers);
+	DrawExtendFormatStringToHandle(drawX - Master::gridWidth, drawY, mfScale, mfScale, GetColor(0, 0, 0), mnStringHandle, "%d", mnCurrentViewers);
 }
 
 void Viewers::Finalize()

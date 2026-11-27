@@ -120,14 +120,14 @@ private:
 	const int mnMaxCommentKind = 5;
 	
 	//マウスのホイール量
-	int mnMouseWheelValue;
+	int mnMouseWheelValue = 0;
 	//スクロールされたか
-	bool mbIsScrolled;
+	bool mbIsScrolled = false;
 
 	int mnCommentBackHandle{};
 
 	//表示されてるコメントの高さの合計
-	int mnTotalHeight;
+	int mnTotalHeight = 0;
 
 	bool mbIsSuperCommentDraw = false;
 

@@ -7,7 +7,7 @@ ResultScene::ResultScene()
 	, mnShowResultHandle(0)
 	,mnNumberOfComments(0)
 	,mnNumberOfCorrectAnswers(0)
-	,mnNumberOfViewers(0)
+	,mnNumberOfSubscribers(0)
 	,mnStreamEnded(0)
 	,mnResultEffect(0)
 {
@@ -26,7 +26,7 @@ void ResultScene::Initialize()
 	mnShowResultHandle = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/ShowResult.png");
 	mnNumberOfComments = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/Number Of Comments.png");
 	mnNumberOfCorrectAnswers = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/Number Of Correct Answers.png");
-	mnNumberOfViewers = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/Number Of Viewers.png");
+	mnNumberOfSubscribers = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/Number Of Subscriber.png");
 	mnStreamEnded = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/StreamEnded.png");
 	mnStreamFailed = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/StreamFailed.png");
 	mnBackToTitle = Master::mpResourceManager->LoadGraphics("Resource/ResultScene/BackToTitle.png");
@@ -44,7 +44,7 @@ void ResultScene::Initialize()
 	Master::mpUIManager->AddUI(mnSceneBackGroundHandle, 0, 0, Master::Width, Master::Height);
 	Master::mpUIManager->AddUI(mnShowResultHandle, Master::gridWidth*24, Master::gridHeight*23, Master::gridWidth*97, Master::gridHeight*93);
 	Master::mpUIManager->AddUI(mnNextButtonHandle, Master::gridWidth * 47, Master::gridHeight * 95, Master::gridWidth * 74, Master::gridHeight * 112);
-	Master::mpUIManager->AddUI(mnNumberOfViewers, Master::gridWidth * 48, Master::gridHeight * 25, Master::gridWidth * 72, Master::gridHeight * 34);
+	Master::mpUIManager->AddUI(mnNumberOfSubscribers, Master::gridWidth * 48, Master::gridHeight * 25, Master::gridWidth * 72, Master::gridHeight * 34);
 	Master::mpUIManager->AddUI(mnNumberOfComments, Master::gridWidth * 71, Master::gridHeight * 57, Master::gridWidth * 87, Master::gridHeight * 63);
 	Master::mpUIManager->AddUI(mnNumberOfCorrectAnswers, Master::gridWidth * 36, Master::gridHeight * 57, Master::gridWidth * 47, Master::gridHeight * 63);
 	
@@ -90,7 +90,7 @@ void ResultScene::Draw()
 	Master::mpUIManager->DrawUI();
 	Scene::Draw();	
 
-	DrawViewersCount(mfAnimationDuration[0], Master::mpViewers->GetViewersCount(), Master::mpViewers->GetStartViewersCount());
+	DrawSubscribersCount(mfAnimationDuration[0], Master::mpSubscribers->GetSubscribersCount() - Master::mpSubscribers->GetGameStartSubscriberCount(), Master::mpSubscribers->GetGameStartSubscriberCount());
 
 	DrawCommentCount(Master::mpCommenterManager->GetCommentsCount());
 
@@ -115,22 +115,14 @@ auto Easing = [](float x)
 			: (2 - powf(2, -20 * x + 10)) / 2;
 	};
 
-void ResultScene::DrawViewersCount(float _viwersCountTime, int _count, int _startCount)
+void ResultScene::DrawSubscribersCount(float _viwersCountTime, int _count, int _startCount)
 {
-	unsigned int color = GetColor(50, 255, 50);
-	char sign = '+';
-	if (Master::mpViewers->GetViewersCount() < 0)
-	{
-		sign = '-';
-		color = GetColor(255, 50, 50);
-	}
+	int drawCount = SubscribersCount(_viwersCountTime, _count);
 
-	int drawCount = ViewersCount(_viwersCountTime, _count);
-
-	ViewersAnimation(drawCount, _startCount, sign, color);
+	SubscribersAnimation(drawCount, _startCount);
 }
 
-void ResultScene::DrawCommentCount(int _count)
+void ResultScene::DrawCommentCount(int _count) const
 {
 	int commentCountWidth, commentCountHeight;
 	GetDrawFormatStringSizeToHandle(&commentCountWidth, &commentCountHeight, NULL, mnConmmentsCountFont, "%d", _count);
@@ -140,7 +132,7 @@ void ResultScene::DrawCommentCount(int _count)
 	DrawFormatStringToHandle(commentDrawPosX, commentDrawPosY, GetColor(0, 0, 0), mnConmmentsCountFont, "%d", _count);
 }
 
-void ResultScene::DrawCorrectAnswerCount(int _count, int _maxCount)
+void ResultScene::DrawCorrectAnswerCount(int _count, int _maxCount) const
 {
 	int correctAnswerCountWidth, correctAnswerCountHeight;
 	int divWidth, divHeight;
@@ -163,7 +155,7 @@ void ResultScene::DrawCorrectAnswerCount(int _count, int _maxCount)
 	DrawFormatStringToHandle(maxCountDrawPosX, maxCountDrawPosY, GetColor(0, 0, 0), mnConmmentsCountFont, "%d", _maxCount);
 }
 
-int ResultScene::ViewersCount(float _duration, int _count)
+int ResultScene::SubscribersCount(float _duration, int _count)
 {
 	// 0.カウント
 	if (mbAnimationFlag.test(0))
@@ -183,7 +175,7 @@ int ResultScene::ViewersCount(float _duration, int _count)
 	return Lerp(0, abs(_count), Easing(t));
 }
 
-void ResultScene::ViewersAnimation(int _count, int _startCount, char _sign, unsigned int _color)
+void ResultScene::SubscribersAnimation(int _count, int _startCount)
 {
 	if (mbAnimationFlag.size() <= mnAnimationIndex)
 	{
@@ -197,7 +189,7 @@ void ResultScene::ViewersAnimation(int _count, int _startCount, char _sign, unsi
 	int countWidth, countHeight;
 
 	// 情報取得
-	GetDrawFormatStringSizeToHandle(&signWidth, &signHeight, NULL, mnViewersCountFont, "%c", _sign);
+	GetDrawFormatStringSizeToHandle(&signWidth, &signHeight, NULL, mnViewersCountFont, "%c", '+');
 	GetDrawFormatStringSizeToHandle(&startCountWidth, &startCountHeight, NULL, mnViewersStartCountFont, "%d人", _startCount);
 	GetDrawFormatStringSizeToHandle(&countWidth, &countHeight, NULL, mnViewersCountFont, "%d人", _count);
 
@@ -252,17 +244,13 @@ void ResultScene::ViewersAnimation(int _count, int _startCount, char _sign, unsi
 		}
 
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255.0f * (1.0f - easingVal)));
-		DrawFormatStringToHandle(signDrawPosX, signDrawPosY + Master::gridHeight, _color, mnViewersCountFont, "%c", _sign);
+		DrawFormatStringToHandle(signDrawPosX, signDrawPosY + Master::gridHeight, GetColor(50, 255, 50), mnViewersCountFont, "%c", '+');
 		DrawFormatStringToHandle(startCountDrawPosX - Master::gridWidth, startCountDrawPosY + Master::gridHeight, GetColor(0, 0, 0), mnViewersStartCountFont, "%d人", _startCount);
-		DrawFormatStringToHandle(countDrawPosX + Master::gridHeight * 2, countDrawPosY, _color, mnViewersCountFont, "%d人", _count);
+		DrawFormatStringToHandle(countDrawPosX + Master::gridHeight * 2, countDrawPosY, GetColor(50, 255, 50), mnViewersCountFont, "%d人", _count);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		return;
 	}
 
-	if (_sign == '-')
-	{
-		_count *= -1;
-	}
 	int allCount  = _count + _startCount;
 	int allCountWidth, allCountHeight;
 	GetDrawFormatStringSizeToHandle(&allCountWidth, &allCountHeight, NULL, mnViewersCountFont, "%d", allCount);
@@ -275,7 +263,7 @@ void ResultScene::ViewersAnimation(int _count, int _startCount, char _sign, unsi
 
 void ResultScene::ProcessButton()
 {
-	bool isClear = (Master::mpViewers->GetCurrentViewers() > 0);
+	//bool isClear = (Master::mpViewers->GetCurrentViewers() > 0);
 
 	// もしコメントが0より大きいのなら次へのボタンを表示
 	int handle =  mnBackToTitle;

@@ -79,6 +79,11 @@ public:
 
 	void UpdateDigits();
 
+	void SetGameEnd(bool _flag);
+
+	int GetSubscribersCount() const;
+
+	int GetGameStartSubscriberCount() const;
 private:
 	// 縦 2 つの画像をループさせるように
 	// 1 つの画像が輪になるようなイメージを持てるように
@@ -96,9 +101,14 @@ private:
 	void NumberToRollPosition(int _digits, int _number, int _moveDigits, bool _isNewDigits = false);
 	Position4 NumberToPosition(int _number, int _digits) const;
 
+
 private:
 	int mnCountNumberHandle{};
-	int mnCorronFontHandle{};
+	
+	int mnCommaFontHandle{};
+	int mnLabelFontHandle{};
+
+	int mnFrameGraphHandle{};
 
 private:
 	int mnDigits{};				// 桁数
@@ -120,7 +130,13 @@ private:
 
 private:
 	int mnTargetSubscribersCount{};			// 登録者数
+	int mnGameStartSubscribersCount{};		// 開始時点の登録者数
 	int mnStartSubscribersCount{};			// アニメーション開始時の登録者数
+	int mnPendingSubscribersCount{};		// 余り部分（カウント中数値）
 	float mfCountTime{};					// 移動時間
 	bool mbIsRollingFinished{};				// カウント終了か
+
+	bool mbIsGameEnd{};
+	float mfEndEasingTime{};
+	bool mbIsEndEasingFinish{};
 };

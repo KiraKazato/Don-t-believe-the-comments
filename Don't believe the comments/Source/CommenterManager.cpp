@@ -26,16 +26,16 @@ void CommenterManager::Initialize()
 	mnCurrentCommentGridPositionX = mnBaseCommentGridPositionX;
 	mnCurrentCommentGridPositionY = mnBaseCommentGridPositionY;
 
-		mpSuperChatEffect = new EffekseerEffect("Resource/Effect/SuperChatEffect.efk", 50.0f);
+	mpSuperChatEffect = new EffekseerEffect("Resource/Effect/SuperChatEffect.efk", 50.0f);
 	mpSuperChatEffect->SetManualDraw(true);
 
-		mnEffectScreen = MakeScreen(Master::Width, Master::Height, FALSE);
+	mnEffectScreen = MakeScreen(Master::Width, Master::Height, FALSE);
 	mnCommentBackHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/Button/CommentBack.png");
 }
 
 void CommenterManager::Finalize()
 {
-		if (mpSuperChatEffect != nullptr)
+	if (mpSuperChatEffect != nullptr)
 	{
 		delete mpSuperChatEffect;
 		mpSuperChatEffect = nullptr;
@@ -331,14 +331,18 @@ void CommenterManager::Update()
 		commenter->updateReputation(drawTotalHeight);
 		drawTotalHeight += commenter->GetTotalHeight();
 	}
-	
+	/*if (CheckHitKey(KEY_INPUT_BACK))
+	{
+		mpSuperChatEffect->Play(
+			static_cast<float>(Master::gridWidth * 103),
+			static_cast<float>(Master::gridHeight * 53));
 
+	}*/
 }
 
 void CommenterManager::Draw()
 {
 
-	
 	for (const auto& commenter : mDisplayCommenters)
 	{
 		commenter->Draw();
@@ -349,16 +353,16 @@ void CommenterManager::Draw()
 	{
 		GetDrawScreenGraph(0, 0, Master::Width, Master::Height, mnEffectScreen);
 
-		SetDrawScreen(mnEffectScreen); 
+		SetDrawScreen(mnEffectScreen); // 
 		
-		mpSuperChatEffect->Draw();     
-		SetDrawScreen(DX_SCREEN_BACK); 
+		mpSuperChatEffect->Draw();     // 
+		SetDrawScreen(DX_SCREEN_BACK); // 
 	}
 
-	
+	//
 	SetDrawArea(Master::gridWidth * 89, Master::gridHeight * 12, Master::gridWidth * 117, Master::gridHeight * 113);
 
-	
+	//
 	if (isEffectPlaying && mnEffectScreen != -1)
 	{
 		DrawGraph(0, 0, mnEffectScreen, FALSE);
@@ -366,7 +370,7 @@ void CommenterManager::Draw()
 
 
 
-	
+	//
 	SetDrawAreaFull();
 	DrawBackScrollButton();
 }
@@ -464,7 +468,7 @@ bool CommenterManager::IsOneSecond()
 
 void CommenterManager::GameEnd()
 {
-	
+	//
 	if (mpSuperChatEffect != nullptr)
 	{
 		mpSuperChatEffect->Stop();

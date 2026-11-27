@@ -12,20 +12,25 @@ Subscribers::~Subscribers()
 void Subscribers::Initialize()
 {
 	mnCountNumberHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/NumberV.png");
-	mnCorronFontHandle = Master::mpFontManager->GetFontHandle(FontManager::FONT_TETUBINN, 60);
+	mnFrameGraphHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/BackGround/ScoreFrame.png");
+
+	mnCommaFontHandle = Master::mpFontManager->GetFontHandle(FontManager::FONT_TETUBINN, 60);
+	mnLabelFontHandle = Master::mpFontManager->GetFontHandle(FontManager::FONT_TETUBINN, 60);
 
 
-	constexpr float a = 0.8f;
-	mnNumberWidth = int(63.0f * a);
-	mnNumberHeight = int(144.0f * a);
+	constexpr float tmp = 0.8f;
+	mnNumberWidth = int(63.0f * tmp);
+	mnNumberHeight = int(144.0f * tmp);
 	mnAllNumberHeight = mnNumberHeight * 10;
 	mnDigits = 1;
 	mnBlankWidth = 0;
 	mnAllWidth = mnNumberWidth + mnBlankWidth;
-	mnCommaWidth = GetDrawStringWidthToHandle(",", int(strlenDx(",")), mnCorronFontHandle);
+	mnCommaWidth = GetDrawStringWidthToHandle(",", int(strlenDx(",")), mnCommaFontHandle);
+	mfEndEasingTime = 0.0f;
 
-
-	mDrawArea = Position4(Master::gridWidth * 10, Master::gridHeight * 100, Master::gridWidth * 10 + mnAllWidth * mnMaxDigits + (mnCommaWidth * ((mnMaxDigits - 1) / 3)), Master::gridHeight * 100 + mnNumberHeight);
+	int baseX = Master::gridWidth * 8 + GetDrawStringWidthToHandle("ああああ: ", static_cast<int>(strlenDx("ああああ: ")), mnLabelFontHandle);;
+	int baseY = Master::gridHeight * 101 - Master::gridHeight / 2;
+	mDrawArea = Position4(baseX, baseY, baseX + mnAllWidth * mnMaxDigits + (mnCommaWidth * ((mnMaxDigits - 1) / 3)), baseY + mnNumberHeight);
 	mfCountTime = 0.0f;
 
 	mNumberInfo[0].resize(mnMaxDigits, VerticalNumberPos());
@@ -54,25 +59,49 @@ void Subscribers::Initialize()
 
 void Subscribers::Draw()
 {
-	clsDx();
-	const auto& [areaX1, areaY1, areaX2, areaY2] = mDrawArea;
+	if (mbIsGameEnd)
+	{
+		float t = 1.0f;
+		t -= mfEndEasingTime;
+		mfEndEasingTime += 1.0f / 60.0f;
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255.0f * t));
+		if (mfEndEasingTime >= 1.0f)
+		{
+			mfEndEasingTime = 1.0f;
+			return;
+		}
+	}
 
-	DrawBox(areaX1 - Master::gridWidth, areaY1, areaX2 + Master::gridWidth, areaY2, GetColor(255, 255, 255), TRUE);
+	const auto& [areaX1, areaY1, areaX2, areaY2] = mDrawArea;
+	//DrawExtendGraph(areaX1 - Master::gridWidth * 2, areaY1 - Master::gridHeight * 4, areaX2 + Master::gridWidth * 2, areaY2, mnFrameGraphHandle, TRUE);
+
+	std::string labelStr = "登録者数: ";
+	int width, height;
+	GetDrawStringSizeToHandle(&width, &height, NULL, labelStr.c_str(), static_cast<int>(labelStr.size()), mnLabelFontHandle);
+	DrawStringToHandle(Master::gridWidth * 8, Master::gridHeight * 104 , labelStr.c_str(), GetColor(0, 0, 0), mnLabelFontHandle);
+
+	//DrawBox(areaX1, areaY1, areaX2, areaY2, GetColor(120, 120, 120), TRUE);
 
 	SetDrawArea(areaX1, areaY1, areaX2, areaY2);
 
+	// コンマの数
 	int commaCount = (mnDigits - 1) / 3;
 
+	// 数字の幅
 	int dispWidth = mnDigits * mnNumberWidth + commaCount * mnCommaWidth;
 
+	// 表示始点
 	int startX = areaX1 + ((areaX2 - areaX1 - dispWidth) >> 1);
 
 	for (int i = 0; i < mnDigits; i++)
 	{
+		// 桁のインデックス
 		int digitIndex = mnMaxDigits - mnDigits + i;
 
+		// コンマの位置
 		int commaBefore = ((mnDigits - 1) / 3) - ((mnDigits - 1 - i) / 3);
 
+		// 描画位置
 		int drawX = startX + (i * mnNumberWidth) + (commaBefore * mnCommaWidth);
 
 		for (size_t j = 0; j < mNumberInfo.size(); j++)
@@ -88,11 +117,13 @@ void Subscribers::Draw()
 		
 		if ((i < mnDigits - 1) && ((mnDigits - 1 - i) % 3 == 0))
 		{
-			DrawStringToHandle(drawX + mnNumberWidth, areaY2 - 70, ",", GetColor(0, 0, 0), mnCorronFontHandle);
+			DrawStringToHandle(drawX + mnNumberWidth, areaY2 - 70, ",", GetColor(0, 0, 0), mnCommaFontHandle);
 		}
 	}
 
 	SetDrawAreaFull();
+
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
 void Subscribers::Update()
@@ -103,6 +134,14 @@ void Subscribers::Update()
 	{
 		// 輪のように
 		Ring(i);
+	}
+
+	// 終了時点で余りがある状態ならばまた回す
+	if (mbIsRollingFinished && mnPendingSubscribersCount > 0)
+	{
+		mnTargetSubscribersCount += mnPendingSubscribersCount;
+		mnPendingSubscribersCount = 0;
+		RollInitialize();
 	}
 }
 
@@ -115,15 +154,15 @@ void Subscribers::DecideSubscribers()
 	const int randMin = 100;
 	const int randMax = 300;
 
-	mnTargetSubscribersCount = 100;
+	mnTargetSubscribersCount = rand() % (randMax - randMin) + randMin;
 	mnStartSubscribersCount = 0;
+	mnGameStartSubscribersCount = mnTargetSubscribersCount;
 }
 
 void Subscribers::Roll(float _duration)
 {
 	if (mbIsRollingFinished)
 	{
-		AddSubscribers();
 		return;
 	}
 
@@ -205,7 +244,17 @@ void Subscribers::AddSubscribers()
 	const int randMin = 500;
 	const int randMax = 750;
 
-	mnTargetSubscribersCount += rand() % (randMax - randMin) + randMin;
+	int addCount = rand() % (randMax - randMin) + randMin;
+
+	// アニメーション中なら
+	if (!mbIsRollingFinished)
+	{
+		// 初期化せず足された値を保存
+		mnPendingSubscribersCount += addCount;
+		return;
+	}
+
+	mnTargetSubscribersCount += addCount;
 	RollInitialize();
 }
 
@@ -241,7 +290,6 @@ void Subscribers::NumberToRollPosition(int _digits, int _number, int _moveDigits
 	auto& info = mNumberInfo[GraphIndex(_digits)][digitIndex];
 	auto& nextInfo = mNumberInfo[GraphNoIndex(_digits)][digitIndex];
 	_number = std::min(std::max(0, _number), 9);
-	auto [x1, y1, x2, y2] = mDrawArea;
 
 	int moveY = _moveDigits * mnNumberHeight;
 
@@ -281,6 +329,21 @@ Subscribers::Position4 Subscribers::NumberToPosition(int _number, int _digits) c
 	y2 = y1 + mnNumberHeight;
 
 	return Position4(x1, y1, x2, y2);
+}
+
+void Subscribers::SetGameEnd(bool _flag)
+{
+	mbIsGameEnd = _flag;
+}
+
+int Subscribers::GetSubscribersCount() const
+{
+	return mnTargetSubscribersCount;
+}
+
+int Subscribers::GetGameStartSubscriberCount() const
+{
+	return mnGameStartSubscribersCount;
 }
 
 size_t Subscribers::GraphIndex(int _digits)

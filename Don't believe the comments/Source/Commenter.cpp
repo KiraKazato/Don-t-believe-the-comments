@@ -91,8 +91,8 @@ void Commenter::SuperChatFrameDraw()
 	int drawY2 = drawY1 + (Master::gridHeight * (totalHeightSpace - 4)) + (Master::gridHeight / 2);
 
 	DrawBox(drawX1, drawY1, drawX2, drawY2 + Master::gridHeight, GetColor(178, 70, 70), TRUE);
-	DrawBox(drawX1, drawY1, drawX2 - (Master::gridWidth / 2), drawY2, GetColor(255, 100, 100), TRUE);
-	DrawLine(drawX2 - (Master::gridWidth / 2), drawY2, drawX2, drawY2 + Master::gridHeight, GetColor(191, 75, 75));
+	DrawBox(drawX1, drawY1, drawX2, drawY2, GetColor(255, 100, 100), TRUE);
+	DrawLine(drawX2, drawY2, drawX2, drawY2 + Master::gridHeight, GetColor(191, 75, 75));
 
 	std::string amountStr = AmountSeparate(10000);
 
@@ -121,7 +121,7 @@ std::string Commenter::CheckLineBreak(std::string _text, int _fontHandle)
 	}
 	else
 	{
-		endCommentPosition = Master::gridWidth* Master::mpCommenterManager->GetMaxWidthPosition();
+		endCommentPosition = Master::gridWidth * Master::mpCommenterManager->GetMaxWidthPosition() - Master::gridWidth / 2;
 	}
 
 	for (int number = 0; number < _text.size();)
@@ -134,9 +134,7 @@ std::string Commenter::CheckLineBreak(std::string _text, int _fontHandle)
 		}
 		std::string nextText = _text.substr(number, charBytes);
 		int nextWidth;
-		int nextHeight;
-		int nextLine;
-		GetDrawStringSizeToHandle(&nextWidth, &nextHeight, &nextLine, (currentText + nextText).c_str(), static_cast<int>((currentText + nextText).length()), _fontHandle);
+		GetDrawStringSizeToHandle(&nextWidth, NULL, NULL, (currentText + nextText).c_str(), static_cast<int>((currentText + nextText).length()), _fontHandle);
 		if (startCommentPotision + nextWidth > endCommentPosition)
 		{
 			resultText += currentText + "\n";

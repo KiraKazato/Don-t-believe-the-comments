@@ -14,13 +14,13 @@ public:
 	virtual void Draw()override;
 	virtual void Finalize()override;
 
-	void DrawViewersCount(float _viwersCountTime, int _count, int _startCount);
-	void DrawCommentCount(int _count);
-	void DrawCorrectAnswerCount(int _count, int _maxCount);
+	void DrawSubscribersCount(float _viwersCountTime, int _count, int _startCount);
+	void DrawCommentCount(int _count) const;
+	void DrawCorrectAnswerCount(int _count, int _maxCount) const;
 
-	int ViewersCount(float _duration, int _count);
+	int SubscribersCount(float _duration, int _count);
 
-	void ViewersAnimation(int _count, int _startCount, char _sign, unsigned int _color);
+	void SubscribersAnimation(int _count, int _startCount);
 
 	void ProcessButton();
 
@@ -34,7 +34,7 @@ private:
 	int mnShowResultHandle;
 	int mnNumberOfComments;
 	int mnNumberOfCorrectAnswers;
-	int mnNumberOfViewers;
+	int mnNumberOfSubscribers;
 	int mnStreamEnded;
 	int mnStreamFailed;
 	int mnBackToTitle;

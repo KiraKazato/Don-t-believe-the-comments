@@ -89,12 +89,6 @@ void ResultScene::Draw()
 {
 	Master::mpUIManager->DrawUI();
 	Scene::Draw();	
-	if (CheckHitKey(KEY_INPUT_BACK))
-	{
-		//BGM‚ðŽ~‚ß‚ÄƒV[ƒ“‘JˆÚ
-		Master::mpSoundManager->StopBGM();
-		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
-	}
 
 	DrawSubscribersCount(mfAnimationDuration[0], Master::mpSubscribers->GetSubscribersCount() - Master::mpSubscribers->GetGameStartSubscriberCount(), Master::mpSubscribers->GetGameStartSubscriberCount());
 

@@ -8,8 +8,8 @@ SoundManager::SoundManager()
 	,NowBgmvolume(255)
 	,NowSevolume(255)
 {
-	ChangeBGMVolume(0);
-	ChangeSEVolume(0);
+	ChangeBGMVolume(100);
+	ChangeSEVolume(100);
 }
 
 SoundManager::~SoundManager()

@@ -24,6 +24,8 @@ public:
 	void Draw();
 	void Finalize();
 	void SetStage(StageNumber _stageNumeber);
+	void Draw10CorrectEffect();//10問正解エフェクトを問題画面内に描画する
+
 
 	int GetShakeX() const { return mnShakeX; }
 	int GetShakeY() const { return mnShakeY; }
@@ -49,7 +51,6 @@ private:
 
 	void GameEnd();
 
-	void Draw10CorrectEffect();//10問正解エフェクトを問題画面内に描画する
 
 private:
 	//入力する文字のフォントハンドルを入れる
@@ -108,7 +109,7 @@ private:
 
 private:
 	int mnQuestionTimer = 0;
-	const int mnLimitQuestionTimer = int(1000.0f * 30.0f);
+	const int mnLimitQuestionTimer = int(1000.0f * 40.0f);
 	bool mbIsDrawSuperHint = false;
 	//理由：static intを使った際、タイトルやリザルトに行ってもカウントし続けてしまうため
 	int lastTime = 0;

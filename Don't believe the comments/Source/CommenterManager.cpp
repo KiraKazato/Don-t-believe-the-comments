@@ -225,7 +225,7 @@ std::string CommenterManager::GetDisplayComment(int _state)
 	{
 		if (mbIsSuperCommentDraw)
 		{
-			//繧ｹ繝代メ繝｣繧ｨ繝輔ぉ繧ｯ繝医ｒ蜀咲函縺吶ｋ
+			
 			if (mpSuperChatEffect != nullptr)
 			{
 				mpSuperChatEffect->Play(
@@ -234,14 +234,14 @@ std::string CommenterManager::GetDisplayComment(int _state)
 				);
 			}
 
-			//隍�焚蟄伜惠縺吶ｋ蝣ｴ蜷医�驕ｸ縺ｶ
+			
 			const std::vector<std::string>& chooseSuperHintComment = Master::mpQuestionManager->GetQuestionData().superHintComment;
 			index = GetRand(static_cast<int>(chooseSuperHintComment.size()) - 1);
 			return chooseSuperHintComment.at(index);
 		}
 
 		//テンプレート
-		if (!mbQuestionStarted || (rate < 0.6f && !mTemplateComments.empty())|| continued > 5)
+		if (!mbQuestionStarted || (rate < 0.7f && !mTemplateComments.empty())|| continued > 5)
 		{
 			std::vector<std::string>&& chooseTemplateComment = ChooseTemplateCommentKind(mnCommentKind);
 			index = GetRand(static_cast<int>(chooseTemplateComment.size() - 1));
@@ -316,7 +316,7 @@ std::vector<std::string> CommenterManager::ChooseTemplateCommentKind(int _kind)
 
 void CommenterManager::Update()
 {
-	//繧ｹ繝代メ繝｣繧ｨ繝輔ぉ繧ｯ繝医�譖ｴ譁ｰ
+
 	if (mpSuperChatEffect != nullptr)
 	{
 		mpSuperChatEffect->Update();

@@ -155,13 +155,7 @@ void GameCycle::Update()
 			mnQuestionNumber++;
 		}
 	}
-	if (CheckHitKey(KEY_INPUT_BACK) && !mn10CorrectAnswersEffect->IsPlaying())
-	{
-		mn10CorrectAnswersEffect->Play(
-			static_cast<float>(Master::gridWidth * 45 + mnShakeX),
-			static_cast<float>(Master::gridHeight * 50 + mnShakeY)
-		);
-	}
+
 
 	GameOver();
 

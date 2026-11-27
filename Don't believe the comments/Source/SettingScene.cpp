@@ -154,13 +154,6 @@ void SettingScene::Update()
 		bgmSlider.dialX = barLeftX + (overallLength * bgmSlider.volumeRatio);
 	}
 
-	// バックスペースキーでタイトルに戻る
-	if (CheckHitKey(KEY_INPUT_BACK))
-	{
-		Master::mpTransitor->AddTransitorAfterUpdate("SettingBGMStop", [&]() { Master::mpSoundManager->StopBGM(); });
-		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
-	}
-
 	Scene::Update();
 }
 

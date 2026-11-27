@@ -19,6 +19,7 @@ void GameScene::Initialize()
 	questionScreenHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/BackBoard.png");
 	inputFieldHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/InputPlace.png");
 	commentFieldHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/CommentField.png");
+	scoreField = Master::mpResourceManager->LoadGraphics("Resource/GameScene/BackGround/ScoreFrame.png");
 	mnBackGround = Master::mpResourceManager->LoadGraphics("Resource/GameScene/GameBackGround.png");
 
 	Master::mpUIManager->AddUI(commentFieldHandle, Master::gridWidth * 88, Master::gridHeight * 3, Master::gridWidth * 118, Master::gridHeight * 115);
@@ -137,6 +138,8 @@ void GameScene::Draw()
 		inputFieldHandle, TRUE
 	);
 
+	DrawExtendGraph(Master::gridWidth * 4, Master::gridHeight * 96, Master::gridWidth * 86, Master::gridHeight * 118, scoreField, TRUE);
+
 	Master::mpUIManager->DrawUI();
 	mGameCycle.Draw();
 	Scene::Draw();
@@ -170,16 +173,30 @@ void GameScene::Finalize()
 
 void GameScene::DrawDecoration()
 {
-	const int baseX1 = Master::gridWidth * 4;
-	const int baseX2 = Master::gridWidth * 86;
-	const int baseY1 = Master::gridHeight * 95;
+	if (mGameCycle.IsGameEnd())
+	{
+		float t = 1.0f;
+		t -= mfGameEndEasingTime;
+		mfGameEndEasingTime += 1.0f / 60.0f;
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255.0f * t));
+		if (mfGameEndEasingTime >= 1.0f)
+		{
+			mfGameEndEasingTime = 1.0f;
+			return;
+		}
+	}
+
+	const int baseX2 = Master::gridWidth * 85;
+	const int baseY1 = Master::gridHeight * 98;
 	const int baseY2 = Master::gridHeight * 115;
 
 	int width = GetDrawFormatStringWidthToHandle(commentCountFontHandle, "コメント数: ");
 	int countWidth = GetDrawFormatStringWidthToHandle(commentCountFontHandle, "%d", Master::mpCommenterManager->GetCommentsCount());
 
 	int drawX = baseX2 - width - (Master::gridWidth * 10);
-	DrawFormatStringToHandle(drawX, baseY1 + (Master::gridHeight * 2), GetColor(0, 0, 0), commentCountFontHandle, "コメント数: ");
-	DrawFormatStringToHandle(baseX2 - countWidth, baseY1 + (Master::gridHeight * 2), GetColor(0, 0, 0), commentCountFontHandle, "%d", Master::mpCommenterManager->GetCommentsCount());
+	DrawFormatStringToHandle(drawX - Master::gridWidth, baseY1 + (Master::gridHeight * 2), GetColor(0, 0, 0), commentCountFontHandle, "コメント数: ");
+	DrawFormatStringToHandle(baseX2 - countWidth - Master::gridWidth, baseY1 + (Master::gridHeight * 2), GetColor(0, 0, 0), commentCountFontHandle, "%d", Master::mpCommenterManager->GetCommentsCount());
+
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 

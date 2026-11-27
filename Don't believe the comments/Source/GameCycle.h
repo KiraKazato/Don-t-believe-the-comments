@@ -28,6 +28,8 @@ public:
 	int GetShakeX() const { return mnShakeX; }
 	int GetShakeY() const { return mnShakeY; }
 
+	int IsGameEnd() const { return mbGameEnd; }
+
 private:
 	void CommentDraw();//コメントの表示
 	
@@ -65,6 +67,8 @@ private:
 	int mn10CorrectEffectScreen = -1; // ★追加：切り抜き用の仮キャンバス
 
 	float mfQuestionDrawEasing = 0.0f;
+
+	float mfGameEndDrawViewersEasing = 0.0f;
 private:
 	//問題番号
 	//最初は一問目なので1に設定

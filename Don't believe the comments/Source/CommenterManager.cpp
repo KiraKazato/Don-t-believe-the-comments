@@ -1,4 +1,4 @@
-#include "CommenterManager.h"
+﻿#include "CommenterManager.h"
 #include"Commenter.h"
 #include "Master.h"
 #include <iostream>
@@ -26,18 +26,15 @@ void CommenterManager::Initialize()
 	mnCurrentCommentGridPositionX = mnBaseCommentGridPositionX;
 	mnCurrentCommentGridPositionY = mnBaseCommentGridPositionY;
 
-	//繧ｹ繝代メ繝｣繧ｨ繝輔ぉ繧ｯ繝医ｒ菴懈�縺励※謇句虚謠冗判繝｢繝ｼ繝峨↓縺吶ｋ
 	mpSuperChatEffect = new EffekseerEffect("Resource/Effect/SuperChatEffect.efk", 50.0f);
 	mpSuperChatEffect->SetManualDraw(true);
 
-	//逕ｻ髱｢縺ｨ蜷後§繧ｵ繧､繧ｺ縺ｮ縲碁乗�縺ｪ莉ｮ繧ｭ繝｣繝ｳ繝舌せ縲阪ｒ菴懈��育ｬｬ3蠑墓焚縺ｮTRUE縺碁城℃縺ゅｊ縺ｮ諢丞袖�
 	mnEffectScreen = MakeScreen(Master::Width, Master::Height, FALSE);
 	mnCommentBackHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/Button/CommentBack.png");
 }
 
 void CommenterManager::Finalize()
 {
-	//繧ｨ繝輔ぉ繧ｯ繝医→莉ｮ繧ｭ繝｣繝ｳ繝舌せ縺ｮ蠕檎援莉倥￠
 	if (mpSuperChatEffect != nullptr)
 	{
 		delete mpSuperChatEffect;
@@ -334,41 +331,38 @@ void CommenterManager::Update()
 		commenter->updateReputation(drawTotalHeight);
 		drawTotalHeight += commenter->GetTotalHeight();
 	}
-	if (CheckHitKey(KEY_INPUT_BACK))
+	/*if (CheckHitKey(KEY_INPUT_BACK))
 	{
 		mpSuperChatEffect->Play(
 			static_cast<float>(Master::gridWidth * 103),
 			static_cast<float>(Master::gridHeight * 53));
 
-	}
+	}*/
 }
 
 void CommenterManager::Draw()
 {
 
-	//縺昴�荳翫°繧峨さ繝｡繝ｳ繝域悽菴薙ｒ謠冗判縺吶ｋ
 	for (const auto& commenter : mDisplayCommenters)
 	{
 		commenter->Draw();
 	}
 	bool isEffectPlaying = (mpSuperChatEffect != nullptr && mpSuperChatEffect->IsPlaying());
 
-	//繧ｨ繝輔ぉ繧ｯ繝亥�逕滉ｸｭ縺ｪ繧峨∽ｻ翫�陬冗判髱｢�郁レ譎ｯ�峨ｒ莉ｮ繧ｭ繝｣繝ｳ繝舌せ縺ｫ繧ｳ繝斐�縺励※繧ｨ繝輔ぉ繧ｯ繝医ｒ謠上￥
 	if (isEffectPlaying && mnEffectScreen != -1)
 	{
-		// 莉翫�逕ｻ髱｢繧剃ｻｮ繧ｭ繝｣繝ｳ繝舌せ縺ｫ縺昴�縺ｾ縺ｾ繧ｳ繝斐�縺吶ｋ
 		GetDrawScreenGraph(0, 0, Master::Width, Master::Height, mnEffectScreen);
 
-		SetDrawScreen(mnEffectScreen); // 謠上″蜈医ｒ莉ｮ繧ｭ繝｣繝ｳ繝舌せ縺ｫ螟画峩
+		SetDrawScreen(mnEffectScreen); // 
 		
-		mpSuperChatEffect->Draw();     // 閭梧勹縺ｮ荳翫↓逶ｴ謗･繧ｨ繝輔ぉ繧ｯ繝医ｒ謠上￥
-		SetDrawScreen(DX_SCREEN_BACK); // 謠上″蜈医ｒ蜈��陬冗判髱｢縺ｫ謌ｻ縺
+		mpSuperChatEffect->Draw();     // 
+		SetDrawScreen(DX_SCREEN_BACK); // 
 	}
 
-	//繧ｳ繝｡繝ｳ繝域ｬ��譫蜀�□縺第緒縺九ｌ繧九ｈ縺�↓蛻�ｊ謚懊″遽�峇繧定ｨｭ螳壹☆繧
+	//
 	SetDrawArea(Master::gridWidth * 89, Master::gridHeight * 12, Master::gridWidth * 117, Master::gridHeight * 113);
 
-	//閭梧勹�九お繝輔ぉ繧ｯ繝医′謠上°繧後◆莉ｮ繧ｭ繝｣繝ｳ繝舌せ繧偵∵棧蜀�□縺題｣冗判髱｢縺ｫ雋ｼ繧贋ｻ倥￠繧
+	//
 	if (isEffectPlaying && mnEffectScreen != -1)
 	{
 		DrawGraph(0, 0, mnEffectScreen, FALSE);
@@ -376,7 +370,7 @@ void CommenterManager::Draw()
 
 
 
-	//蛻�ｊ謚懊″遽�峇繧貞�逕ｻ髱｢縺ｫ謌ｻ縺
+	//
 	SetDrawAreaFull();
 	DrawBackScrollButton();
 }
@@ -474,7 +468,7 @@ bool CommenterManager::IsOneSecond()
 
 void CommenterManager::GameEnd()
 {
-	//繧ｲ繝ｼ繝邨ゆｺ�凾縺ｫ蜀咲函荳ｭ縺ｮ繧ｹ繝代メ繝｣繧ｨ繝輔ぉ繧ｯ繝医ｒ豁｢繧√ｋ
+	//
 	if (mpSuperChatEffect != nullptr)
 	{
 		mpSuperChatEffect->Stop();

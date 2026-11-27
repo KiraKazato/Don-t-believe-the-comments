@@ -450,6 +450,19 @@ bool QuestionManager::IsAlphabet(char _charactor)
 	return (_charactor >= smallMin && _charactor <= smallMax) || (_charactor >= largeMin && _charactor <= largeMax);
 }
 
+void QuestionManager::StringAlphabetLargeToSmall(std::string& _str)
+{
+	for (auto& i : _str)
+	{
+		if (!IsAlphabet(i))
+		{
+			continue;
+		}
+
+		i = std::tolower(i);
+	}
+}
+
 int QuestionManager::GetCorrectAnswerCount()
 {
 	return mnCorrectAnswerCount;

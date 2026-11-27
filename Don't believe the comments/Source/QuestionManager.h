@@ -124,8 +124,6 @@ private:
 private:
 	std::vector<std::pair<std::vector<QuestionData>, bool>> mQuestions{};	// ƒNƒCƒY
 
-	bool IsAlphabet(char _charactor);
-
 	void StringAlphabetLargeToSmall(std::string& _str);
 
 	int mnCurrentIndex = 0;			// ¡‚Ì–â‘è‚Ì”Ô†

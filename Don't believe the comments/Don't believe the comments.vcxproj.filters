@@ -85,8 +85,12 @@
     <ClCompile Include="Source\Pause.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Source\KeyInputManager.cpp" />
-    <ClCompile Include="Source\Subscribers.cpp" />
+    <ClCompile Include="Source\Subscribers.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\KeyInputManager.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Commenter.h">
@@ -173,8 +177,10 @@
     <ClInclude Include="Source\Pause.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Source\KeyInputManager.h" />
     <ClInclude Include="Source\Subscribers.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\KeyInputManager.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

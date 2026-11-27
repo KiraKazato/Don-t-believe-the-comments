@@ -92,8 +92,8 @@ void Transitor::AddTransitorProcessingUpdate(std::string _functionName, const st
 
 void Transitor::AddTransitorProcessingUpdate(const std::function<void()> _func)
 {
-	// Foo1 Foo2 ... のような名前が付く
-	AddTransitorProcessingUpdate("Foo" + std::to_string(mnProcessingFunctionCount), _func);
+	// Fuction1 Fuction2 ... のような名前が付く
+	AddTransitorProcessingUpdate("Fuction" + std::to_string(mnProcessingFunctionCount), _func);
 	mnProcessingFunctionCount++;
 }
 

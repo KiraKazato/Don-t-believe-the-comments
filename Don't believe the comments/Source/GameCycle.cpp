@@ -24,6 +24,7 @@ void GameCycle::Initialize()
 	Master::mpQuestionManager->SetIsAllClear(false);
 	Master::mpCommenterManager->SetCommentSpawnKind(STATE_BEFORE);
 	Master::mpCommenterManager->SetIsSuperHintDraw(false);
+	Master::mpSubscribers->SetGameEnd(false);
 
 	mnCorrectAnswer = new EffekseerEffect("Resource/Effect/CorrectAnswer.efk",300.0f);
 	mnFallingCrossMiss = new EffekseerEffect("Resource/Effect/FallingCrossMiss.efk", 95.0f);
@@ -150,14 +151,14 @@ void GameCycle::Update()
 			mnQuestionNumber++;
 		}
 	}
-	if (CheckHitKey(KEY_INPUT_BACK))
+	/*if (CheckHitKey(KEY_INPUT_BACK))
 	{
 		mn10CorrectAnswersEffect->Play(
 			static_cast<float>(Master::gridWidth * 45),
 			static_cast<float>(Master::gridHeight * 43)
 		);
 
-	}
+	}*/
 
 	GameOver();
 
@@ -173,7 +174,6 @@ void GameCycle::Draw()
 
 	QuestionNumberDraw();
 
-	Master::mpViewers->Draw();
 	Master::mpSubscribers->Draw();
 	if (mbQuestionNumberDrawn && mbQuestionDrawn)
 	{
@@ -181,15 +181,27 @@ void GameCycle::Draw()
 		Master::mpTextInputManager->Draw();
 	}
 
+	if(mbGameEnd)
+	{
+		float t = 1.0f;
+		t -= mfGameEndDrawViewersEasing;
+		mfGameEndDrawViewersEasing += 1.0f / 60.0f;
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255.0f * t));
+		if (mfGameEndDrawViewersEasing >= 1.0f)
+		{
+			mfGameEndDrawViewersEasing = 1.0f;
+		}
+	}
+	Master::mpViewers->Draw();
+
 	if (mbGameEnd)
 	{
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		DrawNextButton();
 		return;
 	}
 
 	QuestionDraw();
-
-	Master::mpViewers->Draw();
 	if (mbQuestionNumberDrawn &&mbQuestionDrawn)
 	{
 		mTextInputManager.Draw();
@@ -218,8 +230,6 @@ void GameCycle::Finalize()
 
 void GameCycle::CommentDraw()
 {
-	
-
 	//‚»‚Ìã‚©‚çƒRƒƒ“ƒg‚ð•`‰æ‚·‚é
 	SetDrawArea(Master::gridWidth * 89, Master::gridHeight * 12, Master::gridWidth * 117, Master::gridHeight * 113);
 	Master::mpCommenterManager->Draw();
@@ -441,6 +451,7 @@ void GameCycle::GameEnd()
 {
 	mbGameEnd = true;
 	Master::mpTextInputManager->Finalize();
+	Master::mpSubscribers->SetGameEnd(true);
 	Master::mpQuestionManager->ClearSpawnedQuestion();
 	Master::mpQuestionManager->SetIsAllClear(true);
 	Master::mpCommenterManager->QuestionStarted(false);

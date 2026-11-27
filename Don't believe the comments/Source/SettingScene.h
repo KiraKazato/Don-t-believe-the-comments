@@ -1,61 +1,58 @@
-#pragma once
+ï»¿#pragma once
 #include "Scene.h"
-#include"SoundManager.h"
+#include "SoundManager.h"
 
 class SettingScene : public Scene
 {
 public:
 	SettingScene();
 	~SettingScene();
-	virtual void Initialize()override;
-	virtual void Update()override;
-	virtual void Draw()override;
-	virtual void Finalize()override;
+	virtual void Initialize() override;
+	virtual void Update() override;
+	virtual void Draw() override;
+	virtual void Finalize() override;
 
 private:
+	// ã‚¹ãƒ©ã‚¤ãƒ€ãƒ¼1æœ¬åˆ†ã®ãƒ‡ãƒ¼ã‚¿ã‚’ã¾ã¨ã‚ã‚‹æ§‹é€ ä½“
+	struct VolumeSlider
+	{
+		float barTopY = 0.0f;      // ãƒãƒ¼ã®ä¸Šç«¯Yåº§æ¨™
+		float barBottomY = 0.0f;   // ãƒãƒ¼ã®ä¸‹ç«¯Yåº§æ¨™
+		float dialX = 0.0f;        // ã¤ã¾ã¿ã®Xåº§æ¨™
+		float dialY = 0.0f;        // ã¤ã¾ã¿ã®Yåº§æ¨™
+		float volumeGaugeY = 0.0f; // ã‚²ãƒ¼ã‚¸ä¸­èº«ã®Yåº§æ¨™
+		bool grabTheDial = false;  // ã¤ã¾ã¿ã‚’æ´ã‚“ã§ã„ã‚‹ã‹
+		int nowVolume = 0;         // ç¾åœ¨ã®éŸ³é‡ï¼ˆ0ã€œ100ï¼‰
+		float volumeRatio = 0.0f;  // éŸ³é‡ã®å‰²åˆï¼ˆ0.0ã€œ1.0ï¼‰
+	};
 
-	int settingGraph;//İ’è‰æ–Ê‚Ì”wŒiƒnƒ“ƒhƒ‹
+	// ã‚¹ãƒ©ã‚¤ãƒ€ãƒ¼ç”¨ã®å…±é€šå‡¦ç†ï¼ˆBGMã¨SEã§ä½¿ã„å›ã™ï¼‰
+	void InitSlider(VolumeSlider& slider, float gridY, int initialVolume);
+	void UpdateSlider(VolumeSlider& slider, bool canGrab);
+	void DrawSlider(const VolumeSlider& slider, const char* label);
 
-	int volumeBar;//‰¹—Ê’²ßƒo[ƒnƒ“ƒhƒ‹
+private:
+	int settingGraph;        // è¨­å®šç”»é¢ã®èƒŒæ™¯ãƒãƒ³ãƒ‰ãƒ«
+	int volumeBar;           // éŸ³é‡èª¿ç¯€ãƒãƒ¼ã®å¤–æ ãƒãƒ³ãƒ‰ãƒ«
+	int volumeBarBackGround; // ãƒãƒ¼ã®ä¸­èº«ï¼ˆã‚²ãƒ¼ã‚¸ï¼‰ãƒãƒ³ãƒ‰ãƒ«
+	int volumeDial;          // éŸ³é‡èª¿ç¯€ã¤ã¾ã¿ãƒãƒ³ãƒ‰ãƒ«
+	int mnBackButtonHandle;  // æˆ»ã‚‹ãƒœã‚¿ãƒ³ãƒãƒ³ãƒ‰ãƒ«
 
-	int volumeBarBackGround;//ƒo[‚Ì”wŒiƒnƒ“ƒhƒ‹
-
-	int volumeDial;//‰¹—Ê’²ß‚Â‚Ü‚İƒnƒ“ƒhƒ‹
-
-	//‰¹—Êƒo[‚Ì‚Â‚Ü‚İÀ•W
-	float dialX{};
-	float dialY{};
-
-
-	int dialWidth;//‚Â‚Ü‚İ‰æ‘œ‚Ì•
-	int dialHeight;//‚Â‚Ü‚İ‰æ‘œ‚Ì‚‚³
-
-	int volumeGaugeWidth;//‰¹—ÊƒQ[ƒW‚Ì‰æ‘œ‚Ì•
-	int volumeGaugeHeight;//‰¹—ÊƒQ[ƒW‚Ì‚Â‚Ü‚İ‰æ‘œ‚Ì‚‚³
-
-
-	float barLeftX;//ƒo[‚Ì¶’[À•W
-	float barRightX; //ƒo[‚Ì‰E’[À•W
-
-	int overallLength; //ƒo[‘S‘Ì‚Ì’·‚³
-
-	//‰¹—ÊƒQ[ƒW‚ÌÀ•W
+	// BGMã¨SEã§å…±é€šã—ã¦ä½¿ã†ã‚µã‚¤ã‚ºãƒ»æ¨ªä½ç½®ã®æƒ…å ±
+	int dialWidth;
+	int dialHeight;
+	int volumeGaugeWidth;
+	int volumeGaugeHeight;
+	float barLeftX;
+	float barRightX;
+	int overallLength;
 	float volumeGaugeX{};
-	float volumeGaugeY{};
 
-	//‚Â‚Ü‚İ‚ª‚Â‚©‚Ü‚ê‚Äˆø‚Á’£‚ç‚ê‚Ä‚¢‚é‚©H
-	bool grabTheDial;
-
-	//ƒ}ƒEƒX‚ÌÀ•W‚ğó‚¯æ‚é
+	// ãƒã‚¦ã‚¹åº§æ¨™
 	int MouseX{};
 	int MouseY{};
 
-	//Œ»İ‚Ìƒ{ƒŠƒ…[ƒ€
-	int nowVolume;
-
-	//ƒ{ƒŠƒ…[ƒ€‚ÌŠ„‡
-	float volumeRatio;
-
-	int mnBackButtonHandle;
-
+	// BGMç”¨ãƒ»SEç”¨ã®ã‚¹ãƒ©ã‚¤ãƒ€ãƒ¼æœ¬ä½“
+	VolumeSlider bgmSlider;
+	VolumeSlider seSlider;
 };

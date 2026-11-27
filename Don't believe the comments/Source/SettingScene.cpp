@@ -1,206 +1,200 @@
-#include"SettingScene.h"
-#include"Master.h"
+ï»¿#include "SettingScene.h"
+#include "Master.h"
 
 SettingScene::SettingScene()
-	:settingGraph(-1)
-	,volumeBar(-1)
-	,volumeBarBackGround(-1)
-	,volumeDial(-1)
-	,dialWidth(0)
-	,dialHeight(0)
-	,grabTheDial(false)
-	,barLeftX(0)
-	,barRightX(0)
-	,overallLength(0)
-	,nowVolume(0)
-	,volumeRatio(0)
-	,volumeGaugeHeight(0)
-	,volumeGaugeWidth(0)
+	: settingGraph(-1)
+	, volumeBar(-1)
+	, volumeBarBackGround(-1)
+	, volumeDial(-1)
 	, mnBackButtonHandle(0)
+	, dialWidth(0)
+	, dialHeight(0)
+	, volumeGaugeWidth(2093)
+	, volumeGaugeHeight(126)
+	, barLeftX(0.0f)
+	, barRightX(0.0f)
+	, overallLength(0)
 {
-
 }
 
 SettingScene::~SettingScene()
 {
-
 }
 
 void SettingScene::Initialize()
 {
-	//İ’è‰æ–Ê”wŒi
+	// ç”»åƒèª­ã¿è¾¼ã¿
 	settingGraph = Master::mpResourceManager->LoadGraphics("Resource/SettingScene/SettingBackGround.png");
-
-	//‰¹—Ê’²ßƒo[
 	volumeBar = Master::mpResourceManager->LoadGraphics("Resource/SettingScene/VolumeBar.png");
-
-	//‰¹—Ê’²ßƒo[‚Ì”wŒi(’†g)
 	volumeBarBackGround = Master::mpResourceManager->LoadGraphics("Resource/SettingScene/BarBackGround.png");
-
-	//‰¹—Ê’²ß‚Ég‚¤‚Â‚Ü‚İ
 	volumeDial = Master::mpResourceManager->LoadGraphics("Resource/SettingScene/VolumeDial.png");
-
 	mnBackButtonHandle = Master::mpResourceManager->LoadGraphics("Resource/SettingScene/BackButton.png");
 
-
-	//‚Â‚Ü‚İƒTƒCƒY
+	// ã¤ã¾ã¿ã‚µã‚¤ã‚ºå–å¾—ã¨èª¿æ•´
 	GetGraphSize(volumeDial, &dialWidth, &dialHeight);
-
-	//‚Â‚Ü‚İ‚ÌƒTƒCƒY’²®
 	dialWidth = (int)(dialWidth * 0.9f);
 	dialHeight = (int)(dialHeight * 0.8f);
 
-	//İ’è‰æ–Ê”wŒi‚Ì“o˜^
+	// èƒŒæ™¯ã¨æˆ»ã‚‹ãƒœã‚¿ãƒ³ã‚’UIManagerã«ç™»éŒ²ï¼ˆâ€»volumeBarã¯2æœ¬æããŸã‚Drawå†…ã§ç›´æ¥æç”»ã—ã¾ã™ï¼‰
 	Master::mpUIManager->AddUI(settingGraph, 0, 0, Master::Width, Master::Height);
-
-	//‰¹—Êƒo[‚Ì“o˜^
-	Master::mpUIManager->AddUI(volumeBar, Master::gridWidth * 32, Master::gridHeight * 63, Master::gridWidth * 87, Master::gridHeight * 70);
-
 	Master::mpUIManager->AddUI(mnBackButtonHandle, Master::gridWidth * 47, Master::gridHeight * 90, Master::gridWidth * 74, Master::gridHeight * 107);
 
+	// BGMå†ç”Ÿ
+	Master::mpSoundManager->PlayBGM(SoundManager::BGM_SETTING);
 
-	Master::mpSoundManager->PlayBGM(SoundManager::BGM_SETTING);//bgmÄ¶
-
-	//ƒo[‚Ì‰EE¶’[À•W
-	barLeftX = 510;
-	barRightX = 1365;
-
-	//ƒo[‘S‘Ì‚Ì’·‚³‚ğŒvZ
+	// ãƒãƒ¼ã®æ¨ªæ–¹å‘ã®ä½ç½®ï¼ˆBGMã¨SEã§å…±é€šï¼‰
+	barLeftX = 510.0f;
+	barRightX = 1365.0f;
 	overallLength = (int)(barRightX - barLeftX);
+	volumeGaugeX = Master::gridWidth * 32.8f;
 
-	//Œ»İ‚Ì‰¹—Êæ“¾
-	nowVolume = Master::mpSoundManager->GetBGMVolume();
+	// BGMã¨SEã®ã‚¹ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’ãã‚Œãã‚ŒåˆæœŸåŒ–ï¼ˆç¬¬2å¼•æ•°ã®æ•°å­—ã‚’å¤‰ãˆã‚‹ã¨ä¸Šä¸‹ã®ä½ç½®ã‚’èª¿æ•´ã§ãã¾ã™ï¼‰
+	InitSlider(bgmSlider, 50.0f, Master::mpSoundManager->GetBGMVolume());
+	InitSlider(seSlider, 70.0f, Master::mpSoundManager->GetSEVolume());
+}
 
-	//æ“¾‚µ‚½‰¹—Ê‚©‚ç”ä—¦‚ğ‚Æ‚é
-	volumeRatio = (nowVolume / 100.0f);
-
-	//‰¹—Ê’²ß‚Â‚Ü‚İ‚ÌˆÊ’u
-	dialX = barLeftX + (overallLength * volumeRatio);
-	dialY = Master::gridHeight * 66.5f - (dialHeight / static_cast<float>(2));
-
-	//ƒ{ƒŠƒ…[ƒ€ƒQ[ƒW‚ÌˆÊ’u
-	volumeGaugeX = (int)(Master::gridWidth * 32.8f);
-	volumeGaugeY = (int)(Master::gridHeight *64.0f);
+void SettingScene::InitSlider(VolumeSlider& slider, float gridY, int initialVolume)
+{
+	slider.barTopY = Master::gridHeight * gridY;
+	slider.barBottomY = Master::gridHeight * (gridY + 7.0f);
+	slider.nowVolume = initialVolume;
+	slider.volumeRatio = slider.nowVolume / 100.0f;
+	slider.dialX = barLeftX + (overallLength * slider.volumeRatio);
+	slider.dialY = Master::gridHeight * (gridY + 3.5f) - (dialHeight / 2.0f);
+	slider.volumeGaugeY = Master::gridHeight * (gridY + 1.0f);
+	slider.grabTheDial = false;
 }
 
 void SettingScene::Update()
 {
-	//ƒ}ƒEƒXÀ•Wó‚¯æ‚è
+	// ãƒã‚¦ã‚¹åº§æ¨™å—ã‘å–ã‚Š
 	Master::mpMouseManager->GetMousePosition(&MouseX, &MouseY);
 
-
+	// æˆ»ã‚‹ãƒœã‚¿ãƒ³ã®å‡¦ç†
 	bool insideStartButton = Master::mpUIManager->InsideUI(mnBackButtonHandle, MouseX, MouseY);
-	//ƒ}ƒEƒX‚ªƒ{ƒ^ƒ“‚Ì”ÍˆÍ“à‚¾‚Á‚½‚ç
 	if (insideStartButton)
 	{
-		//­‚µŠg‘å
 		Master::mpUIManager->ChangeUISize(mnBackButtonHandle, 1.1f);
-
 	}
 	else
 	{
-		//Œ³‚Ì‘å‚«‚³‚É–ß‚µ‚Ä‚¨‚­
 		Master::mpUIManager->ResetUISize(mnBackButtonHandle);
 	}
-	//¶ƒNƒŠƒbƒN‰Ÿ‚³‚ê‚½‚Æ‚«
 	if (Master::mpUIManager->ClickedUI(mnBackButtonHandle, insideStartButton))
 	{
 		Master::mpSoundManager->PlaySE(SoundManager::SE_CUT);
 		Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_TITLE);
 	}
 
-	//¶ƒNƒŠƒbƒN‚ª‰Ÿ‚³‚ê‚Ä‚¢‚é‚©
-	if ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)
+	// 1ãƒ•ãƒ¬ãƒ¼ãƒ å‰ã«SEã®ã¤ã¾ã¿ã‚’æ´ã‚“ã§ã„ãŸã‹ã‚’è¦šãˆã¦ãŠã
+	bool prevGrabSE = seSlider.grabTheDial;
+
+	// ã‚¹ãƒ©ã‚¤ãƒ€ãƒ¼æ›´æ–°ï¼ˆç‰‡æ–¹ã‚’æ´ã‚“ã§ã„ã‚‹é–“ã¯ã€ã‚‚ã†ç‰‡æ–¹ã‚’æ´ã‚ãªã„ã‚ˆã†ã«ã™ã‚‹ï¼‰
+	UpdateSlider(bgmSlider, !seSlider.grabTheDial);
+	UpdateSlider(seSlider, !bgmSlider.grabTheDial);
+
+	// BGMã‚’æ“ä½œä¸­ãªã‚‰BGMéŸ³é‡ã‚’åæ˜ 
+	if (bgmSlider.grabTheDial)
 	{
-		//‰Ÿ‚³‚ê‚½”ÍˆÍ“à‚ª‚Â‚Ü‚İ‰æ‘œ“à‚¾‚Á‚½‚ç
-		if (MouseX > dialX && MouseX < (dialX + dialWidth) &&
-			MouseY > dialY && MouseY < (dialY + dialHeight))
-		{
-			//‚Â‚Ü‚İ‚ğ“®‚©‚·ƒtƒ‰ƒO‚ğ”­“®
-			grabTheDial = true;
-		}
-	}
-	else//‰Ÿ‚³‚ê‚Ä‚¢‚È‚¢‚Íƒtƒ‰ƒO‚ğí‚Éfalse
-	{
-		grabTheDial = false;
+		Master::mpSoundManager->ChangeBGMVolume(bgmSlider.nowVolume);
+		bgmSlider.nowVolume = Master::mpSoundManager->GetBGMVolume();
 	}
 
-	//‚Â‚Ü‚İ‚ğ“®‚©‚·ƒtƒ‰ƒO‚ªTrue‚¾‚Á‚½‚ç
-	if (grabTheDial == true)
+	// SEã‚’æ“ä½œä¸­ãªã‚‰SEéŸ³é‡ã‚’åæ˜ 
+	if (seSlider.grabTheDial)
 	{
-		//‚Â‚Ü‚İÀ•W‚ÌX‚ğƒJ[ƒ\ƒ‹‚ÌˆÊ’u‚É‡‚í‚¹‚é
-		dialX = MouseX - (float(dialWidth / 2));
-		
-		//¶‘¤‚É”ò‚Ño‚È‚¢‚æ‚¤‚É§ŒÀ‚·‚é
-		if (dialX < barLeftX)
-		{
-			dialX = barLeftX;
-		}
+		Master::mpSoundManager->ChangeSEVolume(seSlider.nowVolume);
+		seSlider.nowVolume = Master::mpSoundManager->GetSEVolume();
+	}
 
-		//“¯‚¶‚­‰E‘¤‚à
-		if (dialX > barRightX)
-		{
-			dialX = barRightX;
-		}
+	// SEã®ã¤ã¾ã¿ã‚’ã€Œé›¢ã—ãŸç¬é–“ã€ã«ç¢ºèªç”¨ã®SEã‚’1å›é³´ã‚‰ã™
+	if (prevGrabSE && !seSlider.grabTheDial)
+	{
+		Master::mpSoundManager->PlaySE(SoundManager::SE_CUT);
+	}
 
-		//ƒo[‘S‘Ì‚Ì’·‚³‚ğ‹‚ß‚é
-		float barLength = barRightX - barLeftX;
-
-		//ƒo[‚Ì¶’[‚©‚ç‚Â‚Ü‚İ‚Ì‹——£‚ğ‹‚ß‚é
-		float currentDistance = (float)(dialX - barLeftX);
-
-		//‹——£‚ÌŠ„‡‚É‰‚¶‚½‰¹—Ê‚ğİ’è
-		float volume = ((currentDistance / barLength) * 100.0f);
-
-		//İ’è‚µ‚½‰¹—Ê‚ğ”½‰f‚³‚¹‚é
-		Master::mpSoundManager->ChangeBGMVolume(int(volume));
-
-		nowVolume = Master::mpSoundManager->GetBGMVolume();
-
-		//ƒQ[ƒW‚Æ“¯Šú‚³‚¹‚é‚½‚ß‚±‚±‚ÅXV
-		volumeRatio = (volume / 100.0f);
-
-		//‚Â‚Ü‚İ‚ğ‚Â‚©‚ñ‚Å‚¢‚éŠÔA’·‰Ÿ‚µƒGƒtƒFƒNƒg‚ğo‚µ‘±‚¯‚é
-		Master::mpEffectManager->KeepPlayingEffect(dialX + (dialWidth / 2.0f),dialY + (dialHeight / 2.0f));
-
+	// é•·æŠ¼ã—ã‚¨ãƒ•ã‚§ã‚¯ãƒˆï¼ˆBGMã‹SEã®ã©ã¡ã‚‰ã‹ã‚’æ´ã‚“ã§ã„ã‚‹é–“ã ã‘å†ç”Ÿï¼‰
+	if (bgmSlider.grabTheDial)
+	{
+		Master::mpEffectManager->KeepPlayingEffect(
+			bgmSlider.dialX + (dialWidth / 2.0f),
+			bgmSlider.dialY + (dialHeight / 2.0f)
+		);
+	}
+	else if (seSlider.grabTheDial)
+	{
+		Master::mpEffectManager->KeepPlayingEffect(
+			seSlider.dialX + (dialWidth / 2.0f),
+			seSlider.dialY + (dialHeight / 2.0f)
+		);
 	}
 	else
 	{
 		Master::mpEffectManager->StopHoldEffect();
 	}
 
-	bool isVolumeChanged = false; 
-
+	// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®å·¦å³ã‚­ãƒ¼ï¼ˆBGMéŸ³é‡ã®å¾®èª¿æ•´ï¼‰
+	bool isVolumeChanged = false;
 	if (CheckHitKey(KEY_INPUT_RIGHT))
 	{
-		nowVolume++; 
-		if (nowVolume > 100)
-		{
-			nowVolume = 100; 
-		}
-		isVolumeChanged = true; 
+		bgmSlider.nowVolume++;
+		if (bgmSlider.nowVolume > 100) bgmSlider.nowVolume = 100;
+		isVolumeChanged = true;
 	}
-
-	
 	if (CheckHitKey(KEY_INPUT_LEFT))
 	{
-		nowVolume--;
-		if (nowVolume < 0)
-		{
-			nowVolume = 0;
-		}
-		isVolumeChanged = true; 
+		bgmSlider.nowVolume--;
+		if (bgmSlider.nowVolume < 0) bgmSlider.nowVolume = 0;
+		isVolumeChanged = true;
 	}
-
-	if (isVolumeChanged == true)
+	if (isVolumeChanged)
 	{
-		Master::mpSoundManager->ChangeBGMVolume(nowVolume);
-
-		volumeRatio = (nowVolume / 100.0f);
-
-		dialX = barLeftX + (overallLength * volumeRatio);
+		Master::mpSoundManager->ChangeBGMVolume(bgmSlider.nowVolume);
+		bgmSlider.volumeRatio = bgmSlider.nowVolume / 100.0f;
+		bgmSlider.dialX = barLeftX + (overallLength * bgmSlider.volumeRatio);
 	}
 
+	Scene::Update();
+}
+
+void SettingScene::UpdateSlider(VolumeSlider& slider, bool canGrab)
+{
+	// å·¦ã‚¯ãƒªãƒƒã‚¯ãŒæŠ¼ã•ã‚Œã¦ã„ã‚‹ã‹
+	if ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)
+	{
+		// ã¾ã æ´ã‚“ã§ãŠã‚‰ãšã€ã‚‚ã†ç‰‡æ–¹ã‚‚æ´ã‚“ã§ã„ãªã„çŠ¶æ…‹ã§ã€ã¤ã¾ã¿ã®ä¸Šã‚’ã‚¯ãƒªãƒƒã‚¯ã—ãŸã‚‰æ´ã‚€
+		if (!slider.grabTheDial && canGrab)
+		{
+			if (MouseX > slider.dialX && MouseX < (slider.dialX + dialWidth) &&
+				MouseY > slider.dialY && MouseY < (slider.dialY + dialHeight))
+			{
+				slider.grabTheDial = true;
+			}
+		}
+	}
+	else
+	{
+		// ãƒã‚¦ã‚¹ãƒœã‚¿ãƒ³ã‚’é›¢ã—ãŸã‚‰ãƒ•ãƒ©ã‚°ã‚’falseã«ã™ã‚‹
+		slider.grabTheDial = false;
+	}
+
+	// ã¤ã¾ã¿ã‚’æ´ã‚“ã§ã„ã‚‹é–“ã¯ãƒã‚¦ã‚¹ã«è¿½å¾“ã•ã›ã‚‹
+	if (slider.grabTheDial)
+	{
+		slider.dialX = MouseX - (dialWidth / 2.0f);
+
+		// ãƒãƒ¼ã®å·¦å³ã‹ã‚‰ã¯ã¿å‡ºãªã„ã‚ˆã†ã«åˆ¶é™
+		if (slider.dialX < barLeftX)  slider.dialX = barLeftX;
+		if (slider.dialX > barRightX) slider.dialX = barRightX;
+
+		// å‰²åˆã¨éŸ³é‡ã‚’è¨ˆç®—
+		float barLength = barRightX - barLeftX;
+		float currentDistance = slider.dialX - barLeftX;
+		float volume = (currentDistance / barLength) * 100.0f;
+
+		slider.nowVolume = (int)volume;
+		slider.volumeRatio = volume / 100.0f;
+	}
 
 
 	Scene::Update();
@@ -210,70 +204,105 @@ void SettingScene::Draw()
 {
 	Master::mpUIManager->DrawUI();
 
-	//ƒQ[ƒW‚Ì•E‚‚³‚Ì’è‹`
-	volumeGaugeHeight = 126;
-	volumeGaugeWidth = 2093;
+	// BGMç”¨ãƒ»SEç”¨ã®ã‚¹ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’ãã‚Œãã‚Œæç”»
+	DrawSlider(bgmSlider, "BGM");
+	DrawSlider(seSlider, "SE");
 
-	//ƒQ[ƒW‚Ì‘¾‚³
-	int displayGaugeHeight = 45;
+	// ã‚¿ã‚¤ãƒˆãƒ«æ–‡å­—
+	int color = GetColor(0, 0, 0);
+	int size = GetFontSize();
+	SetFontSize(45);
+	DrawString((int)(Master::gridHeight * 82), (int)(Master::gridWidth * 23), "  éŸ³  é‡  è¨­  å®š  ", color);
+	SetFontSize(size);
 
-	//‰æ–Ê¶’[‚©‚ç‚Â‚Ü‚İ‚Ü‚Å‚Ì’·‚³
-	int displayWidth = (int)(overallLength * volumeRatio);
+	int debugColor = GetColor(255, 0, 0); // èµ¤è‰²
 
-	//Ø‚è”²‚«•‚ÌŒvZ
-	int clipWidth = (int)(volumeGaugeWidth * volumeRatio);
+	// 1. ã¤ã¾ã¿ã®å½“ãŸã‚Šåˆ¤å®šã‚’èµ¤æ ã§è¡¨ç¤ºï¼ˆç”»åƒã®è¦‹ãŸç›®ã¨ã‚ºãƒ¬ã¦ã„ãªã„ã‹ç¢ºèªï¼‰
+	DrawBox(
+		(int)bgmSlider.dialX, (int)bgmSlider.dialY,
+		(int)bgmSlider.dialX + dialWidth, (int)bgmSlider.dialY + dialHeight,
+		debugColor, FALSE
+	);
+	DrawBox(
+		(int)seSlider.dialX, (int)seSlider.dialY,
+		(int)seSlider.dialX + dialWidth, (int)seSlider.dialY + dialHeight,
+		debugColor, FALSE
+	);
+	//ãƒ‡ãƒãƒƒã‚°
+	// 2. ãƒã‚¦ã‚¹åº§æ¨™ãƒ»æ´ã¿çŠ¶æ…‹ãƒ»éŸ³é‡ã‚’å·¦ä¸Šã«è¡¨ç¤º
+	//DrawFormatString(10, 10, debugColor, "Mouse: X=%d, Y=%d", MouseX, MouseY);
+	//DrawFormatString(10, 30, debugColor, "BGM: vol=%d (Manager=%d) grab=%d",
+	//	bgmSlider.nowVolume, Master::mpSoundManager->GetBGMVolume(), bgmSlider.grabTheDial);
+	//DrawFormatString(10, 50, debugColor, "SE : vol=%d (Manager=%d) grab=%d",
+	//	seSlider.nowVolume, Master::mpSoundManager->GetSEVolume(), seSlider.grabTheDial);
 
-	DrawRectExtendGraph(
-		(int)volumeGaugeX,//‰¹—ÊƒQ[ƒW‚ÌX1À•W
-		(int)volumeGaugeY,//‰¹—ÊƒQ[ƒW‚ÌY1À•W
-		(int)volumeGaugeX + displayWidth,//‰¹—ÊƒQ[ƒW‚ÌX2À•W
-		(int)volumeGaugeY + displayGaugeHeight,//‰¹—ÊƒQ[ƒW‚ÌY2À•W
-		0,//ƒQ[ƒW‚ÌŒ³‰æ‘œ‚©‚ç‚ÌØ‚è”²‚«XÀ•W
-		0,//ƒQ[ƒW‚ÌŒ³‰æ‘œ‚©‚ç‚ÌØ‚è”²‚«YÀ•W
-		clipWidth,//ƒQ[ƒW‚ÌŒ³‰æ‘œ‚©‚çØ‚è”²‚­•
-		volumeGaugeHeight,//ƒQ[ƒW‚ÌŒ³‰æ‘œ‚©‚çØ‚è”²‚­‚‚³
-		volumeBarBackGround,//ƒQ[ƒWƒnƒ“ƒhƒ‹
-		TRUE//”wŒi“§‰ß‚·‚é‚©H
+	Scene::Draw();
+}
+
+void SettingScene::DrawSlider(const VolumeSlider& slider, const char* label)
+{
+	// 1. ãƒãƒ¼ã®å¤–æ ã‚’æç”»
+	DrawExtendGraph(
+		(int)(Master::gridWidth * 32),
+		(int)slider.barTopY,
+		(int)(Master::gridWidth * 87),
+		(int)slider.barBottomY,
+		volumeBar,
+		TRUE
 	);
 
+	// 2. ã‚²ãƒ¼ã‚¸ã®ä¸­èº«ã‚’æç”»
+	int displayGaugeHeight = 45;
+	int displayWidth = (int)(overallLength * slider.volumeRatio);
+	int clipWidth = (int)(volumeGaugeWidth * slider.volumeRatio);
+
+	DrawRectExtendGraph(
+		(int)volumeGaugeX,
+		(int)slider.volumeGaugeY,
+		(int)volumeGaugeX + displayWidth,
+		(int)slider.volumeGaugeY + displayGaugeHeight,
+		0,
+		0,
+		clipWidth,
+		volumeGaugeHeight,
+		volumeBarBackGround,
+		TRUE
+	);
+
+	// 3. ã¤ã¾ã¿ã‚’æç”»
 	DrawExtendGraph(
-		(int)dialX,                      // ¶’[‚ÌXÀ•W
-		(int)dialY,                      // ã’[‚ÌYÀ•W
-		(int)dialX + dialWidth,          // ‰E’[‚ÌXÀ•Wi¶’[ { ‚Â‚Ü‚İ‚Ì•j
-		(int)dialY + dialHeight,         // ‰º’[‚ÌYÀ•Wiã’[ { ‚Â‚Ü‚İ‚Ì‚‚³j
-		volumeDial,                 // •`‚«‚½‚¢‰æ‘œ‚Ìƒnƒ“ƒhƒ‹
-		TRUE                        // ”wŒi‚ğ“§‰ß‚·‚é‚©‚Ç‚¤‚©
+		(int)slider.dialX,
+		(int)slider.dialY,
+		(int)slider.dialX + dialWidth,
+		(int)slider.dialY + dialHeight,
+		volumeDial,
+		TRUE
 	);
 
 	int color = GetColor(0, 0, 0);
-	
-	int size = GetFontSize();
+	int size = GetFontSize(); // å…ƒã®ãƒ•ã‚©ãƒ³ãƒˆã‚µã‚¤ã‚ºã‚’è¦šãˆã¦ãŠã
 
-	SetFontSize(32);
-
-	//ˆÊ’u‚ª‚¨‚©‚µ‚©‚Á‚½‚Ì‚Å’²®
-	if (nowVolume >= 10 && nowVolume <= 99)
-	{
-		DrawFormatString((int)dialX - 8, (int)dialY + 60, color, "%d", nowVolume);
-	}
-	if (nowVolume <= 9)
-	{
-		DrawFormatString((int)dialX+2, (int)dialY + 60, color, "%d", nowVolume);
-	}
-	if (nowVolume == 100)
-	{
-		DrawFormatString((int)dialX - 15, (int)dialY + 60, color, "%d", nowVolume);
-
-	}
-	SetFontSize(size);
-
+	// â–¼ ã“ã“ã‹ã‚‰ã€ŒBGMã€ã€ŒSEã€ã®æç”»ï¼ˆã€ŒéŸ³é‡è¨­å®šã€ã¨åŒã˜ã‚µã‚¤ã‚º 45 ã«ã™ã‚‹ï¼‰
 	SetFontSize(45);
+	DrawString((int)(Master::gridWidth * 20), (int)(slider.barTopY + 8), label, color);
 
-	DrawString(Master::gridHeight *82, Master::gridWidth * 29, "  ‰¹  —Ê  İ  ’è  ", color);
+	// â–¼ ã“ã“ã‹ã‚‰éŸ³é‡æ•°å€¤ï¼ˆ0ã€œ100ï¼‰ã®æç”»ï¼ˆå…ƒã®ã‚µã‚¤ã‚º 32 ã«åˆ‡ã‚Šæ›¿ãˆã‚‹ï¼‰
+	SetFontSize(32);
+	if (slider.nowVolume >= 10 && slider.nowVolume <= 99)
+	{
+		DrawFormatString((int)slider.dialX - 8, (int)slider.dialY + 60, color, "%d", slider.nowVolume);
+	}
+	else if (slider.nowVolume <= 9)
+	{
+		DrawFormatString((int)slider.dialX + 2, (int)slider.dialY + 60, color, "%d", slider.nowVolume);
+	}
+	else if (slider.nowVolume == 100)
+	{
+		DrawFormatString((int)slider.dialX - 15, (int)slider.dialY + 60, color, "%d", slider.nowVolume);
+	}
 
+	// æœ€å¾Œã«æœ€åˆã®ãƒ•ã‚©ãƒ³ãƒˆã‚µã‚¤ã‚ºã¸æˆ»ã™
 	SetFontSize(size);
-
-	Scene::Draw();
 }
 
 void SettingScene::Finalize()

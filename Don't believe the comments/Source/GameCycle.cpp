@@ -27,9 +27,10 @@ void GameCycle::Initialize()
 
 	mnCorrectAnswer = new EffekseerEffect("Resource/Effect/CorrectAnswer.efk",300.0f);
 	mnFallingCrossMiss = new EffekseerEffect("Resource/Effect/FallingCrossMiss.efk", 95.0f);
-	mn10CorrectAnswersEffect = new EffekseerEffect("Resource/Effect/10CorrectAnswersEffect4.efk", 37.0f);
+	mn10CorrectAnswersEffect = new EffekseerEffect("Resource/Effect/10CorrectAnswersEffect4.efk", 30.0f);
 
 	mn10CorrectAnswersEffect->SetManualDraw(true);
+	//åˆ‡ã‚ŠæŠœãç”¨ã®ä»®ã‚­ãƒ£ãƒ³ãƒã‚¹ã‚’ä½œæˆã™ã‚‹
 	mn10CorrectEffectScreen = MakeScreen(Master::Width, Master::Height, FALSE);
 
 
@@ -37,7 +38,7 @@ void GameCycle::Initialize()
 	mnNextButtonHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/Button/NextButton.png");
 	//Master::mpUIManager->AddUI(mnNextButtonHandle,mnNextButtonX1, mnNextButtonY1, mnNextButtonX2, mnNextButtonY2, false);
 	
-	//‚±‚±‚ÅŠÔ‚Ì‰Šú‰»
+	//ã“ã“ã§æ™‚é–“ã®åˆæœŸåŒ–
 	lastTime = GetNowCount();
 
 	mfNextButtonDrawTime = 1.0f;
@@ -53,21 +54,21 @@ void GameCycle::Update()
 	Master::mpViewers->Update();
 	Master::mpSubscribers->Update();
 
-	//‰æ–ÊƒVƒFƒCƒN‚ÌXVˆ—
+	//ç”»é¢ã‚·ã‚§ã‚¤ã‚¯ã®æ›´æ–°å‡¦ç†
 	if (mnShakeTime > 0)
 	{
-		mnShakeTime--; // c‚èŠÔ‚ğ1Œ¸‚ç‚·
+		mnShakeTime--; // æ®‹ã‚Šæ™‚é–“ã‚’1æ¸›ã‚‰ã™
 
-		// —h‚ê‚Ì‹­‚³
+		// æºã‚Œã®å¼·ã•
 		int shakePower = 10;
 
-		//ƒ‰ƒ“ƒ_ƒ€‚ÈƒYƒŒ‚É‚·‚é
+		//ãƒ©ãƒ³ãƒ€ãƒ ãªã‚ºãƒ¬ã«ã™ã‚‹
 		mnShakeX = GetRand(shakePower * 2) - shakePower;
 		mnShakeY = GetRand(shakePower * 2) - shakePower;
 	}
 	else
 	{
-		// —h‚êI‚í‚Á‚½‚çƒYƒŒ‚ğ 0‚É–ß‚·
+		// æºã‚Œçµ‚ã‚ã£ãŸã‚‰ã‚ºãƒ¬ã‚’ 0ã«æˆ»ã™
 		mnShakeX = 0;
 		mnShakeY = 0;
 	}
@@ -85,6 +86,14 @@ void GameCycle::Update()
 	
 	if (mn10CorrectAnswersEffect != nullptr)
 	{
+		// å†ç”Ÿä¸­ãªã‚‰ç”»é¢æºã‚Œã«åˆã‚ã›ã¦ä½ç½®ã‚’è¿½å¾“ã•ã›ã‚‹
+		if (mn10CorrectAnswersEffect->IsPlaying())
+		{
+			mn10CorrectAnswersEffect->SetPosition(
+				static_cast<float>(Master::gridWidth * 45 + mnShakeX),
+				static_cast<float>(Master::gridHeight * 50 + mnShakeY)
+			);
+		}
 		mn10CorrectAnswersEffect->Update();
 	}
 
@@ -137,10 +146,10 @@ void GameCycle::Update()
 		mnQuestionTimer = 0;
 		if (mnQuestionNumber >= mnMaxQuestionNumber)
 		{
-			//ƒEƒBƒ“ƒhƒE‘S‘Ì‚Ì’†‰›‚Å‚Í‚È‚­A–â‘è‰æ–Ê‚Ì’†‰›‚ÅÄ¶‚·‚é
+			// æµ·ä¸­èƒŒæ™¯ã®çœŸã‚“ä¸­ã§å†ç”Ÿã™ã‚‹
 			mn10CorrectAnswersEffect->Play(
 				static_cast<float>(Master::gridWidth * 45),
-				static_cast<float>(Master::gridHeight * 43)
+				static_cast<float>(Master::gridHeight * 50)
 			);
 
 			GameEnd();
@@ -151,6 +160,7 @@ void GameCycle::Update()
 		}
 	}
 
+
 	GameOver();
 
 }
@@ -159,9 +169,6 @@ void GameCycle::Update()
 void GameCycle::Draw()
 {
 	CommentDraw();
-
-	//10–â³‰ğƒGƒtƒFƒNƒg‚ğ–â‘è‰æ–Ê‚Ì˜g“à‚É•`‰æ‚·‚é
-	Draw10CorrectEffect();
 
 	QuestionNumberDraw();
 
@@ -176,28 +183,33 @@ void GameCycle::Draw()
 	if (mbGameEnd)
 	{
 		DrawNextButton();
-		return;
 	}
-
-	QuestionDraw();
-
-	Master::mpViewers->Draw();
-	if (mbQuestionNumberDrawn &&mbQuestionDrawn)
+	else
 	{
-		mTextInputManager.Draw();
+		QuestionDraw();
+
+		Master::mpViewers->Draw();
+		if (mbQuestionNumberDrawn && mbQuestionDrawn)
+		{
+			mTextInputManager.Draw();
+		}
 	}
+
+	//å¤‰æ›´ï¼šå•é¡Œç”»é¢ãƒ»å…¥åŠ›ç”»é¢ã‚’ã™ã¹ã¦æãçµ‚ã‚ã£ãŸã€Œä¸€ç•ªæ‰‹å‰ã€ã«ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’æã
+	Draw10CorrectEffect();
 }
 
 
 void GameCycle::Finalize()
 {
-	//ƒGƒtƒFƒNƒg‚Ì’â~‚Æ‰¼ƒLƒƒƒ“ƒoƒX‚Ì‰ğ•ú
 	if (mn10CorrectAnswersEffect != nullptr)
 	{
 		mn10CorrectAnswersEffect->Stop();
 		delete mn10CorrectAnswersEffect;
 		mn10CorrectAnswersEffect = nullptr;
 	}
+
+	//ä»®ã‚­ãƒ£ãƒ³ãƒã‚¹ã®ãƒ¡ãƒ¢ãƒªã‚’è§£æ”¾ã™ã‚‹
 	if (mn10CorrectEffectScreen != -1)
 	{
 		DeleteGraph(mn10CorrectEffectScreen);
@@ -207,12 +219,11 @@ void GameCycle::Finalize()
 	Master::mpTextInputManager->Finalize();
 	Master::mpCommenterManager->GameEnd();
 }
-
 void GameCycle::CommentDraw()
 {
 	
 
-	//‚»‚Ìã‚©‚çƒRƒƒ“ƒg‚ğ•`‰æ‚·‚é
+	//ãã®ä¸Šã‹ã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚’æç”»ã™ã‚‹
 	SetDrawArea(Master::gridWidth * 89, Master::gridHeight * 12, Master::gridWidth * 117, Master::gridHeight * 113);
 	Master::mpCommenterManager->Draw();
 	SetDrawAreaFull();
@@ -220,7 +231,7 @@ void GameCycle::CommentDraw()
 
 void GameCycle::QuestionNumberDraw()
 {
-	// Å‰‚Ífalse‚É‚·‚é
+	// æœ€åˆã¯falseã«ã™ã‚‹
 	int numberWidth,numberHeight;
 	GetDrawFormatStringSizeToHandle(&numberWidth, &numberHeight, NULL, mnQuestionNumberHandle, "Q: %d / %d", mnQuestionNumber, mnMaxQuestionNumber);
 
@@ -238,7 +249,7 @@ void GameCycle::QuestionNumberDraw()
 
 void GameCycle::QuestionDraw()
 {
-	// ƒC[ƒWƒ“ƒOŠÖ”
+	// ã‚¤ãƒ¼ã‚¸ãƒ³ã‚°é–¢æ•°
 	constexpr auto easing = [](float t) {return t < 0.5f ? 4.0f * t * t * t : 1.0f - powf(-2.0f * t + 2.0f, 3.0f) * 0.5f; };
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255 * easing(mfQuestionDrawEasing)));
@@ -253,7 +264,7 @@ void GameCycle::QuestionDraw()
 
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	// 1,0f / (60.0f * x) -> x •b‚©‚¯‚Ä‚Ì•\¦
+	// 1,0f / (60.0f * x) -> x ç§’ã‹ã‘ã¦ã®è¡¨ç¤º
 	constexpr float easingCount = 1.0f / (60.0f * 1.0f);
 	mfQuestionDrawEasing += easingCount;	
 	if (mfQuestionDrawEasing >= 1.0f)
@@ -261,13 +272,13 @@ void GameCycle::QuestionDraw()
 		mfQuestionDrawEasing = 1.0f;
 	}
 
-	// I‚í‚Á‚½
+	// çµ‚ã‚ã£ãŸ
 	mbQuestionDrawn = true;
 }
 
 void GameCycle::InputAnswer()
 {
-	//Œ»İ‚Ì“ü—Íó‘Ô
+	//ç¾åœ¨ã®å…¥åŠ›çŠ¶æ…‹
 	int nowState = Master::mpTextInputManager->CheckInput();
 	Master::mpTextInputManager->ResetState();
 	if (nowState == 0)
@@ -276,7 +287,7 @@ void GameCycle::InputAnswer()
 	}
 	else if (nowState == 1)
 	{
-		//•¶š“ü—Í
+		//æ–‡å­—å…¥åŠ›
 		if (Master::mpTextInputManager->IsAlphabet())
 		{
 			answer = Master::mpTextInputManager->GetInputStringAlphabet();
@@ -384,21 +395,21 @@ void GameCycle::DrawNextButton()
 void GameCycle::QuestionTimer()
 {
 	int currentTime = GetNowCount();
-	//ƒ|[ƒY’†‚Å‚È‚¢‚©‚ÂŠù‚É‘åƒqƒ“ƒg‚ğo‚µ‚Ä‚¢‚È‚¢‚Æ‚«
+	//ãƒãƒ¼ã‚ºä¸­ã§ãªã„ã‹ã¤æ—¢ã«å¤§ãƒ’ãƒ³ãƒˆã‚’å‡ºã—ã¦ã„ãªã„ã¨ã
 	if (!Master::mpPause->IsPause() && !mbIsDrawSuperHint)
 	{
-		//ƒJƒEƒ“ƒg
+		//ã‚«ã‚¦ãƒ³ãƒˆ
 		mnQuestionTimer += currentTime - lastTime;
 	}
 	lastTime = currentTime;
 
-	//‘åƒqƒ“ƒg‚ğo‚·ŠÔ‚É‚È‚Á‚½‚Æ‚«‘åƒqƒ“ƒgƒtƒ‰ƒO‚ğtrue‚É‚·‚é
+	//å¤§ãƒ’ãƒ³ãƒˆã‚’å‡ºã™æ™‚é–“ã«ãªã£ãŸã¨ãå¤§ãƒ’ãƒ³ãƒˆãƒ•ãƒ©ã‚°ã‚’trueã«ã™ã‚‹
 	if (mnQuestionTimer >= mnLimitQuestionTimer)
 	{
-		//ŠÔƒŠƒZƒbƒg
+		//æ™‚é–“ãƒªã‚»ãƒƒãƒˆ
 		mnQuestionTimer = 0;
 		Master::mpCommenterManager->SetIsSuperHintDraw(true);
-		mbIsDrawSuperHint = true;	//‘åƒqƒ“ƒg‚ğo‚µ‚½
+		mbIsDrawSuperHint = true;	//å¤§ãƒ’ãƒ³ãƒˆã‚’å‡ºã—ãŸ
 	}
 }
 
@@ -413,19 +424,19 @@ void GameCycle::GameOver()
 	Master::mpTextInputManager->SetNoInput();
 	Master::mpTextInputManager->Finalize();
 
-	// •]‰¿‚ğ‰Šú‰»
+	// è©•ä¾¡ã‚’åˆæœŸåŒ–
 	Master::mpCommenterManager->ResetCommenterReputation();
 
-	// ƒgƒ‰ƒ“ƒWƒVƒ‡ƒ“’†‚É‚â‚è‚½‚¢ˆ—
+	// ãƒˆãƒ©ãƒ³ã‚¸ã‚·ãƒ§ãƒ³ä¸­ã«ã‚„ã‚ŠãŸã„å‡¦ç†
 	std::function<void()>transitorFunction = [&]() 
 		{
 			Master::mpViewers->Update(); 
 			Master::mpSubscribers->Update();
 		};
 
-	// ƒ‰ƒ€ƒ_®‚Åƒgƒ‰ƒ“ƒWƒVƒ‡ƒ“’†‚É‚â‚è‚½‚¢ˆ—‚ğ•Û‘¶
+	// ãƒ©ãƒ ãƒ€å¼ã§ãƒˆãƒ©ãƒ³ã‚¸ã‚·ãƒ§ãƒ³ä¸­ã«ã‚„ã‚ŠãŸã„å‡¦ç†ã‚’ä¿å­˜
 	Master::mpTransitor->AddTransitorProcessingUpdate("GameOver", transitorFunction);
-	// ƒtƒF[ƒhƒAƒEƒgAƒŠƒUƒ‹ƒgƒV[ƒ“‚Ö•ÏX
+	// ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆã€ãƒªã‚¶ãƒ«ãƒˆã‚·ãƒ¼ãƒ³ã¸å¤‰æ›´
 	Master::mpTransitor->XFadeInit(false, gameOverFadeTime, SceneManager::SCENE_TYPE::SCENE_RESULT);
 }
 
@@ -441,26 +452,29 @@ void GameCycle::GameEnd()
 
 void GameCycle::Draw10CorrectEffect()
 {
-	// Ä¶’†‚Å‚È‚¢A‚Ü‚½‚Í€”õ‚Å‚«‚Ä‚¢‚È‚¯‚ê‚Î‰½‚à‚µ‚È‚¢
+	// å†ç”Ÿä¸­ã§ãªã„ã€ã¾ãŸã¯ä»®ã‚­ãƒ£ãƒ³ãƒã‚¹ãŒæº–å‚™ã§ãã¦ã„ãªã‘ã‚Œã°ä½•ã‚‚ã—ãªã„
 	if (mn10CorrectAnswersEffect == nullptr || !mn10CorrectAnswersEffect->IsPlaying() || mn10CorrectEffectScreen == -1)
 	{
 		return;
 	}
 
-	//¡‚Ì— ‰æ–Êi”wŒi‚â–â‘è˜g‚ª•`‚©‚ê‚½ó‘Ôj‚ğ‰¼ƒLƒƒƒ“ƒoƒX‚ÉƒRƒs[
+	//ä»Šã®è£ç”»é¢ï¼ˆStage1ãƒ»BackBoardãƒ»InputPlaceãƒ»å•é¡Œãƒ»å…¥åŠ›æ–‡å­—ãŒæã‹ã‚ŒãŸçŠ¶æ…‹ï¼‰ã‚’ä»®ã‚­ãƒ£ãƒ³ãƒã‚¹ã«ã‚³ãƒ”ãƒ¼
 	GetDrawScreenGraph(0, 0, Master::Width, Master::Height, mn10CorrectEffectScreen);
 
-	//‰¼ƒLƒƒƒ“ƒoƒX‚ÉƒGƒtƒFƒNƒg‚ğ•`‚­i”wŒi‚Ìã‚©‚ç•`‚­‚Ì‚Å•‚¸‚İ‚ªo‚È‚¢j
+	//æãå…ˆã‚’ä»®ã‚­ãƒ£ãƒ³ãƒã‚¹ã«åˆ‡ã‚Šæ›¿ãˆã€ä¸€ç•ªä¸Šã«ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’æã
 	SetDrawScreen(mn10CorrectEffectScreen);
+	RefreshDxLibDirect3DSetting(); // â˜…è¿½åŠ ï¼šEffekseerã«æç”»å…ˆã®å¤‰æ›´ã‚’ä¼ãˆã‚‹
 	mn10CorrectAnswersEffect->Draw();
+
+	//æãå…ˆã‚’å…ƒã®è£ç”»é¢ã«æˆ»ã™
 	SetDrawScreen(DX_SCREEN_BACK);
 
-	//–â‘è‰æ–ÊiBackBoard.pngj‚Ì˜g“à‚¾‚¯Ø‚è”²‚¢‚Ä— ‰æ–Ê‚É“\‚è•t‚¯‚é
+	// Stage1.png ã®æ å†…ã ã‘åˆ‡ã‚ŠæŠœã„ã¦è²¼ã‚Šä»˜ã‘ã‚‹ï¼ˆæ å¤–ã«ã¯ã¿å‡ºãŸéƒ¨åˆ†ã¯è¡¨ç¤ºã•ã‚Œãªã„ï¼‰
 	SetDrawArea(
-		Master::gridWidth * 18 + mnShakeX,
-		Master::gridHeight * 12 + mnShakeY,
-		Master::gridWidth * 72 + mnShakeX,
-		Master::gridHeight * 73 + mnShakeY
+		Master::gridWidth * 4 + mnShakeX,
+		Master::gridHeight * 6 + mnShakeY,
+		Master::gridWidth * 86 + mnShakeX,
+		Master::gridHeight * 95 + mnShakeY
 	);
 	DrawGraph(0, 0, mn10CorrectEffectScreen, FALSE);
 	SetDrawAreaFull();

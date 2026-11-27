@@ -91,16 +91,15 @@ void GameScene::Draw()
 	int bgX2 = Master::gridWidth * 86 + shakeX;
 	int bgY2 = Master::gridHeight * 95 + shakeY;
 
-	//まず仮キャンバスに「Stage1.png → バブルエフェクト」の順で描く
 	if (mnBubbleScreen != -1)
 	{
 		SetDrawScreen(mnBubbleScreen); // 描き先を仮キャンバスへ
 		ClearDrawScreen();
 
-		//Stage1の背景を描く
+		// Stage1の背景を描く
 		DrawExtendGraph(bgX1, bgY1, bgX2, bgY2, backGroundHandle, TRUE);
 
-		//そのすぐ上にバブルエフェクトを描く
+		// そのすぐ上にバブルエフェクトを描く
 		if (mpBubbleEffect != nullptr)
 		{
 			mpBubbleEffect->Draw();
@@ -108,11 +107,10 @@ void GameScene::Draw()
 
 		SetDrawScreen(DX_SCREEN_BACK); // 描き先を元の裏画面に戻す
 	}
-
 	//裏画面に大元の背景（GameBackGround.png）を描く
 	DrawExtendGraph(0, 0, Master::Width, Master::Height, mnBackGround, TRUE);
 
-	//Stage1.pngの枠内だけ切り抜いて、仮キャンバス（背景＋バブル）を貼り付ける
+	//Stage1.pngの枠内だけ切り抜いて、仮キャンバスを貼り付ける
 	if (mnBubbleScreen != -1)
 	{
 		SetDrawArea(bgX1, bgY1, bgX2, bgY2);
@@ -125,7 +123,7 @@ void GameScene::Draw()
 		DrawExtendGraph(bgX1, bgY1, bgX2, bgY2, backGroundHandle, TRUE);
 	}
 
-	//その上から問題画面と入力画面を描く（これでバブルが裏側に回る！）
+	//その上から問題画面と入力画面を描く
 	DrawExtendGraph(
 		Master::gridWidth * 18 + shakeX, Master::gridHeight * 12 + shakeY,
 		Master::gridWidth * 72 + shakeX, Master::gridHeight * 73 + shakeY,

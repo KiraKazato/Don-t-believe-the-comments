@@ -127,8 +127,6 @@ void LevelSelectScene::Update()
 				isShaking = true;
 				shakeFrameCounter = 0;
 				Master::mpSoundManager->PlaySE(SoundManager::SE_CUT);
-				//ƒQ[ƒ€ƒV[ƒ“‚Ö
-				Master::mpTransitor->XFadeInit(SceneManager::SCENE_TYPE::SCENE_GAME);
 			}
 		}
 

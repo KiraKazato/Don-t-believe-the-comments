@@ -4,7 +4,7 @@
 
 // 変換辞書
 // ん は挙動が特殊で別の変換にするためリストには入れていない
-const std::unordered_map<std::string_view, std::string_view> Typing::KANA_DICTIONARY = 
+const std::unordered_map<std::string_view, std::string_view> Typing::KANA_DICTIONARY =
 {
 		{"a","あ"},{"i","い"},{"u","う"},{"e","え"},{"o","お"},
 
@@ -105,7 +105,7 @@ const std::unordered_map<std::string_view, std::string_view> Typing::KANA_DICTIO
 		{"xtu", "っ"}, {"ltu","っ"},
 
 		{"ca","か"},{"ci","し"},{"cu","く"},{"ce","せ"},{"co","こ"},
-	};
+};
 
 // 逆引き変換辞書。
 // shi や tsu などは書かず一意にする
@@ -162,7 +162,7 @@ const std::string Typing::KanaDictionary(const std::string& _roma, bool _isNorma
 		mnCurrentRomaByte = 0;
 	}
 
-
+	mbIsEnglish = false;
 
 	if (_roma.empty())
 	{
@@ -230,17 +230,17 @@ const std::string Typing::KanaDictionary(const std::string& _roma, bool _isNorma
 		for (int i = 0; i < pending.size(); i++)
 		{
 			char modify = pending[i];
-	
+
 			// 変換できない文字は半角を全角に変換して返す
-			if(IsAlphabet(modify))	
+			if (IsAlphabet(modify))
 			{
 				ret += AlphabetHalfToFull(modify);
 			}
-			else if(IsNumber(modify))
+			else if (IsNumber(modify))
 			{
 				ret += modify;
 			}
-	
+
 			// アルファベット（全角の変換）
 			if (_isNormalize && !IsNumber(modify))
 			{
@@ -249,7 +249,7 @@ const std::string Typing::KanaDictionary(const std::string& _roma, bool _isNorma
 				mnCurrentRomaByte += 1;
 				mnCurrentDraw++;
 			}
-			
+
 			// 数字（半角の変換）
 			if (_isNormalize && IsNumber(modify))
 			{
@@ -308,6 +308,32 @@ const std::string Typing::RomaDictionary(const std::string& _kana)
 	return ret;
 }
 
+const std::string Typing::Alphabet(const std::string& _alphabetString)
+{
+	// 変換情報があるのなら余計な情報になるため一度クリア
+	if (!mConvertionUnits.empty() || mInConvertion != ConversionUnit())
+	{
+		mInConvertion = ConversionUnit();
+		mConvertionUnits.clear();
+		mnCurrentDraw = 0;
+		mnCurrentKanaByte = 0;
+		mnCurrentRomaByte = 0;
+	}
+
+	mbIsEnglish = true;
+
+	for (size_t i = 0; i < _alphabetString.size(); i++)
+	{
+		if (IsAlphabet(_alphabetString[i]) || IsNumber(_alphabetString[i]) || _alphabetString[i] == '-')
+		{
+			mAlphabet += _alphabetString[i];
+			AddConvertion(1, 1, 1, 1, 1);
+		}
+	}
+
+	return mAlphabet;
+}
+
 const std::string Typing::KanaNormalize(const std::string& _kana)
 {
 	mRoma = RomaDictionary(_kana);
@@ -353,7 +379,7 @@ bool Typing::CharactorConvertion(char _charactor, std::string& _str, std::vector
 
 		// 変換文字を入れる
 		_str += itr->second;
-		
+
 		// 次の変換時に余計な文字が入らないようにクリア
 		_roma.clear();
 	}
@@ -368,7 +394,7 @@ bool Typing::CharactorConvertion(char _charactor, std::string& _str, std::vector
 
 bool Typing::NConvertion(char _charactor, char _nextCharactor, std::string& _str, std::vector<char>& _roma, int& _index, bool _isNormalize)
 {
-	if (!IsN(_charactor,_nextCharactor))
+	if (!IsN(_charactor, _nextCharactor))
 	{
 		return false;
 	}
@@ -379,7 +405,7 @@ bool Typing::NConvertion(char _charactor, char _nextCharactor, std::string& _str
 	{
 		_index += 1;
 
-		if(_isNormalize)
+		if (_isNormalize)
 		{
 			AddConvertion(2, 2, 2, 2, 1);
 
@@ -398,7 +424,7 @@ bool Typing::NConvertion(char _charactor, char _nextCharactor, std::string& _str
 
 bool Typing::ConstantConvertion(char _charactor, char _nextCharactor, std::string& _str, std::vector<char>& _roma, int& _index)
 {
-	if (!IsRomaConsonant(_charactor,_nextCharactor))
+	if (!IsRomaConsonant(_charactor, _nextCharactor))
 	{
 		return false;
 	}
@@ -459,7 +485,7 @@ std::string Typing::AlphabetHalfToFull(char _charactor)
 	if (!IsAlphabet(_charactor))
 	{
 		// 半角アルファベット以外はそのまま返す
-		return std::string(1,_charactor);
+		return std::string(1, _charactor);
 	}
 
 	// アルファベットの 半角 -> 全角 
@@ -473,7 +499,7 @@ std::string Typing::AlphabetHalfToFull(char _charactor)
 	// 16進数単位の上位バイトと下位バイト取得
 	unsigned char highByte = (codePoint >> 8) & 0xFF;	// 上位バイトを取得
 	unsigned char lowByte = codePoint & 0xFF;			// 下位バイトを取得
-	
+
 	// 変換後の文字列を返す
 	return std::string({ static_cast<char>(highByte), static_cast<char>(lowByte) });
 }
@@ -528,8 +554,17 @@ char Typing::NumberFullToHalf(const std::string& _fullCharactor)
 	// 2バイト未満の場合は、全角数字ではないため、そのまま返す
 	if (_fullCharactor.size() < 2)
 	{
-		// 全角数字は2バイトなので、2バイト以外はそのまま返す
-		return _fullCharactor[0];
+		// 全角数字は2バイトなので、2バイト以外は数字の時は返す
+		if (IsNumber(_fullCharactor.front()))
+		{
+			return _fullCharactor.front();
+		}
+		else
+		{
+			return '\0';
+		}
+
+
 	}
 
 	// 数字の 全角 -> 半角
@@ -614,7 +649,7 @@ bool Typing::IsCharFullByte(unsigned char _charactorByte)
 
 	constexpr unsigned char minFullCharactorHighByte[] = { unsigned char(0x81u),unsigned char(0xE0u) };	// 全角区間
 	constexpr unsigned char maxFullCharactorHighByte[] = { unsigned char(0x9Fu),unsigned char(0xFCu) };	// 全角区間
-	
+
 	return (_charactorByte >= minFullCharactorHighByte[0] && _charactorByte <= maxFullCharactorHighByte[0])
 		|| (_charactorByte >= minFullCharactorHighByte[1] && _charactorByte <= maxFullCharactorHighByte[1]);
 }
@@ -664,26 +699,21 @@ void Typing::DeleteChar()
 
 	// 削除
 	mRoma.erase(unit.romaBegin, unit.romaLength);
-	mKana.erase(unit.kanaBegin, unit.kanaLength);
 
+	if(mbIsEnglish)
+	{
+		mAlphabet.erase(unit.kanaBegin, unit.kanaLength);
+	}
+	else
+	{
+		mKana.erase(unit.kanaBegin, unit.kanaLength);
+	}
+	
+	
 	// 消した情報を得る
 	decltype(auto) deleteUnit = unit;
 
 	mConvertionUnits.erase(mConvertionUnits.begin() + deletePosition);
-
-	clsDx();
-	// 消した分の情報を修正
-	// 消した文字の右側にある数は全て修正
-	for (size_t i = deletePosition; i < mConvertionUnits.size(); i++)
-	{
-		decltype(auto) modify = mConvertionUnits[i];
-		
-		modify.romaBegin -= deleteUnit.romaLength;
-		modify.kanaBegin -= deleteUnit.kanaLength;
-		modify.kanaCharBegin--;
-
-		printfDx("romaBegin:%d romaLength:%d kanaLength:%d kanaBegin:%d %d文字目\n", modify.romaBegin, modify.romaLength, modify.kanaBegin, modify.kanaLength, modify.kanaCharBegin);
-	}
 
 	// 各変数を変更
 	mnCurrentRomaByte -= deleteUnit.romaLength;
@@ -779,14 +809,19 @@ const std::string& Typing::GetKana() const
 	return mKana;
 }
 
+const std::string& Typing::GetAlphabet() const
+{
+	return mAlphabet;
+}
+
 void Typing::ClearString()
 {
 	mRoma.clear();
 	mKana.clear();
+	mAlphabet.clear();
 	mConvertionUnits.clear();
 	mnCurrentDraw = 0;
 	mnCurrentKanaByte = 0;
 	mnCurrentRomaByte = 0;
 	mInConvertion = ConversionUnit();
-\
 }

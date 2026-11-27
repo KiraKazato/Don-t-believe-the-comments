@@ -1,6 +1,7 @@
 ﻿#include "TextInputManager.h"
 #include "Typing.h"
 #include "DxLib.h"
+#include "Master.h"
 
 TextInputManager::TextInputManager()
 {
@@ -32,16 +33,15 @@ void TextInputManager::Draw()
 
 	if (mnKeyInputState == 0)
 	{
+		std::string drawString = mbIsAlphabet ? mOutputAlphabetString : mOutputString;
+
 		// サイズ計測
 		int width = 0, height = 0;
-		int cursorLineX = 0;
-		GetDrawFormatStringSizeToHandle(&width, &height, NULL, mnFontHandle, "%s", mOutputString.c_str());
+		GetDrawFormatStringSizeToHandle(&width, &height, NULL, mnFontHandle, "%s", drawString.c_str());
 		int centerX = (mnKeyInputDrawX - (width / 2));
-		cursorLineX = centerX + GetDrawFormatStringWidthToHandle(mnFontHandle, "%s",mOutputString.c_str()); // カーソル位置を計算
-		
+
 		// サイズに合わせて中央表示
-		DrawFormatStringToHandle(centerX, mnKeyInputDrawY, KEYINPUT_STRING_COLOR, mnFontHandle, "%s", mOutputString.c_str());
-		DrawLine(cursorLineX, mnKeyInputDrawY, cursorLineX, mnKeyInputDrawY + height, GetColor(128, 128, 128), 2);
+		DrawFormatStringToHandle(centerX, mnKeyInputDrawY, KEYINPUT_STRING_COLOR, mnFontHandle, "%s", drawString.c_str());
 	}
 }
 
@@ -63,19 +63,14 @@ void TextInputManager::Update()
 			mOutputString = mOutputString.erase(mOutputString.size() - 2, 2);
 			mOutputString += "ん";
 		}
-		else if (mInputString == "/p" || mInputString == "/ｐ" || mInputString == "・p" || mInputString == "・ｐ")
-		{
-			mbIsPause = true;
-			mnKeyInputState = 2;
-		}
 	}
 
-	if(mnKeyInputState == 0)
+	if (mnKeyInputState == 0)
 	{
 		// 押したボタン（入力した文字）を得る
 		char inputChar = GetInputChar(TRUE);
 
-		// 
+		// 無入力（0）ではないなら
 		if (inputChar != 0)
 		{
 			ControllInput(inputChar);
@@ -125,6 +120,11 @@ const std::string& TextInputManager::GetInputString() const
 	return mOutputString;
 }
 
+const std::string& TextInputManager::GetInputStringAlphabet() const
+{
+	return mOutputAlphabetString;
+}
+
 void TextInputManager::ResetState()
 {
 	mnKeyInputState = 0;
@@ -132,8 +132,9 @@ void TextInputManager::ResetState()
 
 void TextInputManager::ResetInput()
 {
-	mInputString = "";
-	mOutputString = "";
+	mInputString.clear();
+	mOutputString.clear();
+	mOutputAlphabetString.clear();
 	mTyping.ClearString();
 }
 
@@ -147,13 +148,21 @@ void TextInputManager::ControllInput(char _input)
 		{
 			return;
 		}
-		// 入力を加えるただし、スペース、数字、記号は無視する
- 		if ((_input != ' ' && (mTyping.IsAlphabet(_input) || mTyping.IsNumber(_input))) || _input == '-')
+		// 入力を加えるただし、スペース、記号は無視する
+		if ((_input != ' ' && (mTyping.IsAlphabet(_input) || mTyping.IsNumber(_input))) || _input == '-')
 			mInputString += _input;
 		// 入力を変換
-		mOutputString = mTyping.KanaDictionary(mInputString);
-
-		mTyping.KanaNormalize(mOutputString);
+		if (mbIsAlphabet)
+		{
+			// アルファベットモード
+			mOutputAlphabetString = mTyping.Alphabet(mInputString);
+		}
+		else
+		{
+			// ローマ字モード
+			mOutputString = mTyping.KanaDictionary(mInputString);
+			mTyping.KanaNormalize(mOutputString);	// 正規化（入力内容を一意にする）
+		}
 
 		if (!mTyping.GetConvertionUnits().empty())
 			mnDrawCursorPosition = mTyping.GetConvertionUnits().back().GetKanaCharEnd();
@@ -179,6 +188,17 @@ void TextInputManager::ControllInput(char _input)
 
 	mInputString = mTyping.GetRoma();
 	mOutputString = mTyping.GetKana();
+	mOutputAlphabetString = mTyping.GetAlphabet();
+}
+
+void TextInputManager::SetIsAlphabet(bool _flag)
+{
+	mbIsAlphabet = _flag;
+}
+
+bool TextInputManager::IsAlphabet() const
+{
+	return mbIsAlphabet;
 }
 
 void TextInputManager::SetNoInput()

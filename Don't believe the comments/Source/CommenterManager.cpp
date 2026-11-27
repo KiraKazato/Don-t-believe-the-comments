@@ -1,4 +1,4 @@
-#include "CommenterManager.h"
+﻿#include "CommenterManager.h"
 #include"Commenter.h"
 #include "Master.h"
 #include <iostream>
@@ -26,18 +26,16 @@ void CommenterManager::Initialize()
 	mnCurrentCommentGridPositionX = mnBaseCommentGridPositionX;
 	mnCurrentCommentGridPositionY = mnBaseCommentGridPositionY;
 
-	//スパチャエフェクトを作成して手動描画モードにする
-	mpSuperChatEffect = new EffekseerEffect("Resource/Effect/SuperChatEffect.efk", 50.0f);
+		mpSuperChatEffect = new EffekseerEffect("Resource/Effect/SuperChatEffect.efk", 50.0f);
 	mpSuperChatEffect->SetManualDraw(true);
 
-	//画面と同じサイズの「透明な仮キャンバス」を作成（第3引数のTRUEが透過ありの意味）
-	mnEffectScreen = MakeScreen(Master::Width, Master::Height, FALSE);
+		mnEffectScreen = MakeScreen(Master::Width, Master::Height, FALSE);
+	mnCommentBackHandle = Master::mpResourceManager->LoadGraphics("Resource/GameScene/Button/CommentBack.png");
 }
 
 void CommenterManager::Finalize()
 {
-	//エフェクトと仮キャンバスの後片付け
-	if (mpSuperChatEffect != nullptr)
+		if (mpSuperChatEffect != nullptr)
 	{
 		delete mpSuperChatEffect;
 		mpSuperChatEffect = nullptr;
@@ -205,7 +203,11 @@ void CommenterManager::ChooseDisplayCommenter()
 		if (mnMaxCommentGridPositionY <= commentY)
 		{
 			int diff = commentY - mnMaxCommentGridPositionY;
-			mnCurrentCommentGridPositionY -= diff;
+			
+			if (!mbIsScrolled)
+			{
+				mnCurrentCommentGridPositionY -= diff;
+			}
 		}
 		mnID++;
 
@@ -223,7 +225,7 @@ std::string CommenterManager::GetDisplayComment(int _state)
 	{
 		if (mbIsSuperCommentDraw)
 		{
-			//スパチャエフェクトを再生する
+			
 			if (mpSuperChatEffect != nullptr)
 			{
 				mpSuperChatEffect->Play(
@@ -232,14 +234,14 @@ std::string CommenterManager::GetDisplayComment(int _state)
 				);
 			}
 
-			//複数存在する場合は選ぶ
+			
 			const std::vector<std::string>& chooseSuperHintComment = Master::mpQuestionManager->GetQuestionData().superHintComment;
 			index = GetRand(static_cast<int>(chooseSuperHintComment.size()) - 1);
 			return chooseSuperHintComment.at(index);
 		}
 
 		//テンプレート
-		if (!mbQuestionStarted || (rate < 0.6f && !mTemplateComments.empty())|| continued > 5)
+		if (!mbQuestionStarted || (rate < 0.7f && !mTemplateComments.empty())|| continued > 5)
 		{
 			std::vector<std::string>&& chooseTemplateComment = ChooseTemplateCommentKind(mnCommentKind);
 			index = GetRand(static_cast<int>(chooseTemplateComment.size() - 1));
@@ -314,48 +316,49 @@ std::vector<std::string> CommenterManager::ChooseTemplateCommentKind(int _kind)
 
 void CommenterManager::Update()
 {
-	//スパチャエフェクトの更新
+
 	if (mpSuperChatEffect != nullptr)
 	{
 		mpSuperChatEffect->Update();
 	}
+	ScrollComments();
 	ChooseDisplayCommenter();
+	
 	if (mDisplayCommenters.empty())return;
-	int drawTotalHeight = mnTotalHeight;
+	int drawTotalHeight{};
 	for (const auto& commenter : mDisplayCommenters)
 	{
 		commenter->updateReputation(drawTotalHeight);
 		drawTotalHeight += commenter->GetTotalHeight();
 	}
 	
+
 }
 
 void CommenterManager::Draw()
 {
 
-	//その上からコメント本体を描画する
+	
 	for (const auto& commenter : mDisplayCommenters)
 	{
 		commenter->Draw();
 	}
 	bool isEffectPlaying = (mpSuperChatEffect != nullptr && mpSuperChatEffect->IsPlaying());
 
-	//エフェクト再生中なら、今の裏画面（背景）を仮キャンバスにコピーしてエフェクトを描く
 	if (isEffectPlaying && mnEffectScreen != -1)
 	{
-		// 今の画面を仮キャンバスにそのままコピーする
 		GetDrawScreenGraph(0, 0, Master::Width, Master::Height, mnEffectScreen);
 
-		SetDrawScreen(mnEffectScreen); // 描き先を仮キャンバスに変更
+		SetDrawScreen(mnEffectScreen); 
 		
-		mpSuperChatEffect->Draw();     // 背景の上に直接エフェクトを描く
-		SetDrawScreen(DX_SCREEN_BACK); // 描き先を元の裏画面に戻す
+		mpSuperChatEffect->Draw();     
+		SetDrawScreen(DX_SCREEN_BACK); 
 	}
 
-	//コメント欄の枠内だけ描かれるように切り抜き範囲を設定する
+	
 	SetDrawArea(Master::gridWidth * 89, Master::gridHeight * 12, Master::gridWidth * 117, Master::gridHeight * 113);
 
-	//背景＋エフェクトが描かれた仮キャンバスを、枠内だけ裏画面に貼り付ける
+	
 	if (isEffectPlaying && mnEffectScreen != -1)
 	{
 		DrawGraph(0, 0, mnEffectScreen, FALSE);
@@ -363,8 +366,9 @@ void CommenterManager::Draw()
 
 
 
-	//切り抜き範囲を全画面に戻す
+	
 	SetDrawAreaFull();
+	DrawBackScrollButton();
 }
 
 void CommenterManager::SetCommenter(Commenter* _commenter)
@@ -375,7 +379,7 @@ void CommenterManager::SetCommenter(Commenter* _commenter)
 void CommenterManager::SetDisplayCommenter(Commenter* _commenter)
 {
 	// データ上に残すコメントの数
-	constexpr int saveComments = 15;
+	constexpr int saveComments = 1000;
 
 	/**/if(mDisplayCommenters.size() > saveComments)
 	{
@@ -449,7 +453,7 @@ bool CommenterManager::IsOneSecond()
 
 	int diffTime = currentTime - lastTime;
 
-	if (diffTime >= 2000)
+	if (diffTime >= 1200)
 	{
 		lastTime = currentTime;
 		return true;
@@ -460,7 +464,7 @@ bool CommenterManager::IsOneSecond()
 
 void CommenterManager::GameEnd()
 {
-	//ゲーム終了時に再生中のスパチャエフェクトを止める
+	
 	if (mpSuperChatEffect != nullptr)
 	{
 		mpSuperChatEffect->Stop();
@@ -500,5 +504,69 @@ void CommenterManager::ResetCommenterReputation()
 	for (auto& commenter : mCommenters)
 	{
 		commenter->SetReputation(1.0f);
+	}
+}
+
+void CommenterManager::ScrollComments()
+{
+
+	mnTotalHeight = 0;
+	for (auto comment : mDisplayCommenters)
+	{
+		mnTotalHeight += comment->GetTotalHeight();
+	/*	if (totalHeight > (mnCommentFrameInY2 - mnCommentFrameInY1))
+		{
+			break;
+		}*/
+	}
+	
+	if (mnTotalHeight < (mnCommentFrameInY2 - mnCommentFrameInY1))
+	{
+		return;
+	}
+	
+	Master::mpMouseManager->GetMouseWheelVolume(&mnMouseWheelValue);
+	if (mnMouseWheelValue > 0)
+	{
+		mnMouseWheelValue += 5;
+	}
+	else if(mnMouseWheelValue < 0)
+	{
+		mnMouseWheelValue -= 5;
+	}
+	
+	mnCurrentCommentGridPositionY += mnMouseWheelValue;
+	if (mnCurrentCommentGridPositionY > mnBaseCommentGridPositionY)
+	{
+		mnCurrentCommentGridPositionY = mnBaseCommentGridPositionY;
+	}
+	if (mnCurrentCommentGridPositionY < mnCommentFrameInY2 - mnTotalHeight)
+	{
+		mnCurrentCommentGridPositionY = mnCommentFrameInY2 - mnTotalHeight;
+	}
+	if (mnCurrentCommentGridPositionY > mnCommentFrameInY2 - mnTotalHeight)
+	{
+		mbIsScrolled = true;
+	}
+	else
+	{
+		mbIsScrolled = false;
+		
+	}
+}
+
+void CommenterManager::DrawBackScrollButton()
+{
+	if (mbIsScrolled)
+	{
+		int mouseX{}, mouseY{};
+		bool pressed;
+		Master::mpMouseManager->GetMousePosition(&mouseX, &mouseY);
+		DrawExtendGraph(Master::gridWidth * 101, Master::gridHeight * 104, Master::gridWidth * 105, Master::gridHeight * 111, mnCommentBackHandle, TRUE);
+		bool inside = Master::mpUIManager->InsideUI(Master::gridWidth * 101, Master::gridHeight * 104, Master::gridWidth * 105, Master::gridHeight * 111, mouseX, mouseY);
+		if (Master::mpUIManager->ClickedUI(&pressed, inside))
+		{
+			mnCurrentCommentGridPositionY = mnCommentFrameInY2 - mnTotalHeight;
+		}
 	}
 }

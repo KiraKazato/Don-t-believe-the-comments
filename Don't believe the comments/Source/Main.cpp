@@ -36,6 +36,7 @@ CommenterManager* Master::mpCommenterManager = new CommenterManager();
 Viewers* Master::mpViewers = new Viewers();
 Transitor* Master::mpTransitor = new Transitor();
 Pause* Master::mpPause = new Pause();
+Subscribers* Master::mpSubscribers = new Subscribers();
 
 bool Master::EndGame = false;
 
@@ -59,6 +60,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	SetUseIMEFlag(FALSE);
 
+	//SetWindowSize(Master::gridWidth * 80, Master::gridHeight * 80);
+
 	// DXライブラリ初期化
 	if(DxLib_Init() == -1)
 	{
@@ -79,7 +82,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	Master::mpCommenterManager->Initialize();
 	//視聴者初期化
 	Master::mpViewers->Initialize();
+	//登録者初期化
+	Master::mpSubscribers->Initialize();
 	
+
 	// 描画先画面を裏画面に設定する
 	SetDrawScreen(DX_SCREEN_BACK);
 	
@@ -140,6 +146,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	delete Master::mpViewers;
 	delete Master::mpTransitor;
 	delete Master::mpPause;
+	delete Master::mpSubscribers;
 
 
 	Effkseer_End();

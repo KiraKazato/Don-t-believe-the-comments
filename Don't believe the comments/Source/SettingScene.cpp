@@ -195,6 +195,9 @@ void SettingScene::UpdateSlider(VolumeSlider& slider, bool canGrab)
 		slider.nowVolume = (int)volume;
 		slider.volumeRatio = volume / 100.0f;
 	}
+
+
+	Scene::Update();
 }
 
 void SettingScene::Draw()

@@ -119,8 +119,14 @@ private:
 	// @return そのバイトが大文字の頭文字か
 	bool IsCharactorLargeByte(char _charactor);
 
+	bool IsAlphabet(char _charactor);
+
 private:
 	std::vector<std::pair<std::vector<QuestionData>, bool>> mQuestions{};	// クイズ
+
+	bool IsAlphabet(char _charactor);
+
+	void StringAlphabetLargeToSmall(std::string& _str);
 
 	int mnCurrentIndex = 0;			// 今の問題の番号
 	int mnCurrentDifficulty = 0;	// 今の問題の難易度の数値

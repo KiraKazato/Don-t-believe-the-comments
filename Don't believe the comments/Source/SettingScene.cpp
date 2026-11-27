@@ -35,7 +35,7 @@ void SettingScene::Initialize()
 	dialWidth = (int)(dialWidth * 0.9f);
 	dialHeight = (int)(dialHeight * 0.8f);
 
-	// 背景と戻るボタンをUIManagerに登録（※volumeBarは2本描くためDraw内で直接描画します）
+	// 背景と戻るボタンをUIManagerに登録
 	Master::mpUIManager->AddUI(settingGraph, 0, 0, Master::Width, Master::Height);
 	Master::mpUIManager->AddUI(mnBackButtonHandle, Master::gridWidth * 47, Master::gridHeight * 90, Master::gridWidth * 74, Master::gridHeight * 107);
 
@@ -215,27 +215,6 @@ void SettingScene::Draw()
 	DrawString((int)(Master::gridHeight * 82), (int)(Master::gridWidth * 23), "  音  量  設  定  ", color);
 	SetFontSize(size);
 
-	int debugColor = GetColor(255, 0, 0); // 赤色
-
-	// 1. つまみの当たり判定を赤枠で表示（画像の見た目とズレていないか確認）
-	DrawBox(
-		(int)bgmSlider.dialX, (int)bgmSlider.dialY,
-		(int)bgmSlider.dialX + dialWidth, (int)bgmSlider.dialY + dialHeight,
-		debugColor, FALSE
-	);
-	DrawBox(
-		(int)seSlider.dialX, (int)seSlider.dialY,
-		(int)seSlider.dialX + dialWidth, (int)seSlider.dialY + dialHeight,
-		debugColor, FALSE
-	);
-	//デバッグ
-	// 2. マウス座標・掴み状態・音量を左上に表示
-	//DrawFormatString(10, 10, debugColor, "Mouse: X=%d, Y=%d", MouseX, MouseY);
-	//DrawFormatString(10, 30, debugColor, "BGM: vol=%d (Manager=%d) grab=%d",
-	//	bgmSlider.nowVolume, Master::mpSoundManager->GetBGMVolume(), bgmSlider.grabTheDial);
-	//DrawFormatString(10, 50, debugColor, "SE : vol=%d (Manager=%d) grab=%d",
-	//	seSlider.nowVolume, Master::mpSoundManager->GetSEVolume(), seSlider.grabTheDial);
-
 	Scene::Draw();
 }
 
@@ -282,11 +261,9 @@ void SettingScene::DrawSlider(const VolumeSlider& slider, const char* label)
 	int color = GetColor(0, 0, 0);
 	int size = GetFontSize(); // 元のフォントサイズを覚えておく
 
-	// ▼ ここから「BGM」「SE」の描画（「音量設定」と同じサイズ 45 にする）
 	SetFontSize(45);
 	DrawString((int)(Master::gridWidth * 20), (int)(slider.barTopY + 8), label, color);
 
-	// ▼ ここから音量数値（0〜100）の描画（元のサイズ 32 に切り替える）
 	SetFontSize(32);
 	if (slider.nowVolume >= 10 && slider.nowVolume <= 99)
 	{
